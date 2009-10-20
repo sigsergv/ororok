@@ -25,9 +25,14 @@ static const QString TABLE_SQL_DFN_ALBUM("CREATE TABLE album ("
 
 static const QString TABLE_SQL_DFN_TRACK("CREATE TABLE track ("
 	"id INTEGER PRIMARY KEY, "
-	"path_id INTEGER, " // relatve path to track file
-		"filename VARCHAR, " // filename (without path?)
-		"modtime INTEGER " // file modification time (unixtime)
+	"path_id INTEGER, "       // relatve path to track file
+		"filename VARCHAR, "  // filename (without path?)
+		"modtime INTEGER, "   // file modification time (unixtime)
+		"artist_id INTEGER, " // artist id, ref "artist" table
+		"genre_id INTEGER, "  // genre id, ref "genre" table
+		"album_id INTEGER, "  // album id, ref "album"
+		"track INTEGER, "     // track number in the album
+		"year INTEGER "       // track year
 		")");
 
 static const QString TABLE_SQL_DFN_COLLECTION("CREATE TABLE collection ("
@@ -94,8 +99,9 @@ QSqlError initDb() {
 
 		// init collection with come data
 		if (!q.exec(
+				"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music/Rock', 1)")) {
 				//"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music/Original', 1)")) {
-				"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music', 1)")) {
+				//"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music', 1)")) {
 			return q.lastError();
 		}
 	}

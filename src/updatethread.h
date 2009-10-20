@@ -45,11 +45,14 @@ public:
 	 */
 	void softStop();
 	QString errorMessage();
-	int errorCode();
+	UpdateThread::UpdateThreadError errorCode();
+
+	static QString errorToText(UpdateThreadError err);
 
 protected:
 	void run();
-	ReturnAction processCollection(const QStringList &);
+	ReturnAction scanCollection(int, const QString &, const QString &);
+	ReturnAction processCollections();
 
 private:
 	struct Private;

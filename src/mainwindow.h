@@ -29,6 +29,7 @@ protected slots:
 	void updateThreadStarted();
 	void updateThreadFinished();
 	void updateThreadTerminated();
+	void scanProgress(int);
 
 private:
 	class Private;

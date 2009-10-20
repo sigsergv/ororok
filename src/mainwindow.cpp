@@ -45,12 +45,31 @@ void MainWindow::updateThreadStarted()
 
 void MainWindow::updateThreadFinished()
 {
-	ui.label->setText("finished");
+	UpdateThread::UpdateThreadError ret = ut->errorCode();
+
+	if (ret != UpdateThread::NoError) {
+		// error occured
+		ui.label->setText(UpdateThread::errorToText(ret));
+	} else {
+		ui.label->setText("finished");
+	}
 }
 
 void MainWindow::updateThreadTerminated()
 {
 	ui.label->setText("terminated");
+}
+
+void MainWindow::scanProgress(int progress)
+{
+	if (progress < 0) {
+		progress = 0;
+	}
+	if (progress > 100) {
+		progress = 100;
+	}
+
+	ui.progressBar->setValue(progress);
 }
 
 void MainWindow::createActions()
@@ -66,4 +85,5 @@ void MainWindow::connectSignals()
 	connect(ut, SIGNAL(started()), this, SLOT(updateThreadStarted()));
 	connect(ut, SIGNAL(finished()), this, SLOT(updateThreadFinished()));
 	connect(ut, SIGNAL(terminated()), this, SLOT(updateThreadTerminated()));
+	connect(ut, SIGNAL(progressPercentChanged(int)), this, SLOT(scanProgress(int)));
 }

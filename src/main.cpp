@@ -22,9 +22,9 @@ int main(int argv, char *args[])
 
     QApplication app(argv, args);
     MainWindow win;
-    //win.show();
+    win.show();
     // maximize, for debug purposes
-    win.showMaximized();
+    //win.showMaximized();
 
     return app.exec();
 }

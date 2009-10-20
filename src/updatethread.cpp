@@ -9,6 +9,7 @@
 #include <QtSql>
 
 #include "updatethread.h"
+#include "formats.h"
 
 const int COL_ID = 0;
 const int COL_NAME = 1;
@@ -20,7 +21,7 @@ static const QString TABLE_SQL_DFN_DIR_TMP("CREATE TEMPORARY TABLE _dir ("
 		"modtime INTEGER " // file modification time (unixtime)
 		")");
 
-int scanDir(QDir & d, QSqlQuery * query) {
+void scanDir(QDir & d, QSqlQuery * query) {
 	QFileInfoList el = d.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot,
 			QDir::NoSort);
 
@@ -40,16 +41,19 @@ struct UpdateThread::Private
 {
 	bool stopRequested;
 	QString errorMessage;
-	int errorCode;
+	UpdateThread::UpdateThreadError errorCode;
 	QSqlDatabase * db;
 	QSqlQuery * query;
+	QMap<QString, int> genresMap;
+	QMap<QString, int> artistsMap;
+	QMap<QString, int> albumsMap;
 };
 
 UpdateThread::UpdateThread(QObject * parent) :
 	QThread(parent)
 {
-	p->stopRequested = false;
 	p = new Private();
+	p->stopRequested = false;
 }
 
 UpdateThread::~UpdateThread()
@@ -67,37 +71,49 @@ QString UpdateThread::errorMessage()
 	return p->errorMessage;
 }
 
-int UpdateThread::errorCode()
+UpdateThread::UpdateThreadError UpdateThread::errorCode()
 {
 	return p->errorCode;
 }
 
-UpdateThread::ReturnAction UpdateThread::processCollection(const QStringList & c)
+QString UpdateThread::errorToText(UpdateThread::UpdateThreadError err)
 {
-	QString collection_id = c[COL_ID];
-	QString collection_path = c[COL_PATH];
-	QString collection_name = c[COL_NAME];
+	QString res;
 
+	switch (err) {
+	case UpdateThread::NoError:
+		res = "No error";
+		break;
+	case UpdateThread::GetCollectionsListError:
+		res = "Collections retrieving failed";
+		break;
+	case UpdateThread::CannotCreateTemporaryDirsTable:
+		res = "Failed to create temporary table “_dirs”";
+		break;
+	}
+
+	return res;
+}
+
+UpdateThread::ReturnAction UpdateThread::scanCollection(int collectionId,
+		const QString & collectionPath, const QString & collectionName)
+{
 	// find all subdirs in the directory collection_path
 	//
-	QString t;
-	QDir d(collection_path);
+	QDir d(collectionPath);
 	p->query->prepare(
 			"INSERT INTO _dir (path, modtime) VALUES (:path, :modtime)");
 	scanDir(d, p->query);
+	return Continue;
+}
 
-	/*
-	 query.exec("SELECT path, modtime FROM _dir");
-	 while (query.next()) {
-	 qDebug() << query.value(0).toString();
-	 qDebug() << query.value(1).toInt();
-	 }
-	 */
-
+UpdateThread::ReturnAction UpdateThread::processCollections()
+{
 	// compare just found dirs with the ones from db
 	// find and process deleted directories
 	QStringList dirs_to_delete;
-	qDebug() << ">> deleted directories";
+	QString t;
+	qDebug() << ">> find deleted directories";
 	p->query->exec(
 			"SELECT d.id, d.path FROM dir AS d LEFT JOIN _dir AS _d ON d.path=_d.path WHERE _d.path IS NULL");
 
@@ -123,6 +139,8 @@ UpdateThread::ReturnAction UpdateThread::processCollection(const QStringList & c
 		}
 	}
 
+	emit progressPercentChanged(3);
+
 	QSqlQuery subq;
 	QVariant last_insert_id;
 	QStringList dirs_to_update;
@@ -143,6 +161,7 @@ UpdateThread::ReturnAction UpdateThread::processCollection(const QStringList & c
 		//qDebug() << query.value(0).toString();
 	}
 
+	emit progressPercentChanged(4);
 	// find updated dirs
 	qDebug() << ">> updated directories";
 	p->query->exec(
@@ -166,12 +185,20 @@ UpdateThread::ReturnAction UpdateThread::processCollection(const QStringList & c
 	QDir dir;
 	QStringList name_filters;
 	QStringList values;
-	name_filters << "*.Mp3";
+	Q_FOREACH(const QString s, Ororok::supportedFileExtensions()) {
+		name_filters << QString("*.%1").arg(s);
+	}
+
+	emit progressPercentChanged(5);
 	QStringList::const_iterator i = dirs_to_update.constBegin();
 	const QString values_template("('%1', '%2')");
 
 	p->query->prepare(
-			"INSERT INTO track (path_id, filename) VALUES (:path_id, :filename)");
+			"INSERT INTO track (path_id, filename, artist_id, album_id, genre_id, track, year) "
+			"VALUES (:path_id, :filename, :artistId, :albumId, :genreId, :track, :year)");
+
+	int dirsNum = dirs_to_update_paths.length();
+	float processedDirs = 0;
 	Q_FOREACH (const QString & path, dirs_to_update_paths)
 	{
 		path_id = *i;
@@ -184,31 +211,95 @@ UpdateThread::ReturnAction UpdateThread::processCollection(const QStringList & c
 
 		Q_FOREACH (const QFileInfo & fi, files)
 		{
+			bool success;
+
+			// get file metadata
+			Ororok::MusicTrackMetadata * md = Ororok::getMusicFileMetadata(fi.filePath(), success);
+			int artistId = 0;
+			int albumId = 0;
+			int genreId = 0;
+			if (md->artist.length()) {
+				if (p->artistsMap.contains(md->artist)) {
+					artistId = p->artistsMap[md->artist];
+				} else {
+					// append artist to the database
+					subq.prepare("INSERT INTO artist (name) VALUES (:name)");
+					subq.bindValue(":name", md->artist);
+					if (subq.exec()) {
+						artistId = subq.lastInsertId().toInt();
+					}
+					p->artistsMap[md->artist] = artistId;
+				}
+			}
+			if (md->genre.length()) {
+				if (p->genresMap.contains(md->genre)) {
+					genreId = p->genresMap[md->genre];
+				} else {
+					// append genre to the database
+					subq.prepare("INSERT INTO genre (name) VALUES (:name)");
+					subq.bindValue(":name", md->genre);
+					if (subq.exec()) {
+						genreId = subq.lastInsertId().toInt();
+					}
+					p->genresMap[md->genre] = genreId;
+				}
+			}
+			if (md->album.length()) {
+				if (p->albumsMap.contains(md->album)) {
+					albumId = p->albumsMap[md->album];
+				} else {
+					// append genre to the database
+					subq.prepare("INSERT INTO album (name) VALUES (:name)");
+					subq.bindValue(":name", md->album);
+					if (subq.exec()) {
+						albumId = subq.lastInsertId().toInt();
+					}
+					p->albumsMap[md->album] = albumId;
+				}
+			}
 			p->query->bindValue(":path_id", path_id);
 			p->query->bindValue(":filename", fi.fileName());
+			p->query->bindValue(":artistId", artistId);
+			p->query->bindValue(":albumId", albumId);
+			p->query->bindValue(":genreId", genreId);
+			p->query->bindValue(":track", md->track);
+			p->query->bindValue(":year", md->year);
+			delete md;
 			if (!p->query->exec()) {
 				qDebug() << p->query->lastError();
 			}
 		}
-		//qDebug() << values;
-		qDebug() << "xx: " << path;
+		// one directory updated, increase progress
+		processedDirs += 1;
 		i++;
+
+		float x = (processedDirs / dirsNum) * 95;
+		emit progressPercentChanged(5 + static_cast<int>(x));
 	}
 
-	// find deleted directories
+	return Continue;
 }
+
+typedef QList<QVariant> VariantList;
 
 void UpdateThread::run() {
 	p->errorCode = NoError;
 	p->errorMessage.clear();
+	p->artistsMap.clear();
+	p->genresMap.clear();
+	p->albumsMap.clear();
 
-	p->db = &QSqlDatabase::database();
+	emit progressPercentChanged(0);
+
+	QSqlDatabase _db = QSqlDatabase::database();
+	// required for commits in other class' functions
+	p->db = &_db;
 
 	p->query = new QSqlQuery(*(p->db));
 
 	p->db->transaction();
 
-	QList<QStringList> collections;
+	QList<VariantList> collections;
 
 	if (!p->query->exec("SELECT id, name, path FROM collection WHERE enabled=1")) {
 		p->errorCode = GetCollectionsListError;
@@ -217,14 +308,14 @@ void UpdateThread::run() {
 	}
 
 	while (p->query->next()) {
-		QStringList values;
-		values.append(p->query->value(0).toString());
-		values.append(p->query->value(1).toString());
-		values.append(p->query->value(2).toString());
+		VariantList values;
+		values.append(p->query->value(0)); // id
+		values.append(p->query->value(1)); // name
+		values.append(p->query->value(2)); // path
 		collections.append(values);
 	}
 
-	if (p->query->exec(TABLE_SQL_DFN_DIR_TMP)) {
+	if (!p->query->exec(TABLE_SQL_DFN_DIR_TMP)) {
 		p->errorCode = CannotCreateTemporaryDirsTable;
 		p->db->rollback();
 		return;
@@ -232,14 +323,21 @@ void UpdateThread::run() {
 
 	bool commit = true;
 
-	Q_FOREACH (const QStringList & c, collections) {
-		ReturnAction a = processCollection(c);
+	Q_FOREACH (const VariantList & c, collections) {
+		ReturnAction a;
+		a = scanCollection(c[0].toInt(), c[2].toString(), c[1].toString()); // id, path, name!
 		if (Break == a) {
 			break;
 		} else if (Terminate == a) {
 			commit = false;
 			break;
 		}
+	}
+
+	emit progressPercentChanged(2);
+
+	if (Terminate == processCollections()) {
+		commit = false;
 	}
 
 	p->query->exec("DROP TABLE _dir");

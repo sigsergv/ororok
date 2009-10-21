@@ -87,8 +87,14 @@ QString UpdateThread::errorToText(UpdateThread::UpdateThreadError err)
 	case UpdateThread::GetCollectionsListError:
 		res = "Collections retrieving failed";
 		break;
-	case UpdateThread::CannotCreateTemporaryDirsTable:
+	case UpdateThread::UnableToCreateTemporaryDirsTable:
 		res = "Failed to create temporary table “_dirs”";
+		break;
+	case UpdateThread::UnableToDetectAlbumArtist:
+		res = "Unable to detect album artist";
+		break;
+	case UpdateThread::UbableToSaveAlbumArtist:
+		res = "Unable to save album artist to the database";
 		break;
 	}
 
@@ -277,6 +283,50 @@ UpdateThread::ReturnAction UpdateThread::processCollections()
 		emit progressPercentChanged(5 + static_cast<int>(x));
 	}
 
+	//
+
+	QSqlQuery q1(*(p->db));
+	QSqlQuery q2(*(p->db));
+
+	q1.prepare("SELECT artist_id FROM track WHERE album_id=:albumId GROUP BY artist_id");
+	q2.prepare("UPDATE album SET artist_id=:artistId WHERE id=:albumId");
+	// process all just added albums and detect album's artist
+	QMap<QString, int>::const_iterator a;
+	for (a=p->albumsMap.constBegin(); a!=p->albumsMap.constEnd(); a++) {
+		const QString & albumName = a.key();
+		const int & albumId = a.value();
+
+		q1.bindValue(":albumId", albumId);
+		if (!q1.exec()) {
+			p->errorMessage = "Unable to detect album artist";
+			p->errorCode = UnableToDetectAlbumArtist;
+			return Terminate;
+		}
+
+		int k = 0;
+		QVariant artistId;
+		while (q1.next()) {
+			k++;
+			artistId = q1.value(0);
+		}
+		if (k == 0) {
+			continue;
+		}
+
+		q2.bindValue(":albumId", albumId);
+		if (k == 1) {
+			q2.bindValue(":artistId", artistId);
+		} else if (k > 1) {
+			// this is various artists album
+			q2.bindValue(":artistId", "-1");
+		}
+		if (!q2.exec()) {
+			p->errorMessage = "Unable to write album artist";
+			p->errorCode = UbableToSaveAlbumArtist;
+			return Terminate;
+		}
+	}
+
 	return Continue;
 }
 
@@ -316,7 +366,7 @@ void UpdateThread::run() {
 	}
 
 	if (!p->query->exec(TABLE_SQL_DFN_DIR_TMP)) {
-		p->errorCode = CannotCreateTemporaryDirsTable;
+		p->errorCode = UnableToCreateTemporaryDirsTable;
 		p->db->rollback();
 		return;
 	}
@@ -341,10 +391,16 @@ void UpdateThread::run() {
 	}
 
 	p->query->exec("DROP TABLE _dir");
+	delete p->query;
+	p->query = 0;
+	p->albumsMap.clear();
+	p->artistsMap.clear();
+	p->genresMap.clear();
 
 	if (commit) {
 		p->db->commit();
 	} else {
 		p->db->rollback();
 	}
+	p->db = 0;
 }

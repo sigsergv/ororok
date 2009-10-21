@@ -13,14 +13,19 @@
 
 int main(int argv, char *args[])
 {
+    QApplication app(argv, args);
+
     if (!QSqlDatabase::drivers().contains("QSQLITE")) {
         QMessageBox::critical(0, "Unable to load database", "This application needs the SQLITE driver");
         return 1;
     }
 
-    initDb();
+    QSqlError err = initDb();
+    if (err.type() != QSqlError::NoError) {
+    	QMessageBox::critical(0, "fatal database error", err.text());
+    	return 1;
+    }
 
-    QApplication app(argv, args);
     MainWindow win;
     win.show();
     // maximize, for debug purposes

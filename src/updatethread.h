@@ -25,7 +25,9 @@ public:
 	{
 		NoError,
 		GetCollectionsListError,        // unable to get collections list
-		CannotCreateTemporaryDirsTable, //
+		UnableToCreateTemporaryDirsTable, //
+		UnableToDetectAlbumArtist,
+		UbableToSaveAlbumArtist
 
 	};
 

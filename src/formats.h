@@ -16,6 +16,7 @@ namespace Ororok
 struct MusicTrackMetadata
 {
 	QString artist;
+	QString title;
 	QString album;
 	QString genre;
 	int track;

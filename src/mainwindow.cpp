@@ -9,6 +9,7 @@
 
 #include "mainwindow.h"
 #include "updatethread.h"
+#include "collectiontreewidget.h"
 
 class MainWindow::Private
 {
@@ -21,10 +22,10 @@ MainWindow::MainWindow() :
 	p = new Private();
 	ui.setupUi(this);
 	ut = new UpdateThread(this);
-
+	CollectionTreeWidget * cwt = new CollectionTreeWidget(this);
+	ui.collectionDock->setWidget(cwt);
 	createActions();
 	connectSignals();
-
 }
 
 void MainWindow::rescanCollection()

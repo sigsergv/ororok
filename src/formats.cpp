@@ -35,6 +35,7 @@ Ororok::MusicTrackMetadata * Ororok::getMusicFileMetadata(const QString & filena
 	metadata->artist = S2Q(tag->artist());
 	metadata->album = S2Q(tag->album());
 	metadata->genre = S2Q(tag->genre());
+	metadata->title = S2Q(tag->title());
 	metadata->year = tag->year();
 	metadata->track = tag->track();
 	return metadata;

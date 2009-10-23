@@ -34,6 +34,7 @@ static const QString TABLE_SQL_DFN_TRACK("CREATE TABLE track ("
 		"id INTEGER PRIMARY KEY, "
 		"path_id INTEGER, "       // relatve path to track file
 		"filename VARCHAR, "  // filename (without path?)
+		"title VARCHAR, "     // track title
 		"modtime INTEGER, "   // file modification time (unixtime)
 		"artist_id INTEGER, " // artist id, ref "artist" table
 		"genre_id INTEGER, "  // genre id, ref "genre" table

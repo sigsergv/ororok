@@ -101,8 +101,8 @@ QString UpdateThread::errorToText(UpdateThread::UpdateThreadError err)
 	return res;
 }
 
-UpdateThread::ReturnAction UpdateThread::scanCollection(int collectionId,
-		const QString & collectionPath, const QString & collectionName)
+UpdateThread::ReturnAction UpdateThread::scanCollection(int,
+		const QString & collectionPath, const QString &)
 {
 	// find all subdirs in the directory collection_path
 	//
@@ -200,8 +200,8 @@ UpdateThread::ReturnAction UpdateThread::processCollections()
 	const QString values_template("('%1', '%2')");
 
 	p->query->prepare(
-			"INSERT INTO track (path_id, filename, artist_id, album_id, genre_id, track, year) "
-			"VALUES (:path_id, :filename, :artistId, :albumId, :genreId, :track, :year)");
+			"INSERT INTO track (path_id, title, filename, artist_id, album_id, genre_id, track, year) "
+			"VALUES (:path_id, :title, :filename, :artistId, :albumId, :genreId, :track, :year)");
 
 	int dirsNum = dirs_to_update_paths.length();
 	float processedDirs = 0;
@@ -270,6 +270,7 @@ UpdateThread::ReturnAction UpdateThread::processCollections()
 			p->query->bindValue(":genreId", genreId);
 			p->query->bindValue(":track", md->track);
 			p->query->bindValue(":year", md->year);
+			p->query->bindValue(":title", md->title);
 			delete md;
 			if (!p->query->exec()) {
 				qDebug() << p->query->lastError();
@@ -293,7 +294,6 @@ UpdateThread::ReturnAction UpdateThread::processCollections()
 	// process all just added albums and detect album's artist
 	QMap<QString, int>::const_iterator a;
 	for (a=p->albumsMap.constBegin(); a!=p->albumsMap.constEnd(); a++) {
-		const QString & albumName = a.key();
 		const int & albumId = a.value();
 
 		q1.bindValue(":albumId", albumId);

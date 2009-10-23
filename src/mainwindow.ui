@@ -98,6 +98,15 @@
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QDockWidget" name="collectionDock">
+   <property name="windowTitle">
+    <string>ddd</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents"/>
+  </widget>
   <action name="actionQuit">
    <property name="text">
     <string>Quit</string>

@@ -1,15 +1,22 @@
 HEADERS += mainwindow.h \
 	db.h \
 	updatethread.h \
-	formats.h
+	formats.h \
+	collectiontreewidget.h \
+	collectionitemmodel.h \
+	collectiontreeitem.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
     db.cpp \
     updatethread.cpp \
-    formats.cpp
+    formats.cpp \
+    collectiontreewidget.cpp \
+    collectionitemmodel.cpp \
+    collectiontreeitem.cpp
 
-FORMS += mainwindow.ui
+FORMS += mainwindow.ui \
+	testwidget.ui
 
 TARGET = ororok
 

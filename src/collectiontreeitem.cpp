@@ -129,7 +129,8 @@ void CollectionTreeItem::fetchAlbums(CollectionTreeItem * parent)
 	QSqlDatabase db = QSqlDatabase::database();
 	QSqlQuery query(db);
 
-	query.prepare("SELECT id, name FROM album WHERE artist_id=:artistId ");
+	query.prepare("SELECT album.id, album.name, image.path FROM album LEFT JOIN image ON "
+			"album.image_id=image.id WHERE artist_id=:artistId ");
 	query.bindValue(":artistId", parent->data["id"]);
 
 	if (!query.exec()) {
@@ -146,6 +147,7 @@ void CollectionTreeItem::fetchAlbums(CollectionTreeItem * parent)
 		album->data.clear();
 		album->data["id"] = query.value(0);
 		album->data["name"] = query.value(1);
+		album->data["cover_path"] = query.value(2);
 		album->row = n;
 		p->childItems[n] = album;
 		n++;

@@ -25,9 +25,12 @@ public:
 	{
 		NoError,
 		GetCollectionsListError,        // unable to get collections list
+		UnableToLoadArtists,
+		UnableToLoadGenres,
 		UnableToCreateTemporaryDirsTable, //
 		UnableToDetectAlbumArtist,
-		UbableToSaveAlbumArtist
+		UnableToSaveAlbumArtist,
+		UnableToFetchAlbumDir
 
 	};
 
@@ -53,8 +56,8 @@ public:
 
 protected:
 	void run();
-	ReturnAction scanCollection(int, const QString &, const QString &);
-	ReturnAction processCollections();
+	ReturnAction scanCollection(const QString &);
+	ReturnAction updateCollections();
 
 private:
 	struct Private;

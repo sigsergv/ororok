@@ -4,7 +4,10 @@ HEADERS += mainwindow.h \
 	formats.h \
 	collectiontreewidget.h \
 	collectionitemmodel.h \
-	collectiontreeitem.h
+	collectiontreeitem.h \
+	albumitemdelegate.h \
+	settings.h \
+	cache.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -13,7 +16,10 @@ SOURCES += main.cpp \
     formats.cpp \
     collectiontreewidget.cpp \
     collectionitemmodel.cpp \
-    collectiontreeitem.cpp
+    collectiontreeitem.cpp \
+    albumitemdelegate.cpp \
+    settings.cpp \
+    cache.cpp
 
 FORMS += mainwindow.ui \
 	testwidget.ui

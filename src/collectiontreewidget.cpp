@@ -8,6 +8,7 @@
 
 #include "collectiontreewidget.h"
 #include "collectionitemmodel.h"
+#include "albumitemdelegate.h"
 
 CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 		: QWidget(parent)
@@ -26,4 +27,7 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 	CollectionItemModel * model = new CollectionItemModel(this);
 	collectionTreeView->setModel(model);
 	//model->setArtistsAlbumsMode("");
+
+	AlbumItemDelegate * delegate = new AlbumItemDelegate(this);
+	collectionTreeView->setItemDelegate(delegate);
 }

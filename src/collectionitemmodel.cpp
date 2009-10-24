@@ -68,7 +68,7 @@ int CollectionItemModel::rowCount(const QModelIndex & parent) const
 {
 	CollectionTreeItem * parentItem;
 
-	qDebug() << "rows count requested";
+	//qDebug() << "rows count requested";
 
 	if (!parent.isValid()) {
 		parentItem = p->rootTreeItem;
@@ -101,7 +101,10 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 	}
 
 	if (item->type() == CollectionTreeItem::Album) {
-		return item->data["name"].toString();
+		QString albumTitle;
+		albumTitle = item->data["name"].toString();
+		// item->data["cover_path"].toString()
+		return albumTitle;
 	}
 
 	if (item->type() == CollectionTreeItem::Track) {

@@ -10,12 +10,14 @@
 
 static const QString TABLE_SQL_DFN_GENRE("CREATE TABLE genre ("
 		"id INTEGER PRIMARY KEY, "
-		"name VARCHAR "
+		"name VARCHAR, "
+		"UNIQUE(name)"
 		")");
 
 static const QString TABLE_SQL_DFN_ARTIST("CREATE TABLE artist ("
 		"id INTEGER PRIMARY KEY, "
-		"name VARCHAR "
+		"name VARCHAR, "
+		"UNIQUE(name)"
 		")");
 
 static const QString TABLE_SQL_DFN_ALBUM("CREATE TABLE album ("
@@ -23,16 +25,18 @@ static const QString TABLE_SQL_DFN_ALBUM("CREATE TABLE album ("
 		"name VARCHAR, "
 		"artist_id INTEGER, "
 		"image_id INTEGER "
+		//"UNIQUE(name, artist_id)"
 		")");
 
 static const QString TABLE_SQL_DFN_IMAGE("CREATE TABLE image ("
 		"id INTEGER PRIMARY KEY, "
-		"path VARCHAR "
+		"path VARCHAR, "
+		"UNIQUE(path) "
 		")");
 
 static const QString TABLE_SQL_DFN_TRACK("CREATE TABLE track ("
 		"id INTEGER PRIMARY KEY, "
-		"path_id INTEGER, "       // relatve path to track file
+		"dir_id INTEGER, "       // relatve path to track file
 		"filename VARCHAR, "  // filename (without path?)
 		"title VARCHAR, "     // track title
 		"modtime INTEGER, "   // file modification time (unixtime)

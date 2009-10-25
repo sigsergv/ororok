@@ -9,12 +9,14 @@
 #include "collectiontreewidget.h"
 #include "collectionitemmodel.h"
 #include "albumitemdelegate.h"
+#include "collectiontreefilter.h"
 
 struct CollectionTreeWidget::Private
 {
 	QLineEdit * filter;
 	QTreeView * collectionTreeView;
 	CollectionItemModel * model;
+	CollectionTreeFilter * proxy;
 };
 
 CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
@@ -34,7 +36,10 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 	this->setLayout(layout);
 
 	p->model = new CollectionItemModel(this);
-	p->collectionTreeView->setModel(p->model);
+	p->proxy = new CollectionTreeFilter(this);
+	p->proxy->setSourceModel(p->model);
+
+	p->collectionTreeView->setModel(p->proxy);
 	//model->setArtistsAlbumsMode("");
 
 	AlbumItemDelegate * delegate = new AlbumItemDelegate(this);
@@ -47,6 +52,6 @@ bool CollectionTreeWidget::reloadTree()
 	p->collectionTreeView->setModel(0);
 	// reload model
 	p->model->reloadData();
-	p->collectionTreeView->setModel(p->model);
+	p->collectionTreeView->setModel(p->proxy);
 	return true;
 }

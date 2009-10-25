@@ -7,7 +7,8 @@ HEADERS += mainwindow.h \
 	collectiontreeitem.h \
 	albumitemdelegate.h \
 	settings.h \
-	cache.h
+	cache.h \
+	collectiontreefilter.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -19,7 +20,8 @@ SOURCES += main.cpp \
     collectiontreeitem.cpp \
     albumitemdelegate.cpp \
     settings.cpp \
-    cache.cpp
+    cache.cpp \
+    collectiontreefilter.cpp
 
 FORMS += mainwindow.ui \
 	testwidget.ui

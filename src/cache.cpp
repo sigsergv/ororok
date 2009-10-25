@@ -104,6 +104,7 @@ QPixmap cachedImage(const QString & path, CachedImageSize size)
 		break;
 	}
 
+	return QPixmap();
 }
 
 }

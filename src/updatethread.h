@@ -29,8 +29,8 @@ public:
 		UnableToLoadGenres,
 		UnableToCreateTemporaryDirsTable, //
 		UnableToDetectAlbumArtist,
-		UnableToSaveAlbumArtist,
-		UnableToFetchAlbumDir
+		UnableToSaveAlbumArtist
+		//UnableToFetchAlbumDir
 
 	};
 

@@ -24,7 +24,8 @@ static const QString TABLE_SQL_DFN_ALBUM("CREATE TABLE album ("
 		"id INTEGER PRIMARY KEY, "
 		"name VARCHAR, "
 		"artist_id INTEGER, "
-		"image_id INTEGER "
+		"image_id INTEGER, "
+		"year INTEGER"
 		//"UNIQUE(name, artist_id)"
 		")");
 
@@ -118,9 +119,9 @@ QSqlError initDb() {
 		// init collection with come data
 		if (!q.exec(
 				//"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music/Rock', 1)")) {
-				"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music/Ethno', 1)")) {
+				//"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music/Ethno', 1)")) {
 				//"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music/Original', 1)")) {
-				//"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music', 1)")) {
+				"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music', 1)")) {
 			return q.lastError();
 		}
 	}

@@ -10,20 +10,25 @@
 #include "mainwindow.h"
 #include "updatethread.h"
 #include "collectiontreewidget.h"
+#include "collectionitemmodel.h"
 
-class MainWindow::Private
+#include "ui_mainwindow.h"
+
+struct MainWindow::Private
 {
-
+	Ui::MainWindow ui;
+	UpdateThread * ut;
+	CollectionTreeWidget * ctw;
 };
 
 MainWindow::MainWindow() :
 	QMainWindow()
 {
 	p = new Private();
-	ui.setupUi(this);
-	ut = new UpdateThread(this);
-	CollectionTreeWidget * cwt = new CollectionTreeWidget(this);
-	ui.collectionDock->setWidget(cwt);
+	p->ui.setupUi(this);
+	p->ut = new UpdateThread(this);
+	p->ctw = new CollectionTreeWidget(this);
+	p->ui.collectionDock->setWidget(p->ctw);
 	createActions();
 	connectSignals();
 }
@@ -31,34 +36,39 @@ MainWindow::MainWindow() :
 void MainWindow::rescanCollection()
 {
 	// launch UpdateThread
-	ut->start();
+	p->ut->start();
 }
 
 void MainWindow::stopRescanCollection()
 {
-	ut->softStop();
+	p->ut->softStop();
 }
 
 void MainWindow::updateThreadStarted()
 {
-	ui.label->setText("started");
+	p->ui.label->setText("started");
 }
 
 void MainWindow::updateThreadFinished()
 {
-	UpdateThread::UpdateThreadError ret = ut->errorCode();
+	UpdateThread::UpdateThreadError ret = p->ut->errorCode();
 
 	if (ret != UpdateThread::NoError) {
 		// error occured
-		ui.label->setText(UpdateThread::errorToText(ret));
+		p->ui.label->setText(UpdateThread::errorToText(ret));
 	} else {
-		ui.label->setText("finished");
+		p->ui.label->setText("finished");
 	}
 }
 
 void MainWindow::updateThreadTerminated()
 {
-	ui.label->setText("terminated");
+	p->ui.label->setText("terminated");
+}
+
+void MainWindow::refreshCollectionTree()
+{
+	p->ctw->reloadTree();
 }
 
 void MainWindow::scanProgress(int progress)
@@ -70,7 +80,7 @@ void MainWindow::scanProgress(int progress)
 		progress = 100;
 	}
 
-	ui.progressBar->setValue(progress);
+	p->ui.progressBar->setValue(progress);
 }
 
 void MainWindow::createActions()
@@ -79,12 +89,13 @@ void MainWindow::createActions()
 
 void MainWindow::connectSignals()
 {
-	connect(ui.actionQuit, SIGNAL(triggered()), this, SLOT(close()));
-	connect(ui.actionRescanCollection, SIGNAL(triggered()), this, SLOT(rescanCollection()));
-	connect(ui.pb1, SIGNAL(pressed()), this, SLOT(rescanCollection()));
-	connect(ui.pb2, SIGNAL(pressed()), this, SLOT(stopRescanCollection()));
-	connect(ut, SIGNAL(started()), this, SLOT(updateThreadStarted()));
-	connect(ut, SIGNAL(finished()), this, SLOT(updateThreadFinished()));
-	connect(ut, SIGNAL(terminated()), this, SLOT(updateThreadTerminated()));
-	connect(ut, SIGNAL(progressPercentChanged(int)), this, SLOT(scanProgress(int)));
+	connect(p->ui.actionQuit, SIGNAL(triggered()), this, SLOT(close()));
+	connect(p->ui.actionRescanCollection, SIGNAL(triggered()), this, SLOT(rescanCollection()));
+	connect(p->ui.pb1, SIGNAL(pressed()), this, SLOT(rescanCollection()));
+	connect(p->ui.pb2, SIGNAL(pressed()), this, SLOT(stopRescanCollection()));
+	connect(p->ui.refreshCollectionTree, SIGNAL(pressed()), this, SLOT(refreshCollectionTree()));
+	connect(p->ut, SIGNAL(started()), this, SLOT(updateThreadStarted()));
+	connect(p->ut, SIGNAL(finished()), this, SLOT(updateThreadFinished()));
+	connect(p->ut, SIGNAL(terminated()), this, SLOT(updateThreadTerminated()));
+	connect(p->ut, SIGNAL(progressPercentChanged(int)), this, SLOT(scanProgress(int)));
 }

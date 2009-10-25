@@ -120,74 +120,12 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 	return QString("type: %1").arg(item->type());
 }
 
-/*
-void CollectionItemModel::setArtistsAlbumsMode(const QString & mask)
+bool CollectionItemModel::reloadData()
 {
-	// Sets new tree.
-	// First level - artists, second - albums, third - tracks
-	// Use lazy loading: load actual data only when required
+	// destroy data set
+	delete p->rootTreeItem;
+	// create new
+	p->rootTreeItem = new CollectionTreeItem(CollectionTreeItem::Root, 0);
 
-	QSqlDatabase db = QSqlDatabase::database();
-	QSqlQuery query(db);
-
-	// TODO: apply filter
-	p->artists.clear();
-	query.prepare("SELECT COUNT(*) FROM album WHERE artist_id=-1");
-	if (!query.exec()) {
-		// TODO: send fail signal
-		return;
-	}
-	query.next();
-
-	ArtistRecord r;
-	r.id = -1;
-	r.name = "[Various Artists]";
-	r.type = CommonRecord::Artist;
-	r.albumsCount = query.value(0).toInt();
-	p->artists.append(r);
-
-
-	query.prepare("SELECT artist.id, artist.name, COUNT(album.id) FROM artist INNER JOIN album ON artist.id=album.artist_id GROUP BY artist.id");
-	if (!query.exec()) {
-		// TODO: send fail signal
-		return;
-	}
-
-	while (query.next()) {
-		r.type = CommonRecord::Artist;
-		r.name = query.value(1).toString();
-		r.id = query.value(0).toInt();
-		r.albumsCount = query.value(2).toInt();
-		p->artists.append(r);
-	}
-
+	return true;
 }
-
-void CollectionItemModel::loadAlbumsForArtists(ArtistRecord * artist) const
-{
-	if (!p->artistAlbums.contains(artist->id)) {
-		// albums list not found so load it from the db
-		QSqlDatabase db = QSqlDatabase::database();
-		QSqlQuery query(db);
-
-		query.prepare("SELECT name FROM album WHERE artist_id=:artistId");
-		query.bindValue(":artistId", artist->id);
-		if (!query.exec()) {
-			// TODO: send fail signal
-			return;
-		}
-		AlbumRecordsList albums;
-		int n = 0;
-		while (query.next()) {
-			AlbumRecord album;
-			album.parent = artist;
-			album.name = query.value(0).toString();
-			album.type = CommonRecord::Album;
-			//album.row = n;
-			albums.append(album);
-			n++;
-		}
-		p->artistAlbums[artist->id] = albums;
-	}
-}
-*/

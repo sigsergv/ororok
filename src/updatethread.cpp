@@ -16,6 +16,8 @@ const int COL_NAME = 1;
 const int COL_PATH = 2;
 
 typedef QPair<QString, QString> StringsPair;
+typedef QSet<QString> StringSet;
+typedef QSet<int> IntegerSet;
 
 static const QString TABLE_SQL_DFN_DIR_TMP("CREATE TEMPORARY TABLE _dir ("
 	"id INTEGER PRIMARY KEY, "
@@ -48,7 +50,7 @@ struct UpdateThread::Private
 	QSqlQuery * query;
 	QHash<QString, int> genresHash;
 	QHash<QString, int> artistsHash;
-	QHash<QString, int> albumsHash;
+	//QHash<QString, int> albumsHash;
 };
 
 UpdateThread::UpdateThread(QObject * parent) :
@@ -88,6 +90,12 @@ QString UpdateThread::errorToText(UpdateThread::UpdateThreadError err)
 		break;
 	case UpdateThread::GetCollectionsListError:
 		res = "Collections retrieving failed";
+		break;
+	case UpdateThread::UnableToLoadArtists:
+		res = "Unable to load artists list from the database";
+		break;
+	case UpdateThread::UnableToLoadGenres:
+		res = "Unable to load genres list from the database";
 		break;
 	case UpdateThread::UnableToCreateTemporaryDirsTable:
 		res = "Failed to create temporary table “_dirs”";
@@ -131,6 +139,9 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 {
 	// find deleted directoris
 	QStringList deletedDirectories;
+	QStringList coverImages;
+	coverImages << "cover.jpg" << "cover.gif" << "cover.png" << "folder.jpg" << "folder.gif" << "folder.png";
+
 	qDebug() << ">> find deleted directories";
 	p->query->exec(
 			"SELECT d.id, d.path FROM dir AS d LEFT JOIN _dir AS _d ON d.path=_d.path WHERE _d.path IS NULL");
@@ -161,7 +172,7 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 	emit progressPercentChanged(3);
 
 	QSqlQuery subq;
-	QList<StringsPair> updatedDirs;
+	QList<QStringList> updatedDirs; // [id, path, modtime]
 	//QStringList updatedDirs;
 	//QStringList updatedDirsPaths;
 
@@ -177,29 +188,33 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 		subq.bindValue(":modtime", p->query->value(1).toString());
 		subq.exec();
 		StringsPair pair(subq.lastInsertId().toString(), p->query->value(0).toString());
-		updatedDirs << pair;
+		QStringList sl;
+		sl << subq.lastInsertId().toString() << p->query->value(0).toString() << p->query->value(1).toString();
+		updatedDirs << sl;
 	}
 	qDebug() << ">> new directories number: " << cnt;
 
 	emit progressPercentChanged(4);
 	qDebug() << ">> find updated directories";
 	p->query->exec(
-			"SELECT d.id, d.path FROM dir AS d JOIN _dir as _d ON d.path=_d.path AND d.modtime != _d.modtime");
+			"SELECT d.id, d.path, _d.modtime FROM dir AS d JOIN _dir as _d ON d.path=_d.path AND d.modtime != _d.modtime");
 	cnt = 0;
 	while (p->query->next()) {
 		cnt++;
-		StringsPair pair(p->query->value(0).toString(), p->query->value(1).toString());
-		updatedDirs << pair;
+		QStringList sl;
+		sl << p->query->value(0).toString() << p->query->value(1).toString() << p->query->value(2).toString();
+		updatedDirs << sl;
 	}
 	qDebug() << ">> updated directories number: " << cnt;
 
-	if (updatedDirs.count()) {
+	int dirsNum = updatedDirs.size();
+	if (dirsNum) {
 		// delete all tracks for updated and new directories
-		QStringList dirs;
-		Q_FOREACH (const StringsPair & sp, updatedDirs) {
-			dirs << sp.first;
+		QStringList dirsIds;
+		Q_FOREACH (const QStringList & sl, updatedDirs) {
+			dirsIds << sl[0];
 		}
-		QString t = dirs.join(", ");
+		QString t = dirsIds.join(", ");
 		p->query->prepare(QString("DELETE FROM track WHERE dir_id IN (%1)").arg(t));
 		if (!p->query->exec()) {
 			qDebug() << p->query->lastError();
@@ -211,8 +226,6 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 		}
 
 		emit progressPercentChanged(5);
-		int dirsNum = updatedDirs.size();
-		// find files in the updated and new directories, add them to the db
 		p->query->prepare(
 				"INSERT INTO track (dir_id, title, filename, artist_id, album_id, genre_id, track, year) "
 				"VALUES (:dirId, :title, :filename, :artistId, :albumId, :genreId, :track, :year)");
@@ -221,14 +234,28 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 		QDir dir;
 		QStringList values;
 
-		Q_FOREACH (const StringsPair & sp, updatedDirs) {
-			const QString & dirId = sp.first;
-			const QString & dirPath = sp.second;
+		// find files in the updated and new directories, add them to the db
+		Q_FOREACH (const QStringList & sl, updatedDirs) {
+			const QString & dirId = sl[0];
+			const QString & dirPath = sl[1];
+			const QString & dirModtime = sl[2];
+			// <albumMame, albumId>
+			QHash<QString, int> dirAlbums; // all albums in the current dir
+			// <albumName, {albumYear,...}>
+			QHash<QString, IntegerSet> albumYears; // tracks' years
+			QHash<QString, IntegerSet> albumArtists; // tracks' artists' ids
+
+			qDebug() << "updated directory " << dirPath;
+
+			// update directory modtime
+			subq.prepare("UPDATE dir SET modtime=:time WHERE id=:id");
+			subq.bindValue(":time", dirModtime);
+			subq.bindValue(":id", dirId);
+			subq.exec();
 
 			// read all tracks from the directory "dirPath"
 			dir.setPath(dirPath);
-			QList<QFileInfo> files = dir.entryInfoList(name_filters,
-					QDir::Files);
+			QList<QFileInfo> files = dir.entryInfoList(name_filters, QDir::Files);
 
 			// extract info from the file
 			Q_FOREACH (const QFileInfo & fi, files) {
@@ -239,6 +266,22 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 				int artistId = 0;
 				int albumId = 0;
 				int genreId = 0;
+
+				if (!md->album.isEmpty()) {
+					// check is album is detected before
+					albumId = dirAlbums.value(md->album, -1);
+					if (-1 == albumId) {
+						// i.e. this album is new for current dir
+						// so add it to the database
+						subq.prepare("INSERT INTO album (name) VALUES (:name)");
+						subq.bindValue(":name", md->album);
+						if (subq.exec()) {
+							albumId = subq.lastInsertId().toInt();
+						}
+						dirAlbums.insert(md->album, albumId);
+					}
+				}
+
 				if (!md->artist.isEmpty()) {
 					artistId = p->artistsHash.value(md->artist, -1);
 					if (-1 == artistId) {
@@ -252,8 +295,11 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 						p->artistsHash[md->artist] = artistId;
 					}
 				}
+				if (artistId) {
+					// add artistId to album artists list
+					albumArtists[md->album].insert(artistId);
+				}
 
-				// the same with the genres
 				if (!md->genre.isEmpty()) {
 					genreId = p->genresHash.value(md->genre, -1);
 					if (-1 == genreId) {
@@ -266,18 +312,11 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 					}
 				}
 
-				// now find album id, this process is mainly empiric
-				if (!md->album.isEmpty()) {
-					albumId = p->albumsHash.value(md->album, -1);
-					if (-1 == albumId) {
-						subq.prepare("INSERT INTO album (name) VALUES (:name)");
-						subq.bindValue(":name", md->album);
-						if (subq.exec()) {
-							albumId = subq.lastInsertId().toInt();
-						}
-						p->albumsHash[md->album] = albumId;
-					}
+				if (md->year > 0) {
+					// add track year to album years list
+					albumYears[md->album].insert(md->year);
 				}
+
 				p->query->bindValue(":dirId", dirId);
 				p->query->bindValue(":filename", fi.fileName());
 				p->query->bindValue(":artistId", artistId);
@@ -291,6 +330,62 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 					qDebug() << p->query->lastError();
 				}
 			}
+
+			// all files in the current directory have been processed
+			// so it's time to guess various details for albums (year, artist)
+			// walk through all detected albums
+			int albumImageId = -1;
+			QDir dir(dirPath);
+			QStringList res = dir.entryList(coverImages, QDir::Files|QDir::Readable, QDir::NoSort);
+			if (res.count()) {
+				QString imgPath = dirPath+"/"+res[0];
+
+				subq.prepare("SELECT id FROM image WHERE path = :path");
+				subq.bindValue(":path", imgPath);
+				if (subq.exec()) {
+					if (subq.next()) {
+						albumImageId = subq.value(0).toInt();
+					} else {
+						QSqlQuery q(*p->db);
+						q.prepare("INSERT OR IGNORE INTO image (path) VALUES (:imagePath)");
+						q.bindValue(":imagePath", imgPath);
+						if (q.exec()) {
+							albumImageId = q.lastInsertId().toInt();
+						}
+					}
+				}
+			}
+
+			QHash<QString,int>::const_iterator i;
+			for (i=dirAlbums.constBegin(); i!=dirAlbums.constEnd(); i++) {
+				const QString & albumName = i.key();
+				int albumId = i.value();
+				int albumArtistId = -1;
+				int albumYear = -1;
+
+				IntegerSet s = albumArtists.value(albumName);
+				if (s.size() == 1) {
+					// all tracks for this album in this directory have the same
+					// artist, so consider it as an album's artist
+					albumArtistId = *s.constBegin();
+				}
+
+				s = albumYears.value(albumName);
+				if (s.size() == 1) {
+					// all tracks for this album in this directory have the same
+					// year, so consider it as an album's year
+					albumYear = *s.constBegin();
+				}
+
+				// update album info
+				subq.prepare("UPDATE album SET artist_id=:artistId, year=:year, image_id=:imageId WHERE id=:albumId");
+				subq.bindValue(":artistId", albumArtistId);
+				subq.bindValue(":year", albumYear);
+				subq.bindValue(":imageId", albumImageId);
+				subq.bindValue(":albumId", albumId);
+				subq.exec(); // ignore query result status
+			}
+
 			// one directory updated, increase progress
 			processedDirs += 1;
 			float x = (processedDirs / dirsNum) * 95;
@@ -298,97 +393,17 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 		}
 	}
 
-	emit progressPercentChanged(100);
-
-
-
-	//
-
-	QSqlQuery q1(*(p->db));
-	QSqlQuery q2(*(p->db));
-	QSqlQuery q3(*(p->db));
-	QSqlQuery q4(*(p->db));
-	QSqlQuery q(*(p->db));
-	QStringList coverImages;
-	coverImages << "cover.jpg" << "cover.gif" << "cover.png" << "folder.jpg" << "folder.gif" << "folder.png";
-
-	// process all altered/added albums
-	q1.prepare("SELECT artist_id FROM track WHERE album_id=:albumId GROUP BY artist_id");
-	q2.prepare("UPDATE album SET artist_id=:artistId, image_id=:imageId WHERE id=:albumId");
-	q3.prepare("SELECT track.id, dir.path FROM track INNER JOIN dir ON track.dir_id=dir.id AND track.album_id=:albumId LIMIT 1;");
-	q4.prepare("INSERT OR IGNORE INTO image (path) VALUES (:imagePath)");
-	// process all just added albums and detect album's artist
-	QHash<QString, int>::const_iterator a;
-	for (a=p->albumsHash.constBegin(); a!=p->albumsHash.constEnd(); a++) {
-		// find album artist
-		const int & albumId = a.value();
-
-		q1.bindValue(":albumId", albumId);
-		if (!q1.exec()) {
-			p->errorMessage = "Unable to detect album artist";
-			p->errorCode = UnableToDetectAlbumArtist;
-			return Terminate;
-		}
-
-		int k = 0;
-		QVariant artistId;
-		while (q1.next()) {
-			k++;
-			artistId = q1.value(0);
-		}
-		if (k == 0) {
-			continue;
-		}
-
-		// find album picture
-		q3.bindValue(":albumId", albumId);
-		if (!q3.exec()) {
-			p->errorMessage = "Unable to fetch album directory";
-			p->errorCode = UnableToFetchAlbumDir;
-			return Terminate;
-		}
-		int imgId = -1;
-		if (q3.next()) {
-			QString path = q3.value(1).toString();
-			// try to find picture in this folder: (cover|folder).(jpg|png|gif)
-			Q_FOREACH(const QString coverImage, coverImages) {
-				QDir dir(path);
-				QStringList res = dir.entryList(coverImages, QDir::Files|QDir::Readable, QDir::NoSort);
-				if (!res.count()) {
-					continue;
-				}
-				QString imgPath = path+"/"+res[0];
-				q.prepare("SELECT id FROM image WHERE path = :path");
-				q.bindValue(":path", imgPath);
-				if (!q.exec()) {
-					continue;
-				}
-				if (q.next()) {
-					imgId = q.value(0).toInt();
-				} else {
-					q4.bindValue(":imagePath", imgPath);
-					if (!q4.exec()) {
-						continue;
-					}
-					imgId = q4.lastInsertId().toInt();
-				}
-			}
-		}
-
-		q2.bindValue(":albumId", albumId);
-		q2.bindValue(":imageId", imgId);
-		if (k == 1) {
-			q2.bindValue(":artistId", artistId);
-		} else if (k > 1) {
-			// this is various artists album
-			q2.bindValue(":artistId", "-1");
-		}
-		if (!q2.exec()) {
-			p->errorMessage = "Unable to write album artist";
-			p->errorCode = UnableToSaveAlbumArtist;
-			return Terminate;
+	// perform db cleanup: delete orphaned records etc
+	// delete albums that do not contain tracks
+	QStringList orphanedAlbums;
+	p->query->prepare("SELECT album.name, album.id FROM album LEFT JOIN track ON album.id=track.album_id WHERE track.id IS NULL");
+	if (p->query->exec()) {
+		while (p->query->next()) {
+			orphanedAlbums << p->query->value(1).toString();
 		}
 	}
+	p->query->prepare(QString("DELETE FROM album WHERE id IN (%1)").arg(orphanedAlbums.join(", ")));
+	p->query->exec(); // ignore execution result
 
 	return Continue;
 }
@@ -426,9 +441,6 @@ void UpdateThread::run() {
 	while (p->query->next()) {
 		p->genresHash[p->query->value(1).toString()] = p->query->value(0).toInt();
 	}
-
-	// TODO: load albums, it's not too easy because albums are  not name-unique
-	p->albumsHash.clear();
 
 	p->db->transaction();
 
@@ -472,7 +484,6 @@ void UpdateThread::run() {
 	p->query->exec("DROP TABLE _dir");
 	delete p->query;
 	p->query = 0;
-	p->albumsHash.clear();
 	p->artistsHash.clear();
 	p->genresHash.clear();
 
@@ -482,4 +493,5 @@ void UpdateThread::run() {
 		p->db->rollback();
 	}
 	p->db = 0;
+	emit progressPercentChanged(100);
 }

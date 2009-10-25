@@ -66,6 +66,19 @@
      <number>0</number>
     </property>
    </widget>
+   <widget class="QPushButton" name="refreshCollectionTree">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>30</y>
+      <width>81</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>reload list</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

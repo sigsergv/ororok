@@ -9,7 +9,6 @@
 #define MAINWINDOW_H_
 
 #include <QMainWindow>
-#include "ui_mainwindow.h"
 
 class UpdateThread;
 
@@ -29,13 +28,12 @@ protected slots:
 	void updateThreadStarted();
 	void updateThreadFinished();
 	void updateThreadTerminated();
+	void refreshCollectionTree();
 	void scanProgress(int);
 
 private:
-	class Private;
+	struct Private;
 	Private * p;
-	Ui::MainWindow ui;
-	UpdateThread * ut;
 };
 
 #endif /* MAINWINDOW_H_ */

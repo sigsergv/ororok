@@ -31,7 +31,19 @@ CollectionTreeItem::CollectionTreeItem(CollectionTreeItemType t, CollectionTreeI
 CollectionTreeItem::~CollectionTreeItem()
 {
 	// TODO: delete all elements from p->childItems
+	QHashIterator<int, CollectionTreeItem*> i(p->childItems);
+	QList<CollectionTreeItem*> itemsToDelete;
+
+	while (i.hasNext()) {
+		itemsToDelete << *i.next();
+	}
+	p->childItems.clear();
+	Q_FOREACH (CollectionTreeItem * item, itemsToDelete) {
+		delete item;
+	}
 	delete p;
+
+	qDebug() << ">> deleted tree item";
 }
 
 CollectionTreeItem::CollectionTreeItemType CollectionTreeItem::type()

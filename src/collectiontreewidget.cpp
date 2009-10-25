@@ -10,24 +10,43 @@
 #include "collectionitemmodel.h"
 #include "albumitemdelegate.h"
 
+struct CollectionTreeWidget::Private
+{
+	QLineEdit * filter;
+	QTreeView * collectionTreeView;
+	CollectionItemModel * model;
+};
+
 CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 		: QWidget(parent)
 {
-	filter = new QLineEdit(this);
-	collectionTreeView = new QTreeView(this);
-	collectionTreeView->setHeaderHidden(true);
+	p = new Private;
+
+	p->filter = new QLineEdit(this);
+	p->collectionTreeView = new QTreeView(this);
+	p->collectionTreeView->setHeaderHidden(true);
 	//layout->addWidget(filter);
 
 	//widget->show();
 	QVBoxLayout *layout = new QVBoxLayout(this);
-	layout->addWidget(filter);
-	layout->addWidget(collectionTreeView);
+	layout->addWidget(p->filter);
+	layout->addWidget(p->collectionTreeView);
 	this->setLayout(layout);
 
-	CollectionItemModel * model = new CollectionItemModel(this);
-	collectionTreeView->setModel(model);
+	p->model = new CollectionItemModel(this);
+	p->collectionTreeView->setModel(p->model);
 	//model->setArtistsAlbumsMode("");
 
 	AlbumItemDelegate * delegate = new AlbumItemDelegate(this);
-	collectionTreeView->setItemDelegate(delegate);
+	p->collectionTreeView->setItemDelegate(delegate);
+}
+
+bool CollectionTreeWidget::reloadTree()
+{
+	// unset model
+	p->collectionTreeView->setModel(0);
+	// reload model
+	p->model->reloadData();
+	p->collectionTreeView->setModel(p->model);
+	return true;
 }

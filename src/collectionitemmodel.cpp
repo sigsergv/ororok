@@ -90,24 +90,41 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 		return QVariant();
 	}
 
+	CollectionTreeItem * item = static_cast<CollectionTreeItem*>(index.internalPointer());
+	int itemType = item->type();
+
+	if (ItemTypeRole == role) {
+		return item->type();
+	}
+
+	if (ItemAlbumCoverRole == role && CollectionTreeItem::Album == itemType) {
+		return item->data["cover_path"];
+	}
+
+	if (ItemAlbumNameRole == role && CollectionTreeItem::Album == itemType) {
+		return item->data["name"];
+	}
+
 	if (role != Qt::DisplayRole) {
 		return QVariant();
 	}
 
-	CollectionTreeItem * item = static_cast<CollectionTreeItem*>(index.internalPointer());
-
-	if (item->type() == CollectionTreeItem::Artist) {
+	if (CollectionTreeItem::Artist == itemType) {
 		return item->data["name"].toString();
 	}
 
-	if (item->type() == CollectionTreeItem::Album) {
+	if (CollectionTreeItem::Album == itemType) {
 		QString albumTitle;
-		albumTitle = item->data["name"].toString();
+		int year = item->data["year"].toInt();
+		if (year) {
+			albumTitle += QString("%1 - ").arg(year);
+		}
+		albumTitle += item->data["name"].toString();
 		// item->data["cover_path"].toString()
 		return albumTitle;
 	}
 
-	if (item->type() == CollectionTreeItem::Track) {
+	if (CollectionTreeItem::Track == itemType) {
 		QString trackTitle;
 		int trackNum = item->data["track"].toInt();
 		if (trackNum != 0) {

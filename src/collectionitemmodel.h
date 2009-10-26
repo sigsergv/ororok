@@ -16,6 +16,8 @@ class CollectionItemModel : public QAbstractItemModel
 {
 	Q_OBJECT
 public:
+	enum ItemRole {ItemTypeRole=Qt::UserRole+1, ItemAlbumCoverRole, ItemAlbumNameRole, ItemQuickSearchRole};
+
 	CollectionItemModel(QObject * parent);
 
 	QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;

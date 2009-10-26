@@ -9,6 +9,7 @@
 
 #include "albumitemdelegate.h"
 #include "collectiontreeitem.h"
+#include "collectionitemmodel.h"
 #include "settings.h"
 #include "cache.h"
 
@@ -21,10 +22,12 @@ AlbumItemDelegate::AlbumItemDelegate(QObject *parent)
 
 void AlbumItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-	CollectionTreeItem * item = static_cast<CollectionTreeItem*>(index.internalPointer());
+	// get note type
+	int itemType = index.data(CollectionItemModel::ItemTypeRole).toInt();
 
-	if (item->type() == CollectionTreeItem::Album) {
-		// display 20×20 icon of album cover
+	//qDebug() << "type: " << itemType;
+
+	if (itemType == CollectionTreeItem::Album) {
 		// display album name and other info
 		QPalette palette = QApplication::palette();
 		QBrush b;
@@ -42,7 +45,7 @@ void AlbumItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 		QRect r(baseRect);
 
 		// draw icon
-		QString coverPath(item->data["cover_path"].toString());
+		QString coverPath = index.data(CollectionItemModel::ItemAlbumCoverRole).toString();
 		if (!coverPath.isEmpty()) {
 			QPixmap icon = Ororok::cachedImage(coverPath, Ororok::ImageSizeIcon);
 			if (!icon.isNull()) {
@@ -61,10 +64,9 @@ void AlbumItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 		// draw album title
 		QPoint textPos;
 
-		textPos.setX(baseRect.topLeft().x() + Ororok::ALBUM_ICON_SIZE + Ororok::ALBUM_ITEM_PADDING*2);
+		textPos.setX(baseRect.topLeft().x() + Ororok::ALBUM_ICON_SIZE + Ororok::ALBUM_ITEM_PADDING*3);
 		textPos.setY((baseRect.topLeft().y() + baseRect.bottomLeft().y())/2);
-
-		painter->drawText(textPos, item->data["name"].toString());
+		painter->drawText(textPos, index.data(Qt::DisplayRole).toString());
 		return;
 	}
 	QItemDelegate::paint(painter, option, index);
@@ -72,10 +74,10 @@ void AlbumItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 
 QSize AlbumItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-	CollectionTreeItem * item = static_cast<CollectionTreeItem*>(index.internalPointer());
+	int itemType = index.data(CollectionItemModel::ItemTypeRole).toInt();
 	QSize s = QItemDelegate::sizeHint(option, index);
 
-	if (item->type() == CollectionTreeItem::Album) {
+	if (itemType == CollectionTreeItem::Album) {
 		// change height
 		s.setHeight(Ororok::ALBUM_ICON_SIZE+2*Ororok::ALBUM_ITEM_PADDING+1);
 	}

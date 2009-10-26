@@ -70,19 +70,19 @@ int CollectionTreeItem::childrenCount()
 {
 	if (p->rowsCount == -1) {
 		// fetch child items now
-		qDebug() << "fetching items";
+		//qDebug() << "fetching items";
 		if (p->type == Artist) {
-			qDebug() << "fetch albums";
+			//qDebug() << "fetch albums";
 			// child elements are albums
 			int artistId = p->parentItem->data["id"].toInt();
 			fetchAlbums(this);
 		} else if (p->type == Album) {
 			// child elements are tracks
-			qDebug() << "fetch tracks";
+			//qDebug() << "fetch tracks";
 			fetchTracks(this);
 		} else if (p->type == Root) {
 			// child elements are artists
-			qDebug() << "fetch artists";
+			//qDebug() << "fetch artists";
 			fetchArtists(this);
 		}
 	}
@@ -141,7 +141,7 @@ void CollectionTreeItem::fetchAlbums(CollectionTreeItem * parent)
 	QSqlDatabase db = QSqlDatabase::database();
 	QSqlQuery query(db);
 
-	query.prepare("SELECT album.id, album.name, image.path FROM album LEFT JOIN image ON "
+	query.prepare("SELECT album.id, album.name, image.path, album.year FROM album LEFT JOIN image ON "
 			"album.image_id=image.id WHERE artist_id=:artistId ");
 	query.bindValue(":artistId", parent->data["id"]);
 
@@ -160,6 +160,7 @@ void CollectionTreeItem::fetchAlbums(CollectionTreeItem * parent)
 		album->data["id"] = query.value(0);
 		album->data["name"] = query.value(1);
 		album->data["cover_path"] = query.value(2);
+		album->data["year"] = query.value(3);
 		album->row = n;
 		p->childItems[n] = album;
 		n++;

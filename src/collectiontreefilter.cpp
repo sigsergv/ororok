@@ -5,50 +5,77 @@
  *      Author: Sergei Stolyarov
  */
 
+#include <QtCore>
+#include <QtDebug>
+
 #include "collectiontreefilter.h"
+#include "collectionitemmodel.h"
+#include "collectiontreeitem.h"
+
+struct CollectionTreeFilter::Private
+{
+	QHash<qint64,int> checkedNodes;
+	int counter;
+};
 
 CollectionTreeFilter::CollectionTreeFilter(QObject * parent)
-	: QAbstractProxyModel(parent)
+	: QSortFilterProxyModel(parent)
 {
-
+	p = new Private;
+	p->counter = 0;
 }
 
-QModelIndex CollectionTreeFilter::mapFromSource(const QModelIndex & sourceIndex) const
+bool CollectionTreeFilter::filterAcceptsRow(int source_row, const QModelIndex & source_parent) const
 {
-	Q_ASSERT(false);
-	// disabled for now
-	return sourceIndex;
+	//qDebug() << p->counter++;
+	//return true;
+	//return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+
+	QModelIndex idx = sourceModel()->index(source_row, 0, source_parent);
+	int savedValue = p->checkedNodes.value(idx.internalId(), -1);
+	if (-1 != savedValue) {
+		return savedValue == 1;
+	}
+
+	bool selfMatch = QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+	if (selfMatch) {
+		p->checkedNodes[idx.internalId()] = 1;
+		return true;
+	} else {
+		p->checkedNodes[idx.internalId()] = 0;
+	}
+
+	//qDebug() << idx.internalId();
+	qDebug() << p->checkedNodes.count();
+
+	int type = idx.data(CollectionItemModel::ItemTypeRole).toInt();
+	if (CollectionTreeItem::Track == type) {
+		return selfMatch;
+	}
+	// find for all children
+	bool match = false;
+	int cnt = sourceModel()->rowCount(idx);
+	for (int i=0; i<cnt; i++) {
+		match = match || filterAcceptsRow(i, idx);
+		if (match) {
+			break;
+		}
+	}
+	return match;
+	// accept row if any child matches the pattern
+	//
+	/*
+	QModelIndex idx = sourceModel()->index(source_row, 0, source_parent);
+	if (sourceModel()->hasChildren(idx)) {
+		return true;
+	}
+	*/
+
+	return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 }
 
-QModelIndex CollectionTreeFilter::mapToSource(const QModelIndex & proxyIndex) const
+void CollectionTreeFilter::resetSavedValuesCache()
 {
-	return sourceModel()->index(proxyIndex.row(), proxyIndex.column(), parent(proxyIndex));
+	p->counter = 0;
+	p->checkedNodes.clear();
 }
-
-int CollectionTreeFilter::columnCount(const QModelIndex & parent) const
-{
-	return sourceModel()->columnCount(parent);
-}
-
-QVariant CollectionTreeFilter::data(const QModelIndex & index, int role) const
-{
-	return sourceModel()->data(index, role);
-}
-
-QModelIndex CollectionTreeFilter::index(int row, int column, const QModelIndex & parent) const
-{
-	return sourceModel()->index(row, column, parent);
-}
-
-QModelIndex CollectionTreeFilter::parent(const QModelIndex & index) const
-{
-	return sourceModel()->parent(index);
-}
-
-int CollectionTreeFilter::rowCount(const QModelIndex & parent) const
-{
-	return sourceModel()->rowCount(parent);
-}
-
-
-

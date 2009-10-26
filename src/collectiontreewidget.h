@@ -17,7 +17,10 @@ public:
 	CollectionTreeWidget(QWidget * parent = 0);
 	bool reloadTree();
 
-protected:
+protected slots:
+	void filterActivated();
+
+private:
 	struct Private;
 	Private * p;
 };

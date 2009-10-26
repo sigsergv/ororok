@@ -35,23 +35,44 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 	layout->addWidget(p->collectionTreeView);
 	this->setLayout(layout);
 
+
 	p->model = new CollectionItemModel(this);
 	p->proxy = new CollectionTreeFilter(this);
+	p->proxy->setFilterKeyColumn(0);
+	//p->proxy->setDynamicSortFilter(true);
 	p->proxy->setSourceModel(p->model);
 
-	p->collectionTreeView->setModel(p->proxy);
-	//model->setArtistsAlbumsMode("");
+	//CollectionTreeFilter *proxyModel = new CollectionTreeFilter(this);
+	//proxyModel->setSourceModel(p->model);
 
 	AlbumItemDelegate * delegate = new AlbumItemDelegate(this);
 	p->collectionTreeView->setItemDelegate(delegate);
+
+	p->collectionTreeView->setModel(p->proxy);
+	//p->collectionTreeView->setModel(p->proxy);
+	//p->collectionTreeView->setModel(p->model);
+
+	connect(p->filter, SIGNAL(returnPressed()), this, SLOT(filterActivated()));
+
 }
 
 bool CollectionTreeWidget::reloadTree()
 {
+	/*
 	// unset model
 	p->collectionTreeView->setModel(0);
 	// reload model
 	p->model->reloadData();
 	p->collectionTreeView->setModel(p->proxy);
+	*/
 	return true;
+}
+
+void CollectionTreeWidget::filterActivated()
+{
+	QString filterText = p->filter->text();
+	qDebug() << "filter activated with text: " << filterText;
+	//p->proxy->invalidate();
+	p->proxy->resetSavedValuesCache();
+	p->proxy->setFilterFixedString(filterText);
 }

@@ -16,7 +16,7 @@ class CollectionItemModel : public QAbstractItemModel
 {
 	Q_OBJECT
 public:
-	enum ItemRole {ItemTypeRole=Qt::UserRole+1, ItemAlbumCoverRole, ItemAlbumNameRole, ItemQuickSearchRole};
+	enum ItemRole {ItemTypeRole=Qt::UserRole+1, ItemAlbumCoverRole, ItemAlbumNameRole, ItemQuickSearchMatchedRole};
 
 	CollectionItemModel(QObject * parent);
 
@@ -25,6 +25,7 @@ public:
 	int rowCount(const QModelIndex & parent = QModelIndex()) const;
 	int columnCount(const QModelIndex & parent = QModelIndex()) const;
 	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+	void markItemsMatchString(const QString & match);
 
 	bool reloadData();
 

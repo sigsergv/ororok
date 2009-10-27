@@ -47,6 +47,8 @@ static const QString TABLE_SQL_DFN_TRACK("CREATE TABLE track ("
 		"track INTEGER, "     // track number in the album
 		"year INTEGER "       // track year
 		")");
+static const QString TABLE_SQL_DFN_TRACK_INDEX_ARTIST_ID("CREATE INDEX IF NOT EXISTS track_index_album_id "
+		"ON track (album_id)");
 
 static const QString TABLE_SQL_DFN_COLLECTION("CREATE TABLE collection ("
 		"id INTEGER PRIMARY KEY, "
@@ -60,6 +62,7 @@ static const QString TABLE_SQL_DFN_DIR("CREATE TABLE dir ("
 		"path VARCHAR, " // directory path
 		"modtime INTEGER" // recorded directory modification time
 		")");
+
 QSqlError initDb() {
 	// open database
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
@@ -77,6 +80,9 @@ QSqlError initDb() {
 	if (!tables.contains("track")) {
 		qDebug() << "create table 'track'";
 		if (!q.exec(TABLE_SQL_DFN_TRACK)) {
+			return q.lastError();
+		}
+		if (!q.exec(TABLE_SQL_DFN_TRACK_INDEX_ARTIST_ID)) {
 			return q.lastError();
 		}
 	}
@@ -119,9 +125,9 @@ QSqlError initDb() {
 		// init collection with come data
 		if (!q.exec(
 				//"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music/Rock', 1)")) {
-				//"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music/Ethno', 1)")) {
+				"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music/Ethno', 1)")) {
 				//"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music/Original', 1)")) {
-				"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music', 1)")) {
+				//"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music', 1)")) {
 			return q.lastError();
 		}
 	}

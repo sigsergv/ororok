@@ -27,6 +27,8 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 	p->filter = new QLineEdit(this);
 	p->collectionTreeView = new QTreeView(this);
 	p->collectionTreeView->setHeaderHidden(true);
+	p->proxy = 0;
+	p->model = 0;
 	//layout->addWidget(filter);
 
 	//widget->show();
@@ -35,20 +37,11 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 	layout->addWidget(p->collectionTreeView);
 	this->setLayout(layout);
 
-
-	p->model = new CollectionItemModel(this);
-	p->proxy = new CollectionTreeFilter(this);
-	p->proxy->setFilterKeyColumn(0);
-	//p->proxy->setDynamicSortFilter(true);
-	p->proxy->setSourceModel(p->model);
-
-	//CollectionTreeFilter *proxyModel = new CollectionTreeFilter(this);
-	//proxyModel->setSourceModel(p->model);
+	createModel();
 
 	AlbumItemDelegate * delegate = new AlbumItemDelegate(this);
 	p->collectionTreeView->setItemDelegate(delegate);
 
-	p->collectionTreeView->setModel(p->proxy);
 	//p->collectionTreeView->setModel(p->proxy);
 	//p->collectionTreeView->setModel(p->model);
 
@@ -58,13 +51,7 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 
 bool CollectionTreeWidget::reloadTree()
 {
-	/*
-	// unset model
-	p->collectionTreeView->setModel(0);
-	// reload model
-	p->model->reloadData();
-	p->collectionTreeView->setModel(p->proxy);
-	*/
+	createModel();
 	return true;
 }
 
@@ -73,6 +60,22 @@ void CollectionTreeWidget::filterActivated()
 	QString filterText = p->filter->text();
 	qDebug() << "filter activated with text: " << filterText;
 	//p->proxy->invalidate();
-	p->proxy->resetSavedValuesCache();
+	p->model->markItemsMatchString(filterText);
 	p->proxy->setFilterFixedString(filterText);
+}
+
+void CollectionTreeWidget::createModel()
+{
+	CollectionItemModel * newModel = new CollectionItemModel(this);
+	CollectionTreeFilter * newProxy = new CollectionTreeFilter(this);
+	newProxy->setFilterKeyColumn(0);
+	//p->proxy->setDynamicSortFilter(true);
+	newProxy->setSourceModel(newModel);
+
+	p->collectionTreeView->setModel(newProxy);
+	delete p->proxy;
+	delete p->model;
+	p->proxy = newProxy;
+	p->model = newModel;
+
 }

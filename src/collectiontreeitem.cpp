@@ -26,6 +26,8 @@ CollectionTreeItem::CollectionTreeItem(CollectionTreeItemType t, CollectionTreeI
 	p->type = t;
 	p->parentItem = parent;
 	p->rowsCount = -1;
+	matched = true;
+	searchString = "";
 }
 
 CollectionTreeItem::~CollectionTreeItem()
@@ -68,6 +70,8 @@ CollectionTreeItem * CollectionTreeItem::parent()
  */
 int CollectionTreeItem::childrenCount()
 {
+	return p->rowsCount;
+	/*
 	if (p->rowsCount == -1) {
 		// fetch child items now
 		//qDebug() << "fetching items";
@@ -88,6 +92,63 @@ int CollectionTreeItem::childrenCount()
 	}
 
 	return p->rowsCount;
+	*/
+}
+
+void CollectionTreeItem::fetchData()
+{
+	if (p->type == Artist) {
+		//qDebug() << "fetch albums";
+		// child elements are albums
+		fetchAlbums(this);
+	} else if (p->type == Album) {
+		// child elements are tracks
+		//qDebug() << "fetch tracks";
+		fetchTracks(this);
+	} else if (p->type == Root) {
+		// child elements are artists
+		//qDebug() << "fetch artists";
+		fetchArtists(this);
+	}
+}
+
+
+/**
+ * mark all items that match given string "match"
+ * @param match
+ */
+bool CollectionTreeItem::markItemMatchString(const QString & match)
+{
+	if (searchString.contains(match, Qt::CaseInsensitive)) {
+		// mark this and all child nodes as matched
+		//qDebug() << "matched" << searchString;
+		markChildrenMatched(true);
+		return true;
+	}
+
+	bool m = false;
+	for (QHash<int, CollectionTreeItem*>::iterator i = p->childItems.begin();
+			i != p->childItems.end(); i++)
+	{
+		m = (*i)->markItemMatchString(match) || m;
+	}
+	matched = m;
+	return m;
+}
+
+/**
+ * mark all children as matched/unmatched
+ * @param match
+ * @param item
+ */
+void CollectionTreeItem::markChildrenMatched(bool match)
+{
+	matched = match;
+	for (QHash<int, CollectionTreeItem*>::iterator i = p->childItems.begin();
+			i != p->childItems.end(); i++)
+	{
+		(*i)->markChildrenMatched(match);
+	}
 }
 
 void CollectionTreeItem::fetchArtists(CollectionTreeItem * parent)
@@ -111,7 +172,9 @@ void CollectionTreeItem::fetchArtists(CollectionTreeItem * parent)
 	CollectionTreeItem * artist;
 	artist = new CollectionTreeItem(Artist, parent);
 	artist->data["id"] = -1;
-	artist->data["name"] = "{Variouse Artists}";
+	artist->data["name"] = "{Various Artists}";
+	artist->searchString = "{Various Artists}";
+	artist->fetchData();
 	artist->row = n;
 	p->childItems[n] = artist;
 
@@ -126,7 +189,9 @@ void CollectionTreeItem::fetchArtists(CollectionTreeItem * parent)
 		artist = new CollectionTreeItem(Artist, parent);
 		artist->data["id"] = query.value(0);
 		artist->data["name"] = query.value(1);
+		artist->searchString = query.value(1).toString();
 		artist->row = n;
+		artist->fetchData();
 		p->childItems[n] = artist;
 	}
 
@@ -161,6 +226,14 @@ void CollectionTreeItem::fetchAlbums(CollectionTreeItem * parent)
 		album->data["name"] = query.value(1);
 		album->data["cover_path"] = query.value(2);
 		album->data["year"] = query.value(3);
+		album->fetchData();
+		int year = query.value(3).toInt();
+		QString name = query.value(1).toString();
+		if (year > 0) {
+			album->searchString = QString("%1 %2").arg(year).arg(name);
+		} else {
+			album->searchString = name;
+		}
 		album->row = n;
 		p->childItems[n] = album;
 		n++;
@@ -197,6 +270,9 @@ void CollectionTreeItem::fetchTracks(CollectionTreeItem * parent)
 		track->data["title"] = query.value(1);
 		track->data["filename"] = query.value(2);
 		track->data["track"] = query.value(3);
+		track->searchString = query.value(1).toString();
+		//track->fetchData();
+		//qDebug() << track->searchString;
 		track->row = n;
 		p->childItems[n] = track;
 		n++;

@@ -19,6 +19,7 @@ public:
 
 protected slots:
 	void filterActivated();
+	void createModel();
 
 private:
 	struct Private;

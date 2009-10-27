@@ -22,6 +22,7 @@ CollectionItemModel::CollectionItemModel(QObject * parent)
 	p = new Private;
 	// create empty tree
 	p->rootTreeItem = new CollectionTreeItem(CollectionTreeItem::Root, 0);
+	p->rootTreeItem->fetchData();
 }
 
 QModelIndex CollectionItemModel::index(int row, int column, const QModelIndex & parent) const
@@ -105,6 +106,11 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 		return item->data["name"];
 	}
 
+	if (ItemQuickSearchMatchedRole == role) {
+		// return QString object that contain
+		return item->matched;
+	}
+
 	if (role != Qt::DisplayRole) {
 		return QVariant();
 	}
@@ -116,7 +122,7 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 	if (CollectionTreeItem::Album == itemType) {
 		QString albumTitle;
 		int year = item->data["year"].toInt();
-		if (year) {
+		if (year > 0) {
 			albumTitle += QString("%1 - ").arg(year);
 		}
 		albumTitle += item->data["name"].toString();
@@ -137,12 +143,16 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 	return QString("type: %1").arg(item->type());
 }
 
+void CollectionItemModel::markItemsMatchString(const QString & match)
+{
+	p->rootTreeItem->markItemMatchString(match);
+}
+
 bool CollectionItemModel::reloadData()
 {
 	// destroy data set
 	delete p->rootTreeItem;
 	// create new
 	p->rootTreeItem = new CollectionTreeItem(CollectionTreeItem::Root, 0);
-
 	return true;
 }

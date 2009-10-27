@@ -19,6 +19,7 @@ struct MainWindow::Private
 	Ui::MainWindow ui;
 	UpdateThread * ut;
 	CollectionTreeWidget * ctw;
+	QProgressBar * pb;
 };
 
 MainWindow::MainWindow() :
@@ -29,6 +30,17 @@ MainWindow::MainWindow() :
 	p->ut = new UpdateThread(this);
 	p->ctw = new CollectionTreeWidget(this);
 	p->ui.collectionDock->setWidget(p->ctw);
+
+	// create progressbar
+	p->pb = new QProgressBar(this);
+	statusBar()->addPermanentWidget(p->pb);
+	p->pb->hide();
+
+	// create default playlist tab
+	QWidget * defaultPlaylist = new QWidget(this);
+	p->ui.playlistTabs->addTab(defaultPlaylist, tr("Default"));
+
+	setWindowTitle(tr("Ororok — Music player and organizer"));
 	createActions();
 	connectSignals();
 }
@@ -36,6 +48,7 @@ MainWindow::MainWindow() :
 void MainWindow::rescanCollection()
 {
 	// launch UpdateThread
+	p->pb->show();
 	p->ut->start();
 }
 
@@ -46,7 +59,7 @@ void MainWindow::stopRescanCollection()
 
 void MainWindow::updateThreadStarted()
 {
-	p->ui.label->setText("started");
+	//p->ui.label->setText("started");
 }
 
 void MainWindow::updateThreadFinished()
@@ -55,15 +68,17 @@ void MainWindow::updateThreadFinished()
 
 	if (ret != UpdateThread::NoError) {
 		// error occured
-		p->ui.label->setText(UpdateThread::errorToText(ret));
+		//p->ui.label->setText(UpdateThread::errorToText(ret));
 	} else {
-		p->ui.label->setText("finished");
+		//p->ui.label->setText("finished");
 	}
+	p->pb->hide();
 }
 
 void MainWindow::updateThreadTerminated()
 {
-	p->ui.label->setText("terminated");
+	//p->ui.label->setText("terminated");
+	p->pb->hide();
 }
 
 void MainWindow::refreshCollectionTree()
@@ -80,7 +95,7 @@ void MainWindow::scanProgress(int progress)
 		progress = 100;
 	}
 
-	p->ui.progressBar->setValue(progress);
+	p->pb->setValue(progress);
 }
 
 void MainWindow::createActions()
@@ -91,9 +106,7 @@ void MainWindow::connectSignals()
 {
 	connect(p->ui.actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 	connect(p->ui.actionRescanCollection, SIGNAL(triggered()), this, SLOT(rescanCollection()));
-	connect(p->ui.pb1, SIGNAL(pressed()), this, SLOT(rescanCollection()));
-	connect(p->ui.pb2, SIGNAL(pressed()), this, SLOT(stopRescanCollection()));
-	connect(p->ui.refreshCollectionTree, SIGNAL(pressed()), this, SLOT(refreshCollectionTree()));
+	connect(p->ui.actionReloadCollectionTree, SIGNAL(triggered()), this, SLOT(refreshCollectionTree()));
 	connect(p->ut, SIGNAL(started()), this, SLOT(updateThreadStarted()));
 	connect(p->ut, SIGNAL(finished()), this, SLOT(updateThreadFinished()));
 	connect(p->ut, SIGNAL(terminated()), this, SLOT(updateThreadTerminated()));

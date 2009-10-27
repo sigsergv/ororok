@@ -15,15 +15,10 @@ class CollectionTreeFilter : public QSortFilterProxyModel
 	Q_OBJECT
 public:
 	CollectionTreeFilter(QObject * parent = 0);
-	void resetSavedValuesCache();
-	//QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
 
 protected:
 	bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
 
-private:
-	struct Private;
-	Private * p;
 };
 
 #endif /* COLLECTIONTREEFILTER_H_ */

@@ -13,6 +13,7 @@
 
 int main(int argv, char *args[])
 {
+	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
     QApplication app(argv, args);
 
     if (!QSqlDatabase::drivers().contains("QSQLITE")) {

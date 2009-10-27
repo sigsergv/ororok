@@ -27,6 +27,7 @@ FORMS += mainwindow.ui \
 	testwidget.ui
 
 TARGET = ororok
+CODECFORTR = UTF-8
 
 QT += xml
 QT += sql

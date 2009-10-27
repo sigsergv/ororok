@@ -20,8 +20,17 @@ public:
 	CollectionTreeItem * parent();
 	int childrenCount();
 
+	bool markItemMatchString(const QString & match);
+
+	void fetchData();
+
 	int row;
 	QMap<QString, QVariant> data;
+	QString searchString;
+	bool matched;
+
+protected:
+	void markChildrenMatched(bool match);
 
 private:
 	struct Private;

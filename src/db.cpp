@@ -45,10 +45,15 @@ static const QString TABLE_SQL_DFN_TRACK("CREATE TABLE track ("
 		"genre_id INTEGER, "  // genre id, ref "genre" table
 		"album_id INTEGER, "  // album id, ref "album"
 		"track INTEGER, "     // track number in the album
+		"length INTEGER, "    // track length
 		"year INTEGER "       // track year
 		")");
 static const QString TABLE_SQL_DFN_TRACK_INDEX_ARTIST_ID("CREATE INDEX IF NOT EXISTS track_index_album_id "
 		"ON track (album_id)");
+static const QString TABLE_SQL_DFN_TRACK_INDEX_GENRE_ID("CREATE INDEX IF NOT EXISTS track_index_genre_id "
+		"ON track (genre_id)");
+static const QString TABLE_SQL_DFN_TRACK_INDEX_DIR_ID("CREATE INDEX IF NOT EXISTS track_index_dir_id "
+		"ON track (dir_id)");
 
 static const QString TABLE_SQL_DFN_COLLECTION("CREATE TABLE collection ("
 		"id INTEGER PRIMARY KEY, "

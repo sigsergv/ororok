@@ -16,7 +16,8 @@ class CollectionItemModel : public QAbstractItemModel
 {
 	Q_OBJECT
 public:
-	enum ItemRole {ItemTypeRole=Qt::UserRole+1, ItemAlbumCoverRole, ItemAlbumNameRole, ItemQuickSearchMatchedRole};
+	enum ItemRole {ItemTypeRole=Qt::UserRole+1, ItemAlbumCoverRole, ItemAlbumNameRole,
+		ItemQuickSearchMatchedRole, ItemTrackInfoRole};
 
 	CollectionItemModel(QObject * parent);
 
@@ -26,11 +27,14 @@ public:
 	int columnCount(const QModelIndex & parent = QModelIndex()) const;
 	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
 	void markItemsMatchString(const QString & match);
+	Qt::ItemFlags flags(const QModelIndex &index) const;
+	QStringList mimeTypes() const;
+	QMimeData * mimeData(const QModelIndexList &indexes) const;
 
 	bool reloadData();
 
 protected:
-	//void loadAlbumsForArtists(ArtistRecord * artist) const;
+	void findTracksInIndexesTree(const QModelIndex & index, QModelIndexList & target) const;
 
 private:
 	struct Private;

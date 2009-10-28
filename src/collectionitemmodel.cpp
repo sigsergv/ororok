@@ -10,11 +10,13 @@
 
 #include "collectionitemmodel.h"
 #include "collectiontreeitem.h"
+#include "mimetrackinfo.h"
 
 struct CollectionItemModel::Private
 {
 	CollectionTreeItem * rootTreeItem;
 };
+
 
 CollectionItemModel::CollectionItemModel(QObject * parent)
 	: QAbstractItemModel(parent)
@@ -111,6 +113,29 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 		return item->matched;
 	}
 
+	if (ItemTrackInfoRole == role && CollectionTreeItem::Track == itemType) {
+		QStringList ti;
+		ti << ""; // full track path
+		ti << item->data.value("track", "0").toString();
+		ti << item->data.value("title", "").toString();
+		ti << item->data.value("year", "").toString();
+		CollectionTreeItem * parent = item->parent();
+		if (CollectionTreeItem::Album == parent->type()) {
+			ti << parent->data.value("name", "").toString();
+		} else {
+			ti << "";
+		}
+		parent = parent->parent();
+		if (CollectionTreeItem::Artist == parent->type()) {
+			ti << parent->data.value("name", "").toString();
+		} else {
+			ti << "";
+		}
+		ti << item->data.value("genre", "").toString();
+		ti << item->data.value("length", "0").toString();
+		return ti;
+	}
+
 	if (role != Qt::DisplayRole) {
 		return QVariant();
 	}
@@ -146,6 +171,72 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 void CollectionItemModel::markItemsMatchString(const QString & match)
 {
 	p->rootTreeItem->markItemMatchString(match);
+}
+
+Qt::ItemFlags CollectionItemModel::flags(const QModelIndex &index) const
+{
+	Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
+
+	if (index.isValid()) {
+		return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
+	} else {
+		return Qt::ItemIsDropEnabled | defaultFlags;
+	}
+}
+
+QStringList CollectionItemModel::mimeTypes() const
+{
+	QStringList mt;
+
+	mt << Ororok::TRACKS_MIME;
+
+	return mt;
+}
+
+QMimeData * CollectionItemModel::mimeData(const QModelIndexList &indexes) const
+{
+	QMimeData *md = new QMimeData();
+	QByteArray encodedData;
+	QDataStream stream(&encodedData, QIODevice::WriteOnly);
+	// we should form list of tracks, but list of indexes may contain albums or artists
+	// so we have to extract tracks
+
+	QModelIndexList trackIndexes;
+
+	Q_FOREACH (const QModelIndex & index, indexes) {
+		if (!index.isValid()) {
+			continue;
+		}
+		if (index.data(CollectionItemModel::ItemTypeRole) == CollectionTreeItem::Track) {
+			trackIndexes << index;
+			continue;
+		}
+		findTracksInIndexesTree(index, trackIndexes);
+	}
+
+	Q_FOREACH (const QModelIndex & index, trackIndexes) {
+		// [trackPath, trackNo, title, album, year, album, artist, genre]
+		QStringList trackInfo = index.data(CollectionItemModel::ItemTrackInfoRole).toStringList();
+		//stream << Ororok::serializeTrackInfo(trackInfo);
+		stream << trackInfo;
+	}
+	md->setData(Ororok::TRACKS_MIME, encodedData);
+
+	return md;
+}
+
+void CollectionItemModel::findTracksInIndexesTree(const QModelIndex & index, QModelIndexList & target) const
+{
+	if (index.data(CollectionItemModel::ItemTypeRole) == CollectionTreeItem::Track) {
+		target << index;
+		return;
+	}
+
+	int count = rowCount(index);
+
+	for (int i=0; i<count; i++) {
+		findTracksInIndexesTree(index.child(i, 0), target);
+	}
 }
 
 bool CollectionItemModel::reloadData()

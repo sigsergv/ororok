@@ -11,6 +11,7 @@
 #include "updatethread.h"
 #include "collectiontreewidget.h"
 #include "collectionitemmodel.h"
+#include "playlistwidget.h"
 
 #include "ui_mainwindow.h"
 
@@ -37,7 +38,7 @@ MainWindow::MainWindow() :
 	p->pb->hide();
 
 	// create default playlist tab
-	QWidget * defaultPlaylist = new QWidget(this);
+	PlaylistWidget * defaultPlaylist = new PlaylistWidget(this);
 	p->ui.playlistTabs->addTab(defaultPlaylist, tr("Default"));
 
 	setWindowTitle(tr("Ororok — Music player and organizer"));

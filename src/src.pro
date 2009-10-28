@@ -8,7 +8,10 @@ HEADERS += mainwindow.h \
 	albumitemdelegate.h \
 	settings.h \
 	cache.h \
-	collectiontreefilter.h
+	collectiontreefilter.h \
+	playlistwidget.h \
+	playlistmodel.h \
+	mimetrackinfo.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -21,7 +24,10 @@ SOURCES += main.cpp \
     albumitemdelegate.cpp \
     settings.cpp \
     cache.cpp \
-    collectiontreefilter.cpp
+    collectiontreefilter.cpp \
+    playlistwidget.cpp \
+    playlistmodel.cpp \
+	mimetrackinfo.cpp
 
 FORMS += mainwindow.ui \
 	testwidget.ui

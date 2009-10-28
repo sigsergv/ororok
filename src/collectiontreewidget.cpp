@@ -27,6 +27,13 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 	p->filter = new QLineEdit(this);
 	p->collectionTreeView = new QTreeView(this);
 	p->collectionTreeView->setHeaderHidden(true);
+	p->collectionTreeView->setDragEnabled(true);
+	p->collectionTreeView->setAcceptDrops(false);
+	p->collectionTreeView->setDropIndicatorShown(true);
+	p->collectionTreeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	p->collectionTreeView->setDragDropMode(QAbstractItemView::DragOnly);
+	p->collectionTreeView->setSelectionBehavior(QAbstractItemView::SelectRows);
+
 	p->proxy = 0;
 	p->model = 0;
 	//layout->addWidget(filter);
@@ -67,8 +74,10 @@ void CollectionTreeWidget::filterActivated()
 void CollectionTreeWidget::createModel()
 {
 	CollectionItemModel * newModel = new CollectionItemModel(this);
+	newModel->setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
 	CollectionTreeFilter * newProxy = new CollectionTreeFilter(this);
 	newProxy->setFilterKeyColumn(0);
+	//newProxy->setSupportedDragActions(Qt::CopyAction);
 	//p->proxy->setDynamicSortFilter(true);
 	newProxy->setSourceModel(newModel);
 

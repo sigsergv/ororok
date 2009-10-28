@@ -227,8 +227,8 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 
 		emit progressPercentChanged(5);
 		p->query->prepare(
-				"INSERT INTO track (dir_id, title, filename, artist_id, album_id, genre_id, track, year) "
-				"VALUES (:dirId, :title, :filename, :artistId, :albumId, :genreId, :track, :year)");
+				"INSERT INTO track (dir_id, title, filename, artist_id, album_id, genre_id, track, length, year) "
+				"VALUES (:dirId, :title, :filename, :artistId, :albumId, :genreId, :track, :length, :year)");
 		float processedDirs = 0;
 
 		QDir dir;
@@ -323,6 +323,7 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 				p->query->bindValue(":albumId", albumId);
 				p->query->bindValue(":genreId", genreId);
 				p->query->bindValue(":track", md->track);
+				p->query->bindValue(":length", md->length);
 				p->query->bindValue(":year", md->year);
 				p->query->bindValue(":title", md->title);
 				delete md;

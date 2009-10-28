@@ -19,9 +19,11 @@ struct MusicTrackMetadata
 	QString title;
 	QString album;
 	QString genre;
+	QString comment;
 	int track;
 	int year;
 	int bitrate;
+	int length;
 };
 
 QStringList supportedFileExtensions();

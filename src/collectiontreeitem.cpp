@@ -251,8 +251,9 @@ void CollectionTreeItem::fetchTracks(CollectionTreeItem * parent)
 	QSqlDatabase db = QSqlDatabase::database();
 	QSqlQuery query(db);
 
-	query.prepare("SELECT t.id, t.title, t.filename, t.track, t.length, g.name, d.path FROM track t "
+	query.prepare("SELECT t.id, t.title, t.filename, t.track, t.length, g.name, d.path, ar.name FROM track t "
 			"LEFT JOIN genre g ON g.id=t.genre_id "
+			"LEFT JOIN artist ar ON ar.id=t.artist_id "
 			"LEFT JOIN dir d ON d.id=t.dir_id WHERE album_id=:albumId");
 	query.bindValue(":albumId", parent->data["id"]);
 
@@ -275,6 +276,7 @@ void CollectionTreeItem::fetchTracks(CollectionTreeItem * parent)
 		track->data["length"] = query.value(4);
 		track->data["genre"] = query.value(5);
 		track->data["path"] = query.value(6);
+		track->data["artist"] = query.value(7);
 		track->searchString = query.value(1).toString();
 		//track->fetchData();
 		//qDebug() << track->searchString;

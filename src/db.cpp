@@ -48,10 +48,12 @@ static const QString TABLE_SQL_DFN_TRACK("CREATE TABLE track ("
 		"length INTEGER, "    // track length
 		"year INTEGER "       // track year
 		")");
-static const QString TABLE_SQL_DFN_TRACK_INDEX_ARTIST_ID("CREATE INDEX IF NOT EXISTS track_index_album_id "
+static const QString TABLE_SQL_DFN_TRACK_INDEX_ALBUM_ID("CREATE INDEX IF NOT EXISTS track_index_album_id "
 		"ON track (album_id)");
 static const QString TABLE_SQL_DFN_TRACK_INDEX_GENRE_ID("CREATE INDEX IF NOT EXISTS track_index_genre_id "
 		"ON track (genre_id)");
+static const QString TABLE_SQL_DFN_TRACK_INDEX_ARTIST_ID("CREATE INDEX IF NOT EXISTS track_index_artist_id "
+		"ON track (artist_id)");
 static const QString TABLE_SQL_DFN_TRACK_INDEX_DIR_ID("CREATE INDEX IF NOT EXISTS track_index_dir_id "
 		"ON track (dir_id)");
 
@@ -87,7 +89,16 @@ QSqlError initDb() {
 		if (!q.exec(TABLE_SQL_DFN_TRACK)) {
 			return q.lastError();
 		}
+		if (!q.exec(TABLE_SQL_DFN_TRACK_INDEX_ALBUM_ID)) {
+			return q.lastError();
+		}
+		if (!q.exec(TABLE_SQL_DFN_TRACK_INDEX_GENRE_ID)) {
+			return q.lastError();
+		}
 		if (!q.exec(TABLE_SQL_DFN_TRACK_INDEX_ARTIST_ID)) {
+			return q.lastError();
+		}
+		if (!q.exec(TABLE_SQL_DFN_TRACK_INDEX_DIR_ID)) {
 			return q.lastError();
 		}
 	}

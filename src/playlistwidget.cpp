@@ -16,6 +16,7 @@ struct PlaylistWidget::Private
 	QTreeView * tracksList;
 	PlaylistModel * model;
 	QSortFilterProxyModel * proxy;
+	int activeTrack;
 };
 
 PlaylistWidget::PlaylistWidget(QWidget * parent)
@@ -35,6 +36,7 @@ PlaylistWidget::PlaylistWidget(QWidget * parent)
 	layout->addWidget(p->tracksList);
 
 	p->model = new PlaylistModel(this);
+	p->activeTrack = 0;
 
 	p->proxy = new QSortFilterProxyModel(this);
 	p->proxy->setSourceModel(p->model);
@@ -43,10 +45,33 @@ PlaylistWidget::PlaylistWidget(QWidget * parent)
 	//p->tracksList->show();
 
 	setLayout(layout);
+
+	connect(p->tracksList, SIGNAL(doubleClicked(const QModelIndex &)),
+			this, SLOT(playlistDoubleClicked(const QModelIndex &)));
 }
 
 
 PlaylistWidget::~PlaylistWidget()
 {
 	delete p;
+}
+
+QStringList PlaylistWidget::activeTrackInfo()
+{
+	// take selected track
+	QStringList trackInfo;
+	Q_FOREACH (const QModelIndex & index, p->tracksList->selectionModel()->selectedIndexes()) {
+		trackInfo = index.data(PlaylistModel::ItemTrackInfoRole).toStringList();
+		break;
+	}
+
+	//qDebug() << rows;
+	return trackInfo;
+}
+
+void PlaylistWidget::playlistDoubleClicked(const QModelIndex & index)
+{
+	// doubleclicked track marked as “active track”
+	QStringList trackInfo = index.data(PlaylistModel::ItemTrackInfoRole).toStringList();
+	emit trackPlayRequsted(trackInfo);
 }

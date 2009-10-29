@@ -14,6 +14,8 @@ class PlaylistModel : public QAbstractTableModel
 {
 	Q_OBJECT
 public:
+	enum ItemRole {ItemTrackInfoRole=Qt::UserRole+1};
+
 	PlaylistModel(QObject * parent = 0);
 	int rowCount(const QModelIndex & parent = QModelIndex()) const;
 	int columnCount(const QModelIndex & parent = QModelIndex()) const;

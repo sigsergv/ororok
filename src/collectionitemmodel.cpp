@@ -115,7 +115,8 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 
 	if (ItemTrackInfoRole == role && CollectionTreeItem::Track == itemType) {
 		QStringList ti;
-		ti << ""; // full track path
+		ti << QString("%1/%2").arg(item->data.value("path").toString())
+				.arg(item->data.value("filename").toString());
 		ti << item->data.value("track", "0").toString();
 		ti << item->data.value("title", "").toString();
 		ti << item->data.value("year", "").toString();
@@ -125,14 +126,11 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 		} else {
 			ti << "";
 		}
-		parent = parent->parent();
-		if (CollectionTreeItem::Artist == parent->type()) {
-			ti << parent->data.value("name", "").toString();
-		} else {
-			ti << "";
-		}
+
+		ti << item->data.value("artist", "").toString();
 		ti << item->data.value("genre", "").toString();
 		ti << item->data.value("length", "0").toString();
+
 		return ti;
 	}
 

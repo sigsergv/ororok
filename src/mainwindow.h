@@ -10,7 +10,8 @@
 
 #include <QMainWindow>
 
-class UpdateThread;
+struct UpdateThread;
+struct QFrame;
 
 class MainWindow : public QMainWindow
 {
@@ -30,6 +31,11 @@ protected slots:
 	void updateThreadTerminated();
 	void refreshCollectionTree();
 	void scanProgress(int);
+
+	void playbackPlayPause();
+
+protected:
+	QFrame * createStatusBarSection(QWidget * widget);
 
 private:
 	struct Private;

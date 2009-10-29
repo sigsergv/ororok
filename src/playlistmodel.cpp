@@ -11,7 +11,7 @@
 #include "playlistmodel.h"
 #include "mimetrackinfo.h"
 
-enum VisibleColumns{ VisColumnTitle=0, VisColumnArtist, VisColumnLength,
+enum VisibleColumns{ VisColumnTitle=0, VisColumnArtist, VisColumnAlbum, VisColumnLength,
 	VISIBLE_COLUMNS_NUM};
 
 struct PlaylistModel::Private
@@ -27,6 +27,7 @@ PlaylistModel::PlaylistModel(QObject * parent)
 
 	p->storageMap << Ororok::TrackFieldTitle;  // VisColumnTitle
 	p->storageMap << Ororok::TrackFieldArtist; // VisColumnArtist
+	p->storageMap << Ororok::TrackFieldAlbum;  // VisColumnAlbum
 	p->storageMap << Ororok::TrackFieldLength; // VisColumnLength
 
 }
@@ -60,6 +61,10 @@ QVariant PlaylistModel::data(const QModelIndex & index, int role) const
 		return QVariant();
 	}
 
+	if (ItemTrackInfoRole == role) {
+		return p->storage[index.row()];
+	}
+
 	if (Qt::DisplayRole != role) {
 		return QVariant();
 	}
@@ -69,6 +74,7 @@ QVariant PlaylistModel::data(const QModelIndex & index, int role) const
 	switch (static_cast<VisibleColumns>(index.column())) {
 	case VisColumnArtist:
 	case VisColumnTitle:
+	case VisColumnAlbum:
 		res = p->storage[index.row()].value(p->storageMap[index.column()], QString());
 		break;
 
@@ -123,6 +129,9 @@ QVariant PlaylistModel::headerData(int section, Qt::Orientation orientation, int
 			break;
 		case VisColumnTitle:
 			res = tr("Title");
+			break;
+		case VisColumnAlbum:
+			res = tr("Album");
 			break;
 		case VISIBLE_COLUMNS_NUM:
 			break;
@@ -184,7 +193,7 @@ bool PlaylistModel::dropMimeData(const QMimeData *data,
 		rows++;
 	}
 
-	beginInsertRows(QModelIndex(), beginRow, beginRow+rows);
+	beginInsertRows(QModelIndex(), beginRow, beginRow+rows-1);
 	foreach (const QStringList & trackInfo, newItems) {
 		p->storage.insert(beginRow, trackInfo);
 		beginRow++;

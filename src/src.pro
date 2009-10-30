@@ -11,7 +11,8 @@ HEADERS += mainwindow.h \
 	collectiontreefilter.h \
 	playlistwidget.h \
 	playlistmodel.h \
-	mimetrackinfo.h
+	mimetrackinfo.h \
+	playlistitemdelegate.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -27,7 +28,8 @@ SOURCES += main.cpp \
     collectiontreefilter.cpp \
     playlistwidget.cpp \
     playlistmodel.cpp \
-	mimetrackinfo.cpp
+	mimetrackinfo.cpp \
+	playlistitemdelegate.cpp
 
 FORMS += mainwindow.ui \
 	testwidget.ui

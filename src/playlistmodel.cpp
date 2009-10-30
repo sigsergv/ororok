@@ -18,12 +18,14 @@ struct PlaylistModel::Private
 {
 	QList<QStringList> storage;
 	QList<int> storageMap; // key is a visible column number, value - index in the "storage" row
+	int activeTrackNum;
 };
 
 PlaylistModel::PlaylistModel(QObject * parent)
 	: QAbstractTableModel(parent)
 {
 	p = new Private;
+	p->activeTrackNum = -1;
 
 	p->storageMap << Ororok::TrackFieldTitle;  // VisColumnTitle
 	p->storageMap << Ororok::TrackFieldArtist; // VisColumnArtist
@@ -63,6 +65,10 @@ QVariant PlaylistModel::data(const QModelIndex & index, int role) const
 
 	if (ItemTrackInfoRole == role) {
 		return p->storage[index.row()];
+	}
+
+	if (ItemTrackStateRole == role) {
+		return index.row() == p->activeTrackNum;
 	}
 
 	if (Qt::DisplayRole != role) {
@@ -201,5 +207,20 @@ bool PlaylistModel::dropMimeData(const QMimeData *data,
 	endInsertRows();
 	//qDebug() << "inserted rows: " << rows;
 	return true;
+}
+
+void PlaylistModel::setActiveTrack(int n)
+{
+	int oldActiveTrackNum = p->activeTrackNum;
+
+	if (n < 0 || n > rowCount(QModelIndex())) {
+		return;
+	}
+
+	p->activeTrackNum = n;
+
+	// emit data change signal
+	emit dataChanged(index(oldActiveTrackNum,0), index(oldActiveTrackNum,VISIBLE_COLUMNS_NUM-1));
+	emit dataChanged(index(n,0), index(n,VISIBLE_COLUMNS_NUM-1));
 }
 

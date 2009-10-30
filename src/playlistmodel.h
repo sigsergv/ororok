@@ -14,7 +14,7 @@ class PlaylistModel : public QAbstractTableModel
 {
 	Q_OBJECT
 public:
-	enum ItemRole {ItemTrackInfoRole=Qt::UserRole+1};
+	enum ItemRole {ItemTrackInfoRole=Qt::UserRole+1, ItemTrackStateRole};
 
 	PlaylistModel(QObject * parent = 0);
 	int rowCount(const QModelIndex & parent = QModelIndex()) const;
@@ -26,6 +26,7 @@ public:
 	QStringList mimeTypes() const;
 	bool dropMimeData(const QMimeData *data,
 			Qt::DropAction action, int row, int column, const QModelIndex &parent);
+	void setActiveTrack(int n);
 
 protected:
 	bool insertTrack(int pos, const QStringList & trackInfo);

@@ -9,6 +9,7 @@
 
 #include "playlistwidget.h"
 #include "playlistmodel.h"
+#include "playlistitemdelegate.h"
 
 struct PlaylistWidget::Private
 {
@@ -46,6 +47,9 @@ PlaylistWidget::PlaylistWidget(QWidget * parent)
 
 	setLayout(layout);
 
+	PlaylistItemDelegate * delegate = new PlaylistItemDelegate(this);
+	p->tracksList->setItemDelegate(delegate);
+
 	connect(p->tracksList, SIGNAL(doubleClicked(const QModelIndex &)),
 			this, SLOT(playlistDoubleClicked(const QModelIndex &)));
 }
@@ -73,5 +77,6 @@ void PlaylistWidget::playlistDoubleClicked(const QModelIndex & index)
 {
 	// doubleclicked track marked as “active track”
 	QStringList trackInfo = index.data(PlaylistModel::ItemTrackInfoRole).toStringList();
+	p->model->setActiveTrack(index.row());
 	emit trackPlayRequsted(trackInfo);
 }

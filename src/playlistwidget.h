@@ -31,6 +31,9 @@ public:
 signals:
 	void trackPlayRequsted(const QStringList & trackInfo);
 
+public slots:
+	void trackStopped(const QStringList & trackInfo);
+
 protected slots:
 	void playlistDoubleClicked(const QModelIndex & index);
 

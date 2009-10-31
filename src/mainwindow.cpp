@@ -12,6 +12,7 @@
 #include "collectiontreewidget.h"
 #include "collectionitemmodel.h"
 #include "playlistwidget.h"
+#include "playlistmanager.h"
 
 #include "ui_mainwindow.h"
 
@@ -57,10 +58,10 @@ MainWindow::MainWindow() :
 	p->ctw = new CollectionTreeWidget(this);
 	p->ui.collectionDock->setWidget(p->ctw);
 
-	// create default playlist tab
-	PlaylistWidget * defaultPlaylist = new PlaylistWidget(this);
-	p->ui.playlistTabs->addTab(defaultPlaylist, tr("Default"));
-	p->tmpPL = defaultPlaylist;
+	// initialize PlaylistManager
+	PlaylistManager * pm = PlaylistManager::instance();
+
+	this->setCentralWidget(pm->playlistsTabWidget());
 
 	//statusBar()->layout()->setContentsMargins(0, 0, 10, 0);
 	statusBar()->setSizeGripEnabled(false);
@@ -154,9 +155,9 @@ void MainWindow::playbackPlayPause()
 {
 	qDebug() << "play/pause";
 	// fetch active track info from current playlist
-	QStringList trackInfo = p->tmpPL->activeTrackInfo();
+	//QStringList trackInfo = p->tmpPL->activeTrackInfo();
 
-	qDebug() << trackInfo;
+	//qDebug() << trackInfo;
 }
 
 void MainWindow::createActions()

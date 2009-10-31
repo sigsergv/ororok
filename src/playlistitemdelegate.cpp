@@ -16,62 +16,98 @@ struct PlaylistItemDelegate::Private
 {
 	QPen activeItemBorderPen;
 	QBrush activeItemBgBrush;
+	QBrush stateIconBgBrush;
+	QBrush activeSelecteItemBgBrush;
 };
 
 PlaylistItemDelegate::PlaylistItemDelegate(QObject * parent)
 	: QItemDelegate(parent)
 {
 	p = new Private;
-	p->activeItemBorderPen.setWidth(2);
 	QLinearGradient g(0, 0, 0, 1);
 	// TODO: set color from appliaction style
-	g.setColorAt(0, QColor::fromRgb(200, 200, 200));
-	g.setColorAt(0.5, QColor::fromRgb(255, 255, 255));
-	g.setColorAt(1, QColor::fromRgb(200, 200, 200));
+	g.setColorAt(0, QColor::fromRgb(255, 255, 255));
+	g.setColorAt(0.5, QColor::fromRgb(200, 200, 200));
+	g.setColorAt(1, QColor::fromRgb(255, 255, 255));
 	g.setCoordinateMode(QGradient::ObjectBoundingMode);
 	p->activeItemBgBrush = QBrush(g);
-	//p->activeItemBgBrush.setStyle(Qt::LinearGradientPattern);
-	//p->activeItemBgBrush.setColor(QColor(200, 200, 200));
+
+	g.setColorAt(0, QApplication::palette().color(QPalette::Highlight));
+	//g.setColorAt(0.5, QColor::fromRgb(255, 255, 255));
+	g.setColorAt(1, QApplication::palette().color(QPalette::Highlight));
+	p->activeSelecteItemBgBrush = QBrush(g);
+
+	p->stateIconBgBrush = QBrush(QColor(255, 0, 0));
 }
 
 void PlaylistItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-	const QStyle * style = QApplication::style();
 	const QRect & baseRect = option.rect;
 	painter->save();
+	painter->setClipRect(baseRect, Qt::ReplaceClip);
 
 	QRect displayRect(baseRect);
 
-	//painter->fillRect(QRect(100,100,200,200), p->activeItemBgBrush);
+	PlaylistModel::ActiveTrackState state =
+			static_cast<PlaylistModel::ActiveTrackState>(
+					index.data(PlaylistModel::ItemTrackStateRole).toInt());
 
-	if (index.data(PlaylistModel::ItemTrackStateRole).toBool()) {
+	if (PlaylistModel::TrackStateNotSelected != state) {
 		// draw custom background
-		painter->fillRect(baseRect, p->activeItemBgBrush);
+		if (option.state & QStyle::State_Selected) {
+			painter->setPen(QPen(QApplication::palette().color(QPalette::HighlightedText)));
+			painter->fillRect(baseRect, p->activeSelecteItemBgBrush);
+		} else {
+			painter->fillRect(baseRect, p->activeItemBgBrush);
+		}
 
-		// draw active track border (top and bottom lines)
-		QRect r(baseRect);
-		r.adjust(0, 1, 0, 0);
-		QLine topLine(r.topLeft(), r.topRight());
-		QLine bottomLine(r.bottomLeft(), r.bottomRight());
-		painter->setPen(p->activeItemBorderPen);
-		painter->drawLine(topLine);
-		painter->drawLine(bottomLine);
+		if (index.column() == 0) {
+			QImage stateImage;;
 
+			// draw track playing state icon in the first column
+			switch (state) {
+			case PlaylistModel::TrackStatePaused:
+				stateImage.load(":track-state-paused.png");
+				break;
+			case PlaylistModel::TrackStatePlaying:
+				stateImage.load(":track-state-playing.png");
+				break;
+			case PlaylistModel::TrackStateStopped:
+				stateImage.load(":track-state-stopped.png");
+				break;
+			case PlaylistModel::TrackStateNotSelected:
+				break;
+			}
+
+			QRect r(baseRect);
+			r.adjust(0, 0, 0, -1);
+			QPoint sp(r.topLeft());
+			sp += QPoint(2, 0);
+			sp.setY(r.center().y() - stateImage.height()/2 + 1);
+
+			painter->drawImage(sp, stateImage);
+
+			displayRect.adjust(stateImage.width()+1, 0, 0, 0);
+
+		}
 		// adjust rect for text
 		displayRect.adjust(0, 2, 0, 0);
 
-		// set font style
+		// set font style: italic
 		QFont f = painter->font();
 		f.setItalic(true);
 		painter->setFont(f);
+	} else if (option.state & QStyle::State_Selected) {
+		// if item is selected draw the selected item background
+		painter->setPen(QPen(QApplication::palette().color(QPalette::HighlightedText)));
+		painter->fillRect(baseRect, QApplication::palette().highlight());
 	}
 
 	displayRect.adjust(3, 0, 0, 0);
-	painter->drawText(displayRect, index.data(Qt::DisplayRole).toString());
+	painter->drawText(displayRect, Qt::TextSingleLine | Qt::TextDontClip,
+			index.data(Qt::DisplayRole).toString());
 
 	painter->restore();
-	// draw text
-	//QItemDelegate::paint(painter, option, index);
 }
 
 QSize PlaylistItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -79,7 +115,7 @@ QSize PlaylistItemDelegate::sizeHint(const QStyleOptionViewItem &option, const Q
 	QSize s = QItemDelegate::sizeHint(option, index);
 
 	if (index.data(PlaylistModel::ItemTrackStateRole).toBool()) {
-		// add some pixels
+		// increase height of the active line
 		s += QSize(0, 4);
 	}
 

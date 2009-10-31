@@ -35,6 +35,7 @@ void AlbumItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 
 		if (option.state & QStyle::State_Selected) {
 			// draw selected frame
+			painter->setPen(QPen(palette.color(QPalette::HighlightedText)));
 			b = palette.highlight();
 		} else {
 			// draw not-selected frame

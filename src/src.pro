@@ -12,7 +12,9 @@ HEADERS += mainwindow.h \
 	playlistwidget.h \
 	playlistmodel.h \
 	mimetrackinfo.h \
-	playlistitemdelegate.h
+	playlistitemdelegate.h \
+	player.h \
+	playlistmanager.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -29,7 +31,9 @@ SOURCES += main.cpp \
     playlistwidget.cpp \
     playlistmodel.cpp \
 	mimetrackinfo.cpp \
-	playlistitemdelegate.cpp
+	playlistitemdelegate.cpp \
+	player.cpp \
+	playlistmanager.cpp
 
 FORMS += mainwindow.ui \
 	testwidget.ui

@@ -4,5 +4,8 @@
   <file>play-control-playpause.png</file>
   <file>play-control-stop.png</file>
   <file>play-control-next.png</file>
+  <file>track-state-playing.png</file>
+  <file>track-state-paused.png</file>
+  <file>track-state-stopped.png</file>
 </qresource>
 </RCC>

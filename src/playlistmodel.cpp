@@ -19,6 +19,7 @@ struct PlaylistModel::Private
 	QList<QStringList> storage;
 	QList<int> storageMap; // key is a visible column number, value - index in the "storage" row
 	int activeTrackNum;
+	ActiveTrackState activeTrackState;
 };
 
 PlaylistModel::PlaylistModel(QObject * parent)
@@ -26,6 +27,7 @@ PlaylistModel::PlaylistModel(QObject * parent)
 {
 	p = new Private;
 	p->activeTrackNum = -1;
+	p->activeTrackState = TrackStatePlaying;
 
 	p->storageMap << Ororok::TrackFieldTitle;  // VisColumnTitle
 	p->storageMap << Ororok::TrackFieldArtist; // VisColumnArtist
@@ -68,7 +70,10 @@ QVariant PlaylistModel::data(const QModelIndex & index, int role) const
 	}
 
 	if (ItemTrackStateRole == role) {
-		return index.row() == p->activeTrackNum;
+		if (index.row() != p->activeTrackNum) {
+			return TrackStateNotSelected;
+		}
+		return p->activeTrackState;
 	}
 
 	if (Qt::DisplayRole != role) {
@@ -224,3 +229,15 @@ void PlaylistModel::setActiveTrack(int n)
 	emit dataChanged(index(n,0), index(n,VISIBLE_COLUMNS_NUM-1));
 }
 
+void PlaylistModel::stopActiveTrack()
+{
+	p->activeTrackState = TrackStateStopped;
+	if (p->activeTrackNum >= 0) {
+		emit dataChanged(index(p->activeTrackNum, 0), index(p->activeTrackNum, VISIBLE_COLUMNS_NUM-1));
+	}
+}
+
+PlaylistModel::ActiveTrackState PlaylistModel::activeTrackState()
+{
+	return p->activeTrackState;
+}

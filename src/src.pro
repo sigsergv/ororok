@@ -34,12 +34,12 @@ SOURCES += main.cpp \
 FORMS += mainwindow.ui \
 	testwidget.ui
 
+RESOURCES = ../resources/application.qrc
 TARGET = ororok
 CODECFORTR = UTF-8
 
 QT += xml
 QT += sql
-
 
 win32 { 
 	debug:DESTDIR = ../debug/

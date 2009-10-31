@@ -162,16 +162,16 @@ void MainWindow::playbackPlayPause()
 void MainWindow::createActions()
 {
 	p->actionPlaybackPrev = new QAction("Play previous track", this);
-	p->actionPlaybackPrev->setIcon(style()->standardIcon(QStyle::SP_MediaSkipBackward));
+	p->actionPlaybackPrev->setIcon(QIcon(":/play-control-prev.png"));
 
 	p->actionPlaybackPlayPause = new QAction("Play/Pause", this);
-	p->actionPlaybackPlayPause->setIcon(style()->standardIcon(QStyle::SP_MediaPlay));
+	p->actionPlaybackPlayPause->setIcon(QIcon(":play-control-playpause.png"));
 
 	p->actionPlaybackStop = new QAction("Stop", this);
-	p->actionPlaybackStop->setIcon(style()->standardIcon(QStyle::SP_MediaStop));
+	p->actionPlaybackStop->setIcon(QIcon(":play-control-stop.png"));
 
 	p->actionPlaybackNext = new QAction("Play next track", this);
-	p->actionPlaybackNext->setIcon(style()->standardIcon(QStyle::SP_MediaSkipForward));
+	p->actionPlaybackNext->setIcon(QIcon(":play-control-next.png"));
 }
 
 void MainWindow::connectSignals()

@@ -16,6 +16,10 @@ class Player : public QObject
 public:
 	static Player * instance();
 
+public slots:
+	void stopTrackPlay();
+	void startTrackPlay(const QStringList & trackInfo);
+
 private:
 	struct Private;
 	Private * p;

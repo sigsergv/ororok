@@ -30,7 +30,7 @@ public:
 	QTabWidget * playlistsTabWidget();
 
 protected slots:
-	void playlistRequestedTrackPlay(const QStringList & trackInfo);
+	void requestTrackPlay(const QStringList & trackInfo);
 
 private:
 	struct Private;

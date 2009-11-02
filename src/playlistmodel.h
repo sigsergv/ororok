@@ -28,6 +28,8 @@ public:
 	bool dropMimeData(const QMimeData *data,
 			Qt::DropAction action, int row, int column, const QModelIndex &parent);
 	void setActiveTrack(int n);
+	bool setActiveTrack(const QStringList & trackInfo);
+	void startActiveTrack();
 	void stopActiveTrack();
 	ActiveTrackState activeTrackState();
 

@@ -11,6 +11,7 @@
 
 #include "playlistmanager.h"
 #include "playlistwidget.h"
+#include "player.h"
 
 PlaylistManager * PlaylistManager::inst = 0;
 
@@ -35,7 +36,7 @@ PlaylistWidget * PlaylistManager::playlist(const QString & name)
 		pw = new PlaylistWidget;
 		p->playlists[name] = pw;
 		connect(pw, SIGNAL(trackPlayRequsted(const QStringList &)), this,
-				SLOT(playlistRequestedTrackPlay(const QStringList &)));
+				SLOT(requestTrackPlay(const QStringList &)));
 	}
 
 	return p->playlists[name];
@@ -55,13 +56,23 @@ QTabWidget * PlaylistManager::playlistsTabWidget()
 	return p->playlistsTabWidget;
 }
 
-void PlaylistManager::playlistRequestedTrackPlay(const QStringList & trackInfo)
+void PlaylistManager::requestTrackPlay(const QStringList & trackInfo)
 {
-	// in this action we must do the following:
-	// 1. stop currently playing track by sending corresponding signals
-	// 2. request playing of requested track
+	Player * player = Player::instance();
 
-	qDebug() << "track play requested" << trackInfo;
+	// stop currently playing track
+	player->stopTrackPlay();
+
+	// notify all PlaylistWidget instances that track is stopped
+	// also tell that track is started, playlist should
+	// recognize track and mark it properly if required
+	Q_FOREACH (PlaylistWidget* pw, p->playlists) {
+		pw->stopActiveTrack();
+		player->startTrackPlay(trackInfo);
+		pw->startActiveTrack(trackInfo);
+	}
+
+	//qDebug() << "track play requested" << trackInfo;
 }
 
 PlaylistManager * PlaylistManager::instance()

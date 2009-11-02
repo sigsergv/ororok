@@ -18,6 +18,13 @@ const int ALBUM_ITEM_PADDING = 2;
 
 QString imagesCachePath();
 QString profilePath();
+
+/**
+ * generate unique (in the session) value
+ *
+ * @return
+ */
+int generateUid();
 }
 
 

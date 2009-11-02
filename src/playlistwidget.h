@@ -33,6 +33,14 @@ signals:
 
 public slots:
 	void trackStopped(const QStringList & trackInfo);
+	void stopActiveTrack();
+
+	/**
+	 * select specified track as active (if it belongs to playlist) and mark it as playing
+	 *
+	 * @param trackInfo
+	 */
+	void startActiveTrack(const QStringList & trackInfo);
 
 protected slots:
 	void playlistDoubleClicked(const QModelIndex & index);

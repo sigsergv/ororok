@@ -44,6 +44,7 @@ CODECFORTR = UTF-8
 
 QT += xml
 QT += sql
+QT += phonon
 
 win32 { 
 	debug:DESTDIR = ../debug/

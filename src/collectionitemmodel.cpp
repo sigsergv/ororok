@@ -115,6 +115,8 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 
 	if (ItemTrackInfoRole == role && CollectionTreeItem::Track == itemType) {
 		QStringList ti;
+		// four reserved positions
+		ti << QString() << QString() << QString() << QString();
 		ti << QString("%1/%2").arg(item->data.value("path").toString())
 				.arg(item->data.value("filename").toString());
 		ti << item->data.value("track", "0").toString();

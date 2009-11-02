@@ -8,6 +8,7 @@
 #include <QtDebug>
 #include <QtGui>
 
+#include "settings.h"
 #include "playlistmodel.h"
 #include "mimetrackinfo.h"
 
@@ -16,6 +17,7 @@ enum VisibleColumns{ VisColumnTitle=0, VisColumnArtist, VisColumnAlbum, VisColum
 
 struct PlaylistModel::Private
 {
+	int uid;
 	QList<QStringList> storage;
 	QList<int> storageMap; // key is a visible column number, value - index in the "storage" row
 	int activeTrackNum;
@@ -26,6 +28,7 @@ PlaylistModel::PlaylistModel(QObject * parent)
 	: QAbstractTableModel(parent)
 {
 	p = new Private;
+	p->uid = Ororok::generateUid();
 	p->activeTrackNum = -1;
 	p->activeTrackState = TrackStatePlaying;
 
@@ -66,7 +69,10 @@ QVariant PlaylistModel::data(const QModelIndex & index, int role) const
 	}
 
 	if (ItemTrackInfoRole == role) {
-		return p->storage[index.row()];
+		QStringList trackInfo = p->storage[index.row()];
+		trackInfo[Ororok::TrackPlaylistId] = QString("%1").arg(p->uid);
+		trackInfo[Ororok::TrackNumInPlaylist] = QString("%1").arg(index.row());
+		return trackInfo;
 	}
 
 	if (ItemTrackStateRole == role) {
@@ -227,6 +233,26 @@ void PlaylistModel::setActiveTrack(int n)
 	// emit data change signal
 	emit dataChanged(index(oldActiveTrackNum,0), index(oldActiveTrackNum,VISIBLE_COLUMNS_NUM-1));
 	emit dataChanged(index(n,0), index(n,VISIBLE_COLUMNS_NUM-1));
+}
+
+bool PlaylistModel::setActiveTrack(const QStringList & trackInfo)
+{
+	if (trackInfo[Ororok::TrackPlaylistId].toInt() != p->uid) {
+		// not our track, ignore
+		return false;
+	}
+
+	int n = trackInfo[Ororok::TrackNumInPlaylist].toInt();
+	setActiveTrack(n);
+	return true;
+}
+
+void PlaylistModel::startActiveTrack()
+{
+	p->activeTrackState = TrackStatePlaying;
+	if (p->activeTrackNum >= 0) {
+		emit dataChanged(index(p->activeTrackNum, 0), index(p->activeTrackNum, VISIBLE_COLUMNS_NUM-1));
+	}
 }
 
 void PlaylistModel::stopActiveTrack()

@@ -10,6 +10,7 @@
 #include "settings.h"
 
 static QString _imagesCachePath;
+static int lastUid = 0;
 
 namespace Ororok
 {
@@ -25,6 +26,12 @@ QString profilePath()
 	}
 
 	return path;
+}
+
+int generateUid()
+{
+	::lastUid++;
+	return ::lastUid;
 }
 
 QString imagesCachePath()

@@ -56,6 +56,7 @@
 <pathentry base-path="/usr/include/qt4" include="Qt3Support" kind="inc" path="" system="true"/>
 <pathentry base-path="/usr/include/qt4" include="QtDesigner" kind="inc" path="" system="true"/>
 <pathentry include="/usr/include/taglib" kind="inc" path="" system="true"/>
+<pathentry include="/usr/include/qt4/phonon" kind="inc" path="" system="true"/>
 <pathentry kind="src" path=""/>
 <pathentry kind="out" path=""/>
 </storageModule>

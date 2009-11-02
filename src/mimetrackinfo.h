@@ -13,9 +13,12 @@ namespace Ororok
 // trackinfo "structure" is usually filled in the file "collectionitemmodel.cpp",
 // in the function "data()"
 
-enum TrackInfoField {TrackFieldPath=0, TrackFieldNo, TrackFieldTitle, TrackFieldYear,
+enum TrackInfoField { TrackPlaylistId=0, TrackNumInPlaylist,
+	TrackReservedDataField3, TrackReservedDataField4,
+	TrackFieldPath, TrackFieldNo, TrackFieldTitle, TrackFieldYear,
 	TrackFieldAlbum, TrackFieldArtist, TrackFieldGenre, TrackFieldLength,
-	TrackInfoFieldsCount};
+	TrackInfoFieldsCount
+	};
 
 const QString TRACKS_MIME("application/x-ororok-tracks");
 }

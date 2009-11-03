@@ -15,6 +15,8 @@ int main(int argv, char *args[])
 {
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
     QApplication app(argv, args);
+    app.setApplicationName("Ororok");
+    app.setQuitOnLastWindowClosed(true);
 
     if (!QSqlDatabase::drivers().contains("QSQLITE")) {
         QMessageBox::critical(0, "Unable to load database", "This application needs the SQLITE driver");

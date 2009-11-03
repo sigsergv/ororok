@@ -6,6 +6,8 @@
  */
 #include <QtCore>
 #include <QtGui>
+#include <Phonon/SeekSlider>
+#include <Phonon/VolumeSlider>
 
 #include "mainwindow.h"
 #include "updatethread.h"
@@ -13,6 +15,7 @@
 #include "collectionitemmodel.h"
 #include "playlistwidget.h"
 #include "playlistmanager.h"
+#include "player.h"
 
 #include "ui_mainwindow.h"
 
@@ -31,7 +34,6 @@ struct MainWindow::Private
 	//QFrame * pbSection;
 
 	// statusbar widgets
-	QSlider * trackTimeSlider;
 	QLabel * statusMessageLabel;
 	QLabel * playlistInfoLabel;
 
@@ -40,6 +42,13 @@ struct MainWindow::Private
 	QAction * actionPlaybackPlayPause;
 	QAction * actionPlaybackStop;
 	QAction * actionPlaybackNext;
+
+	// track progress
+	Phonon::SeekSlider * trackProgressSlider;
+	QLabel * trackTimeLabel;
+
+	// volume
+	Phonon::VolumeSlider * volumeSlider;
 
 	PlaylistWidget * tmpPL;
 
@@ -79,23 +88,36 @@ MainWindow::MainWindow() :
 	p->playlistInfoLabel = new QLabel(this);
 	statusBar()->addWidget(p->playlistInfoLabel);
 
-	p->trackTimeSlider = new QSlider(Qt::Horizontal, this);
-	p->trackTimeSlider->setFocusPolicy(Qt::NoFocus);
-	p->trackTimeSlider->setMaximumWidth(200);
-	p->trackTimeSlider->setMinimumWidth(200);
-	statusBar()->addWidget(p->trackTimeSlider);
+	statusBar()->addWidget(new QLabel(this)); // placeholder
+
+	Player * player = Player::instance();
+
+	p->trackProgressSlider = player->seekSlider();
+	p->trackProgressSlider->setFocusPolicy(Qt::NoFocus);
+	//p->trackProgressSlider->setMaximumWidth(200);
+	//p->trackProgressSlider->setMinimumWidth(200);
+	p->trackTimeLabel = new QLabel(this);
+	p->volumeSlider = player->volumeSlider();
 
 	createActions();
 
 	// populate playControlsToolbar
-
 	p->ui.playControlsToolbar->addAction(p->actionPlaybackPrev);
 	p->ui.playControlsToolbar->addAction(p->actionPlaybackPlayPause);
 	p->ui.playControlsToolbar->addAction(p->actionPlaybackStop);
 	p->ui.playControlsToolbar->addAction(p->actionPlaybackNext);
 
+	// populate trackProgressToolbar
+	p->ui.trackProgressToolbar->layout()->setSpacing(3);
+	p->ui.trackProgressToolbar->addWidget(p->trackProgressSlider);
+	p->ui.trackProgressToolbar->addWidget(p->trackTimeLabel);
+
+	// populate volumeToolbar
+	p->ui.volumeToolbar->addWidget(p->volumeSlider);
+
 	connectSignals();
 	setWindowTitle(tr("Ororok — Music player and organizer"));
+	trackTimeChange(0, 0);
 }
 
 void MainWindow::rescanCollection()
@@ -160,6 +182,14 @@ void MainWindow::playbackPlayPause()
 	//qDebug() << trackInfo;
 }
 
+void MainWindow::trackTimeChange(qint64 time, qint64 totalTime)
+{
+	Q_UNUSED(totalTime);
+	// set track time label
+	QTime displayTime(0, (time / 60000) % 60, (time / 1000) % 60);
+	p->trackTimeLabel->setText(displayTime.toString("mm:ss"));
+}
+
 void MainWindow::createActions()
 {
 	p->actionPlaybackPrev = new QAction("Play previous track", this);
@@ -186,6 +216,10 @@ void MainWindow::connectSignals()
 	connect(p->ut, SIGNAL(progressPercentChanged(int)), this, SLOT(scanProgress(int)));
 
 	connect(p->actionPlaybackPlayPause, SIGNAL(triggered()), this, SLOT(playbackPlayPause()));
+
+	Player * player = Player::instance();
+
+	connect(player, SIGNAL(trackTimeChanged(qint64, qint64)), this, SLOT(trackTimeChange(qint64, qint64)));
 }
 
 QFrame * MainWindow::createStatusBarSection(QWidget * widget)

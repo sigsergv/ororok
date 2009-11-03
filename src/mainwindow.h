@@ -33,6 +33,7 @@ protected slots:
 	void scanProgress(int);
 
 	void playbackPlayPause();
+	void trackTimeChange(qint64 time, qint64 totalTime);
 
 protected:
 	QFrame * createStatusBarSection(QWidget * widget);

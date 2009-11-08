@@ -27,10 +27,12 @@ public:
 	QStringList mimeTypes() const;
 	bool dropMimeData(const QMimeData *data,
 			Qt::DropAction action, int row, int column, const QModelIndex &parent);
-	void setActiveTrack(int n);
-	bool setActiveTrack(const QStringList & trackInfo);
-	void startActiveTrack();
-	void stopActiveTrack();
+	void selectActiveTrack(int n);
+	bool selectActiveTrack(const QStringList & trackInfo);
+	void markActiveTrackStarted();
+	void markActiveTrackStopped();
+	void markActiveTrackPaused();
+	void markActiveTrackPlaying();
 	ActiveTrackState activeTrackState();
 
 protected:

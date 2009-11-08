@@ -58,6 +58,11 @@ PlaylistWidget::~PlaylistWidget()
 	delete p;
 }
 
+PlaylistModel * PlaylistWidget::model()
+{
+	return p->model;
+}
+
 QStringList PlaylistWidget::activeTrackInfo()
 {
 	// take selected track
@@ -71,27 +76,9 @@ QStringList PlaylistWidget::activeTrackInfo()
 	return trackInfo;
 }
 
-void PlaylistWidget::trackStopped(const QStringList & trackInfo)
-{
-	Q_UNUSED(trackInfo);
-	p->model->stopActiveTrack();
-}
-
-void PlaylistWidget::stopActiveTrack()
-{
-
-}
-
-void PlaylistWidget::startActiveTrack(const QStringList & trackInfo)
-{
-	// if track belongs to this playlist mark it as active
-	// otherwise ignore it
-	p->model->setActiveTrack(trackInfo);
-	p->model->startActiveTrack();
-}
-
 void PlaylistWidget::playlistDoubleClicked(const QModelIndex & index)
 {
 	QStringList trackInfo = index.data(PlaylistModel::ItemTrackInfoRole).toStringList();
+	//markActiveTrackStarted(trackInfo);
 	emit trackPlayRequsted(trackInfo);
 }

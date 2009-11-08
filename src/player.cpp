@@ -57,12 +57,27 @@ Phonon::VolumeSlider * Player::volumeSlider()
 	return p->volumeSlider;
 }
 
-void Player::stopTrackPlay()
+Phonon::State Player::state()
+{
+	return p->mediaObject->state();
+}
+
+void Player::stop()
 {
 
 }
 
-void Player::startTrackPlay(const QStringList & trackInfo)
+void Player::pause()
+{
+	p->mediaObject->pause();
+}
+
+void Player::play()
+{
+	p->mediaObject->play();
+}
+
+void Player::start(const QStringList & trackInfo)
 {
 	Phonon::MediaSource f(trackInfo[Ororok::TrackFieldPath]);
 	//qDebug() << "start track " << trackFile;

@@ -8,6 +8,7 @@
 #include <QtGui>
 #include <Phonon/SeekSlider>
 #include <Phonon/VolumeSlider>
+#include <Phonon/MediaObject>
 
 #include "mainwindow.h"
 #include "updatethread.h"
@@ -118,6 +119,9 @@ MainWindow::MainWindow() :
 	connectSignals();
 	setWindowTitle(tr("Ororok — Music player and organizer"));
 	trackTimeChange(0, 0);
+
+	// Debug code. test playlists
+	pm->playlist("new-playlist");
 }
 
 void MainWindow::rescanCollection()
@@ -175,11 +179,48 @@ void MainWindow::scanProgress(int progress)
 
 void MainWindow::playbackPlayPause()
 {
+	Player * player = Player::instance();
+	PlaylistManager * pm = PlaylistManager::instance();
+
+	// if player is playing something right now then pause play
+	if (Phonon::PlayingState == player->state()) {
+		// now mark track as paused in the corresponding playlist
+		pm->requestTrackPause();
+		return;
+	}
+
+	// if player is in paused state the resume playing
+	if (Phonon::PausedState == player->state()) {
+		// now mark active paused track as playing
+		pm->requestTrackResume();
+		return;
+	}
+
+	// if there is no playing/paused tracks fetch active track
+	// from the currently displayed playlist and play it
+
+
 	qDebug() << "play/pause";
 	// fetch active track info from current playlist
 	//QStringList trackInfo = p->tmpPL->activeTrackInfo();
 
 	//qDebug() << trackInfo;
+}
+
+void MainWindow::playbackPrev()
+{
+
+}
+
+void MainWindow::playbackStop()
+{
+
+}
+
+
+void MainWindow::playbackNext()
+{
+
 }
 
 void MainWindow::trackTimeChange(qint64 time, qint64 totalTime)
@@ -216,6 +257,9 @@ void MainWindow::connectSignals()
 	connect(p->ut, SIGNAL(progressPercentChanged(int)), this, SLOT(scanProgress(int)));
 
 	connect(p->actionPlaybackPlayPause, SIGNAL(triggered()), this, SLOT(playbackPlayPause()));
+	connect(p->actionPlaybackPrev, SIGNAL(triggered()), this, SLOT(playbackPrev()));
+	connect(p->actionPlaybackStop, SIGNAL(triggered()), this, SLOT(playbackStop()));
+	connect(p->actionPlaybackNext, SIGNAL(triggered()), this, SLOT(playbackNext()));
 
 	Player * player = Player::instance();
 

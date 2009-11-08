@@ -33,6 +33,9 @@ protected slots:
 	void scanProgress(int);
 
 	void playbackPlayPause();
+	void playbackPrev();
+	void playbackStop();
+	void playbackNext();
 	void trackTimeChange(qint64 time, qint64 totalTime);
 
 protected:

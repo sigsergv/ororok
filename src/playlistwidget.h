@@ -11,6 +11,7 @@
 #include <QWidget>
 
 struct QModelIndex;
+struct PlaylistModel;
 
 class PlaylistWidget : public QWidget
 {
@@ -27,20 +28,10 @@ public:
 	 * @return
 	 */
 	QStringList activeTrackInfo();
+	PlaylistModel * model();
 
 signals:
 	void trackPlayRequsted(const QStringList & trackInfo);
-
-public slots:
-	void trackStopped(const QStringList & trackInfo);
-	void stopActiveTrack();
-
-	/**
-	 * select specified track as active (if it belongs to playlist) and mark it as playing
-	 *
-	 * @param trackInfo
-	 */
-	void startActiveTrack(const QStringList & trackInfo);
 
 protected slots:
 	void playlistDoubleClicked(const QModelIndex & index);

@@ -26,10 +26,12 @@ public:
 	 * @param name name of the playlist
 	 * @return
 	 */
-	PlaylistWidget * playlist(const QString & name);
+	PlaylistWidget * playlist(const QString & name, const QString & title=QString());
 	QTabWidget * playlistsTabWidget();
 
-protected slots:
+public slots:
+	void requestTrackPause();
+	void requestTrackResume();
 	void requestTrackPlay(const QStringList & trackInfo);
 
 private:

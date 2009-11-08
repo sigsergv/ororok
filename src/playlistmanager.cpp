@@ -11,6 +11,7 @@
 
 #include "playlistmanager.h"
 #include "playlistwidget.h"
+#include "playlistmodel.h"
 #include "player.h"
 
 PlaylistManager * PlaylistManager::inst = 0;
@@ -27,14 +28,27 @@ PlaylistManager::PlaylistManager()
 	p->playlistsTabWidget = 0;
 }
 
-PlaylistWidget * PlaylistManager::playlist(const QString & name)
+PlaylistWidget * PlaylistManager::playlist(const QString & name, const QString & title)
 {
+	if (p->playlistsTabWidget == 0) {
+		return 0;
+	}
+
 	PlaylistWidget * pw = p->playlists.value(name, 0);
 	if (0 == pw) {
 		// create playlist widget, load tracks if required and
 		// add to the hash
+		qDebug() << "create playlist " << name;
+		QString playlistTitle(title);
+		if (playlistTitle.isEmpty()) {
+			playlistTitle = name;
+		}
+
 		pw = new PlaylistWidget;
 		p->playlists[name] = pw;
+		pw->setParent(p->playlistsTabWidget);
+		p->playlistsTabWidget->addTab(pw, playlistTitle);
+
 		connect(pw, SIGNAL(trackPlayRequsted(const QStringList &)), this,
 				SLOT(requestTrackPlay(const QStringList &)));
 	}
@@ -45,31 +59,83 @@ PlaylistWidget * PlaylistManager::playlist(const QString & name)
 QTabWidget * PlaylistManager::playlistsTabWidget()
 {
 	if (p->playlistsTabWidget == 0) {
-		QTabWidget * tw = new QTabWidget();
-
-		PlaylistWidget * defaultPlaylist = playlist("default");
-		defaultPlaylist->setParent(tw);
-		tw->addTab(defaultPlaylist, tr("Default"));
-		p->playlistsTabWidget = tw;
+		p->playlistsTabWidget = new QTabWidget();
+		playlist("default", tr("Default"));
 	}
 
 	return p->playlistsTabWidget;
 }
 
+void PlaylistManager::requestTrackPause()
+{
+	Player * player = Player::instance();
+
+	// find playlist that owns currently playing track and pause it
+	PlaylistWidget *  targetPlaylist = 0;
+
+	Q_FOREACH (PlaylistWidget * pw, p->playlists) {
+		if (PlaylistModel::TrackStatePlaying == pw->model()->activeTrackState()) {
+			targetPlaylist = pw;
+			break;
+		}
+	}
+
+	player->pause();
+
+	if (targetPlaylist) {
+		targetPlaylist->model()->markActiveTrackPaused();
+	}
+}
+
+void PlaylistManager::requestTrackResume()
+{
+	Player * player = Player::instance();
+
+	// find playlist that owns currently playing track and pause it
+	PlaylistWidget *  targetPlaylist = 0;
+
+	Q_FOREACH (PlaylistWidget * pw, p->playlists) {
+		if (PlaylistModel::TrackStatePaused == pw->model()->activeTrackState()) {
+			targetPlaylist = pw;
+			break;
+		}
+	}
+
+	player->play();
+
+	if (targetPlaylist) {
+		targetPlaylist->model()->markActiveTrackPlaying();
+	}
+}
+/**
+ * track play action requested
+ *
+ * @param trackInfo contains track specs, that track is owned by one of playlists
+ */
 void PlaylistManager::requestTrackPlay(const QStringList & trackInfo)
 {
 	Player * player = Player::instance();
 
-	// stop currently playing track
-	player->stopTrackPlay();
+	player->stop();
 
 	// notify all PlaylistWidget instances that track is stopped
 	// also tell that track is started, playlist should
 	// recognize track and mark it properly if required
-	Q_FOREACH (PlaylistWidget* pw, p->playlists) {
-		pw->stopActiveTrack();
-		player->startTrackPlay(trackInfo);
-		pw->startActiveTrack(trackInfo);
+	PlaylistWidget *  targetPlaylist = 0;
+
+	Q_FOREACH (PlaylistWidget * pw, p->playlists) {
+		pw->model()->markActiveTrackStopped();
+		if (pw->model()->selectActiveTrack(trackInfo)) {
+			targetPlaylist = pw;
+		}
+	}
+
+	// stop currently playing track and start new
+	player->start(trackInfo);
+
+	if (targetPlaylist) {
+		// TODO: check is track really started
+		targetPlaylist->model()->markActiveTrackStarted();
 	}
 
 	//qDebug() << "track play requested" << trackInfo;

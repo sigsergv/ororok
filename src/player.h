@@ -9,6 +9,7 @@
 #define PLAYER_H_
 
 #include <QObject>
+#include <Phonon/Global>
 
 namespace Phonon
 {
@@ -23,13 +24,16 @@ public:
 	static Player * instance();
 	Phonon::SeekSlider * seekSlider();
 	Phonon::VolumeSlider * volumeSlider();
+	Phonon::State state();
 
 signals:
 	void trackTimeChanged(qint64 time, qint64 totalTime);
 
 public slots:
-	void stopTrackPlay();
-	void startTrackPlay(const QStringList & trackInfo);
+	void stop();
+	void pause();
+	void play();
+	void start(const QStringList & trackInfo);
 
 protected slots:
 	void tick(qint64 time);

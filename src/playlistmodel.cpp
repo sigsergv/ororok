@@ -220,7 +220,7 @@ bool PlaylistModel::dropMimeData(const QMimeData *data,
 	return true;
 }
 
-void PlaylistModel::setActiveTrack(int n)
+void PlaylistModel::selectActiveTrack(int n)
 {
 	int oldActiveTrackNum = p->activeTrackNum;
 
@@ -235,7 +235,7 @@ void PlaylistModel::setActiveTrack(int n)
 	emit dataChanged(index(n,0), index(n,VISIBLE_COLUMNS_NUM-1));
 }
 
-bool PlaylistModel::setActiveTrack(const QStringList & trackInfo)
+bool PlaylistModel::selectActiveTrack(const QStringList & trackInfo)
 {
 	if (trackInfo[Ororok::TrackPlaylistId].toInt() != p->uid) {
 		// not our track, ignore
@@ -243,11 +243,11 @@ bool PlaylistModel::setActiveTrack(const QStringList & trackInfo)
 	}
 
 	int n = trackInfo[Ororok::TrackNumInPlaylist].toInt();
-	setActiveTrack(n);
+	selectActiveTrack(n);
 	return true;
 }
 
-void PlaylistModel::startActiveTrack()
+void PlaylistModel::markActiveTrackStarted()
 {
 	p->activeTrackState = TrackStatePlaying;
 	if (p->activeTrackNum >= 0) {
@@ -255,14 +255,30 @@ void PlaylistModel::startActiveTrack()
 	}
 }
 
-void PlaylistModel::stopActiveTrack()
+void PlaylistModel::markActiveTrackStopped()
 {
 	p->activeTrackState = TrackStateStopped;
 	if (p->activeTrackNum >= 0) {
 		emit dataChanged(index(p->activeTrackNum, 0), index(p->activeTrackNum, VISIBLE_COLUMNS_NUM-1));
 	}
+	p->activeTrackNum = -1;
 }
 
+void PlaylistModel::markActiveTrackPaused()
+{
+	p->activeTrackState = TrackStatePaused;
+	if (p->activeTrackNum >= 0) {
+		emit dataChanged(index(p->activeTrackNum, 0), index(p->activeTrackNum, VISIBLE_COLUMNS_NUM-1));
+	}
+}
+
+void PlaylistModel::markActiveTrackPlaying()
+{
+	p->activeTrackState = TrackStatePlaying;
+	if (p->activeTrackNum >= 0) {
+		emit dataChanged(index(p->activeTrackNum, 0), index(p->activeTrackNum, VISIBLE_COLUMNS_NUM-1));
+	}
+}
 PlaylistModel::ActiveTrackState PlaylistModel::activeTrackState()
 {
 	return p->activeTrackState;

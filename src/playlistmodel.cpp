@@ -77,7 +77,7 @@ QVariant PlaylistModel::data(const QModelIndex & index, int role) const
 
 	if (ItemTrackStateRole == role) {
 		if (index.row() != p->activeTrackNum) {
-			return TrackStateNotSelected;
+			return TrackStateNotActive;
 		}
 		return p->activeTrackState;
 	}
@@ -245,6 +245,29 @@ bool PlaylistModel::selectActiveTrack(const QStringList & trackInfo)
 	int n = trackInfo[Ororok::TrackNumInPlaylist].toInt();
 	selectActiveTrack(n);
 	return true;
+}
+
+QStringList PlaylistModel::activeTrack()
+{
+	QStringList trackInfo;
+	if (p->activeTrackNum >= 0) {
+		trackInfo = index(p->activeTrackNum, 0).data(ItemTrackInfoRole).toStringList();
+	} else {
+		// take first track
+		trackInfo = index(0, 0).data(ItemTrackInfoRole).toStringList();
+	}
+	return trackInfo;
+}
+
+QStringList PlaylistModel::nextAfterActiveTrack()
+{
+	QStringList trackInfo;
+
+	if (p->activeTrackNum >= 0) {
+		trackInfo = index(p->activeTrackNum+1, 0).data(ItemTrackInfoRole).toStringList();;
+	}
+
+	return trackInfo;
 }
 
 void PlaylistModel::markActiveTrackStarted()

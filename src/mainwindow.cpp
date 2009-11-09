@@ -196,9 +196,9 @@ void MainWindow::playbackPlayPause()
 		return;
 	}
 
-	// if there is no playing/paused tracks fetch active track
-	// from the currently displayed playlist and play it
-
+	// neither playing, nor paused
+	// so start new
+	pm->requestTrackPlay();
 
 	qDebug() << "play/pause";
 	// fetch active track info from current playlist
@@ -214,9 +214,10 @@ void MainWindow::playbackPrev()
 
 void MainWindow::playbackStop()
 {
+	PlaylistManager * pm = PlaylistManager::instance();
 
+	pm->requestTrackStop();
 }
-
 
 void MainWindow::playbackNext()
 {
@@ -229,6 +230,15 @@ void MainWindow::trackTimeChange(qint64 time, qint64 totalTime)
 	// set track time label
 	QTime displayTime(0, (time / 60000) % 60, (time / 1000) % 60);
 	p->trackTimeLabel->setText(displayTime.toString("mm:ss"));
+}
+
+void MainWindow::playerRequestedNextTrack()
+{
+	Player * player = Player::instance();
+	PlaylistManager * pm = PlaylistManager::instance();
+
+	QStringList nextTrackInfo = pm->fetchNextTrack();
+	player->enqueue(nextTrackInfo);
 }
 
 void MainWindow::createActions()
@@ -264,6 +274,7 @@ void MainWindow::connectSignals()
 	Player * player = Player::instance();
 
 	connect(player, SIGNAL(trackTimeChanged(qint64, qint64)), this, SLOT(trackTimeChange(qint64, qint64)));
+	connect(player, SIGNAL(nextTrackNeeded()), this, SLOT(playerRequestedNextTrack()));
 }
 
 QFrame * MainWindow::createStatusBarSection(QWidget * widget)

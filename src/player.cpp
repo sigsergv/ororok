@@ -24,6 +24,8 @@ struct Player::Private
 	QList<Phonon::MediaSource> mediaSources;
 	Phonon::SeekSlider * seekSlider;
 	Phonon::VolumeSlider * volumeSlider;
+
+	QStringList nextTrack;
 };
 
 Player::Player()
@@ -43,6 +45,9 @@ Player::Player()
 	// connect signals: tick, stateChanged etc
 	p->mediaObject->setTickInterval(1000);
 	connect(p->mediaObject, SIGNAL(tick(qint64)), this, SLOT(tick(qint64)));
+	connect(p->mediaObject, SIGNAL(aboutToFinish()), this, SLOT(almostFinished()));
+	connect(p->mediaObject, SIGNAL(currentSourceChanged(const Phonon::MediaSource &)),
+			this, SLOT(sourceShanged(const Phonon::MediaSource &)));
 
 	Phonon::createPath(p->mediaObject, p->audioOutput);
 }
@@ -64,7 +69,7 @@ Phonon::State Player::state()
 
 void Player::stop()
 {
-
+	p->mediaObject->stop();
 }
 
 void Player::pause()
@@ -80,10 +85,20 @@ void Player::play()
 void Player::start(const QStringList & trackInfo)
 {
 	Phonon::MediaSource f(trackInfo[Ororok::TrackFieldPath]);
+	f.setAutoDelete(true);
 	//qDebug() << "start track " << trackFile;
 	p->mediaObject->clear();
 	p->mediaObject->enqueue(f);
 	p->mediaObject->play();
+	p->nextTrack.clear();
+}
+
+void Player::enqueue(const QStringList & trackInfo)
+{
+	Phonon::MediaSource f(trackInfo[Ororok::TrackFieldPath]);
+	f.setAutoDelete(true);
+	p->mediaObject->enqueue(f);
+	p->nextTrack = trackInfo;
 }
 
 void Player::tick(qint64 time)
@@ -91,6 +106,20 @@ void Player::tick(qint64 time)
 	qint64 totalTime = p->mediaObject->totalTime();
 	// emit signal with track time
 	emit trackTimeChanged(time, totalTime);
+}
+
+void Player::almostFinished()
+{
+	emit nextTrackNeeded();
+}
+
+void Player::sourceShanged(const Phonon::MediaSource &)
+{
+	if (!p->nextTrack.isEmpty()) {
+		qDebug() << "playing next track, emit signal";
+		emit trackChanged(p->nextTrack);
+	}
+	p->nextTrack.clear();
 }
 
 Player * Player::instance()

@@ -30,6 +30,7 @@ int main(int argv, char *args[])
     }
 
     MainWindow win;
+    QApplication::setActiveWindow(&win);
     win.show();
     // maximize, for debug purposes
     //win.showMaximized();

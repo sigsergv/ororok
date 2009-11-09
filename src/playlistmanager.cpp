@@ -26,6 +26,10 @@ PlaylistManager::PlaylistManager()
 {
 	p = new Private;
 	p->playlistsTabWidget = 0;
+
+	Player * player = Player::instance();
+	connect(player, SIGNAL(trackChanged(const QStringList &)),
+			this, SLOT(trackPlayingStarted(const QStringList &)));
 }
 
 PlaylistWidget * PlaylistManager::playlist(const QString & name, const QString & title)
@@ -64,6 +68,32 @@ QTabWidget * PlaylistManager::playlistsTabWidget()
 	}
 
 	return p->playlistsTabWidget;
+}
+
+/**
+ * fetch next track from the current playlist
+ *
+ * @return next track spec or empty list if there is no one
+ */
+QStringList PlaylistManager::fetchNextTrack()
+{
+	QStringList trackInfo;
+
+	// find playlist that owns currently playing track
+	PlaylistModel * model = 0;
+
+	Q_FOREACH (PlaylistWidget * pw, p->playlists) {
+		if (PlaylistModel::TrackStatePlaying == pw->model()->activeTrackState()) {
+			model = pw->model();
+			break;
+		}
+	}
+
+	if (model) {
+		trackInfo = model->nextAfterActiveTrack();
+	}
+
+	return trackInfo;
 }
 
 void PlaylistManager::requestTrackPause()
@@ -107,6 +137,20 @@ void PlaylistManager::requestTrackResume()
 		targetPlaylist->model()->markActiveTrackPlaying();
 	}
 }
+
+/**
+ *
+ */
+void PlaylistManager::requestTrackStop()
+{
+	Player * player = Player::instance();
+
+	player->stop();
+
+	Q_FOREACH (PlaylistWidget * pw, p->playlists) {
+		pw->model()->markActiveTrackStopped();
+	}
+}
 /**
  * track play action requested
  *
@@ -139,6 +183,60 @@ void PlaylistManager::requestTrackPlay(const QStringList & trackInfo)
 	}
 
 	//qDebug() << "track play requested" << trackInfo;
+}
+
+/**
+ * play current playlist
+ */
+void PlaylistManager::requestTrackPlay()
+{
+	// first stop all
+	Player * player = Player::instance();
+	player->stop();
+
+	// take currently opened playlist
+	PlaylistWidget * targetPlaylist =
+			qobject_cast<PlaylistWidget*>(p->playlistsTabWidget->currentWidget());
+	PlaylistModel * model = targetPlaylist->model();
+
+	if (model->rowCount() == 0) {
+		QMessageBox::warning(QApplication::activeWindow(), tr("Error"),
+				tr("No tracks found in the current playlist"));
+		return;
+	}
+
+	QStringList activeTrack = model->activeTrack();
+	if (activeTrack.isEmpty()) {
+		QMessageBox::warning(QApplication::activeWindow(), tr("Error"),
+				tr("Playlist returned invalid track"));
+		return;
+	}
+
+	model->selectActiveTrack(activeTrack);
+	player->start(activeTrack);
+	model->markActiveTrackPlaying();
+
+}
+
+/**
+ * player just started new track and reported about that
+ *
+ * @param trackInfo
+ */
+void PlaylistManager::trackPlayingStarted(const QStringList & trackInfo)
+{
+	PlaylistModel * model = 0;
+
+	Q_FOREACH (PlaylistWidget * pw, p->playlists) {
+		//pw->model()->markActiveTrackStopped();
+		if (pw->model()->selectActiveTrack(trackInfo)) {
+			model = pw->model();
+		}
+	}
+
+	if (model) {
+		model->markActiveTrackPlaying();
+	}
 }
 
 PlaylistManager * PlaylistManager::instance()

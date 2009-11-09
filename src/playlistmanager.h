@@ -28,11 +28,15 @@ public:
 	 */
 	PlaylistWidget * playlist(const QString & name, const QString & title=QString());
 	QTabWidget * playlistsTabWidget();
+	QStringList fetchNextTrack();
 
 public slots:
 	void requestTrackPause();
 	void requestTrackResume();
+	void requestTrackStop();
 	void requestTrackPlay(const QStringList & trackInfo);
+	void requestTrackPlay();
+	void trackPlayingStarted(const QStringList & trackInfo);
 
 private:
 	struct Private;

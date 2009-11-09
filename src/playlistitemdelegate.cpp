@@ -52,7 +52,7 @@ void PlaylistItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
 			static_cast<PlaylistModel::ActiveTrackState>(
 					index.data(PlaylistModel::ItemTrackStateRole).toInt());
 
-	if (PlaylistModel::TrackStateNotSelected != state) {
+	if (PlaylistModel::TrackStateNotActive != state) {
 		// draw custom background
 		if (option.state & QStyle::State_Selected) {
 			painter->setPen(QPen(QApplication::palette().color(QPalette::HighlightedText)));
@@ -75,7 +75,7 @@ void PlaylistItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
 			case PlaylistModel::TrackStateStopped:
 				stateImage.load(":track-state-stopped.png");
 				break;
-			case PlaylistModel::TrackStateNotSelected:
+			case PlaylistModel::TrackStateNotActive:
 				break;
 			}
 
@@ -91,7 +91,7 @@ void PlaylistItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
 
 		}
 		// adjust rect for text
-		displayRect.adjust(0, 2, 0, 0);
+		//displayRect.adjust(0, 2, 0, 0);
 
 		// set font style: italic
 		QFont f = painter->font();
@@ -109,15 +109,16 @@ void PlaylistItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
 
 	painter->restore();
 }
-
+/*
 QSize PlaylistItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
 	QSize s = QItemDelegate::sizeHint(option, index);
 
-	if (index.data(PlaylistModel::ItemTrackStateRole).toBool()) {
+	if (PlaylistModel::TrackStateNotActive != index.data(PlaylistModel::ItemTrackStateRole).toInt()) {
 		// increase height of the active line
-		s += QSize(0, 4);
+		//s += QSize(0, 4);
 	}
 
 	return s;
 }
+*/

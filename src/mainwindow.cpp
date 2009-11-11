@@ -14,6 +14,7 @@
 #include "updatethread.h"
 #include "collectiontreewidget.h"
 #include "collectionitemmodel.h"
+#include "settingsdialog.h"
 #include "playlistwidget.h"
 #include "playlistmanager.h"
 #include "player.h"
@@ -204,12 +205,17 @@ void MainWindow::playbackPlayPause()
 	// fetch active track info from current playlist
 	//QStringList trackInfo = p->tmpPL->activeTrackInfo();
 
+
 	//qDebug() << trackInfo;
 }
 
 void MainWindow::playbackPrev()
 {
-
+	PlaylistManager * pm = PlaylistManager::instance();
+	QStringList prevTrackInfo = pm->fetchPrevTrack();
+	if (!prevTrackInfo.isEmpty()) {
+		pm->requestTrackPlay(prevTrackInfo);
+	}
 }
 
 void MainWindow::playbackStop()
@@ -221,7 +227,11 @@ void MainWindow::playbackStop()
 
 void MainWindow::playbackNext()
 {
-
+	PlaylistManager * pm = PlaylistManager::instance();
+	QStringList nextTrackInfo = pm->fetchNextTrack();
+	if (!nextTrackInfo.isEmpty()) {
+		pm->requestTrackPlay(nextTrackInfo);
+	}
 }
 
 void MainWindow::trackTimeChange(qint64 time, qint64 totalTime)
@@ -239,6 +249,14 @@ void MainWindow::playerRequestedNextTrack()
 
 	QStringList nextTrackInfo = pm->fetchNextTrack();
 	player->enqueue(nextTrackInfo);
+}
+
+void MainWindow::editSettings()
+{
+	// open settings edit dialog
+	SettingsDialog d(this);
+	d.exec();
+
 }
 
 void MainWindow::createActions()
@@ -261,6 +279,7 @@ void MainWindow::connectSignals()
 	connect(p->ui.actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 	connect(p->ui.actionRescanCollection, SIGNAL(triggered()), this, SLOT(rescanCollection()));
 	connect(p->ui.actionReloadCollectionTree, SIGNAL(triggered()), this, SLOT(refreshCollectionTree()));
+	connect(p->ui.actionEditSettings, SIGNAL(triggered()), this, SLOT(editSettings()));
 	connect(p->ut, SIGNAL(started()), this, SLOT(updateThreadStarted()));
 	connect(p->ut, SIGNAL(finished()), this, SLOT(updateThreadFinished()));
 	connect(p->ut, SIGNAL(terminated()), this, SLOT(updateThreadTerminated()));

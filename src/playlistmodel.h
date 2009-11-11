@@ -30,7 +30,8 @@ public:
 	void selectActiveTrack(int n);
 	bool selectActiveTrack(const QStringList & trackInfo);
 	QStringList activeTrack();
-	QStringList nextAfterActiveTrack();
+	QStringList trackAfterActive();
+	QStringList trackBeforeActive();
 	void markActiveTrackStarted();
 	void markActiveTrackStopped();
 	void markActiveTrackPaused();

@@ -29,6 +29,7 @@ public:
 	PlaylistWidget * playlist(const QString & name, const QString & title=QString());
 	QTabWidget * playlistsTabWidget();
 	QStringList fetchNextTrack();
+	QStringList fetchPrevTrack();
 
 public slots:
 	void requestTrackPause();

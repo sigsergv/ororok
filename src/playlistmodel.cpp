@@ -259,12 +259,23 @@ QStringList PlaylistModel::activeTrack()
 	return trackInfo;
 }
 
-QStringList PlaylistModel::nextAfterActiveTrack()
+QStringList PlaylistModel::trackAfterActive()
 {
 	QStringList trackInfo;
 
 	if (p->activeTrackNum >= 0) {
 		trackInfo = index(p->activeTrackNum+1, 0).data(ItemTrackInfoRole).toStringList();;
+	}
+
+	return trackInfo;
+}
+
+QStringList PlaylistModel::trackBeforeActive()
+{
+	QStringList trackInfo;
+
+	if (p->activeTrackNum >= 0) {
+		trackInfo = index(p->activeTrackNum-1, 0).data(ItemTrackInfoRole).toStringList();;
 	}
 
 	return trackInfo;

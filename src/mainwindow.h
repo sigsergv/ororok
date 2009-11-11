@@ -38,6 +38,7 @@ protected slots:
 	void playbackNext();
 	void trackTimeChange(qint64 time, qint64 totalTime);
 	void playerRequestedNextTrack();
+	void editSettings();
 
 protected:
 	QFrame * createStatusBarSection(QWidget * widget);

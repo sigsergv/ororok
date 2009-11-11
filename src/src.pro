@@ -14,7 +14,8 @@ HEADERS += mainwindow.h \
 	mimetrackinfo.h \
 	playlistitemdelegate.h \
 	player.h \
-	playlistmanager.h
+	playlistmanager.h \
+	settingsdialog.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -33,10 +34,12 @@ SOURCES += main.cpp \
 	mimetrackinfo.cpp \
 	playlistitemdelegate.cpp \
 	player.cpp \
-	playlistmanager.cpp
+	playlistmanager.cpp \
+	settingsdialog.cpp
 
 FORMS += mainwindow.ui \
-	testwidget.ui
+	testwidget.ui \
+	settingsdialog.ui
 
 RESOURCES = ../resources/application.qrc
 TARGET = ororok

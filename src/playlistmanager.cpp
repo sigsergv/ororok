@@ -90,7 +90,28 @@ QStringList PlaylistManager::fetchNextTrack()
 	}
 
 	if (model) {
-		trackInfo = model->nextAfterActiveTrack();
+		trackInfo = model->trackAfterActive();
+	}
+
+	return trackInfo;
+}
+
+QStringList PlaylistManager::fetchPrevTrack()
+{
+	QStringList trackInfo;
+
+	// find playlist that owns currently playing track
+	PlaylistModel * model = 0;
+
+	Q_FOREACH (PlaylistWidget * pw, p->playlists) {
+		if (PlaylistModel::TrackStatePlaying == pw->model()->activeTrackState()) {
+			model = pw->model();
+			break;
+		}
+	}
+
+	if (model) {
+		trackInfo = model->trackBeforeActive();
 	}
 
 	return trackInfo;

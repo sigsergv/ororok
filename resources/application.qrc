@@ -7,5 +7,9 @@
   <file>track-state-playing.png</file>
   <file>track-state-paused.png</file>
   <file>track-state-stopped.png</file>
+  <file>preferences-system-network.png</file>
+  <file>preferences-other.png</file>
+  <file>tools-media-optical-format.png</file>
+  <file>server-database.png</file>
 </qresource>
 </RCC>

@@ -426,7 +426,6 @@ void UpdateThread::run() {
 	p->artistsHash.clear();
 	if (!p->query->exec("SELECT id, name FROM artist")) {
 		p->errorCode = UnableToLoadArtists;
-		p->db->rollback();
 		return;
 	}
 	while (p->query->next()) {
@@ -436,7 +435,6 @@ void UpdateThread::run() {
 	p->genresHash.clear();
 	if (!p->query->exec("SELECT id, name FROM genre")) {
 		p->errorCode = UnableToLoadGenres;
-		p->db->rollback();
 		return;
 	}
 	while (p->query->next()) {
@@ -447,7 +445,7 @@ void UpdateThread::run() {
 
 	QStringList collections;
 
-	if (!p->query->exec("SELECT path FROM collection WHERE enabled=1")) {
+	if (!p->query->exec("SELECT path FROM collection")) {
 		p->errorCode = GetCollectionsListError;
 		p->db->rollback();
 		return;

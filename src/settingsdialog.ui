@@ -60,28 +60,101 @@
     </widget>
    </widget>
    <widget class="QWidget" name="page_3">
-    <widget class="QListWidget" name="listWidget">
+    <widget class="QGroupBox" name="groupBox">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>341</width>
-       <height>181</height>
+       <x>0</x>
+       <y>0</y>
+       <width>272</width>
+       <height>262</height>
       </rect>
      </property>
-    </widget>
-    <widget class="QLabel" name="label_4">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>251</width>
-       <height>16</height>
-      </rect>
+     <property name="toolTip">
+      <string/>
      </property>
-     <property name="text">
-      <string>Collections settings</string>
+     <property name="title">
+      <string>Collection directories</string>
      </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="addCollectionDirButton">
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="toolTip">
+           <string>Add new collection directory</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources/application.qrc">
+            <normaloff>:/list-add.png</normaloff>:/list-add.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>22</width>
+            <height>22</height>
+           </size>
+          </property>
+          <property name="autoDefault">
+           <bool>false</bool>
+          </property>
+          <property name="flat">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="removeCollectionDirButton">
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="toolTip">
+           <string>Remove directory from collection</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="../resources/application.qrc">
+            <normaloff>:/list-remove.png</normaloff>:/list-remove.png</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>22</width>
+            <height>22</height>
+           </size>
+          </property>
+          <property name="autoDefault">
+           <bool>false</bool>
+          </property>
+          <property name="flat">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QListWidget" name="collectionsListWidget"/>
+      </item>
+     </layout>
     </widget>
    </widget>
    <widget class="QWidget" name="page_4">
@@ -222,7 +295,7 @@
    </item>
    <item row="1" column="0">
     <property name="text">
-     <string>Collections</string>
+     <string>Collection</string>
     </property>
    </item>
    <item row="2" column="0">
@@ -237,7 +310,9 @@
    </item>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources/application.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

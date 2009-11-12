@@ -59,9 +59,7 @@ static const QString TABLE_SQL_DFN_TRACK_INDEX_DIR_ID("CREATE INDEX IF NOT EXIST
 
 static const QString TABLE_SQL_DFN_COLLECTION("CREATE TABLE collection ("
 		"id INTEGER PRIMARY KEY, "
-		"name VARCHAR, " // human readable collection name, title
-		"path VARCHAR, " // path to collection root directory
-		"enabled INTEGER " // collection state (1|0), if enabled then collection will be scanned for updates
+		"path VARCHAR " // path to collection root directory
 		")");
 
 static const QString TABLE_SQL_DFN_DIR("CREATE TABLE dir ("
@@ -138,6 +136,7 @@ QSqlError initDb() {
 			return q.lastError();
 		}
 
+		/*
 		// init collection with come data
 		if (!q.exec(
 				//"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music/Rock', 1)")) {
@@ -146,6 +145,7 @@ QSqlError initDb() {
 				//"INSERT INTO collection VALUES (3, 'collection 1', '/share/gate/data/music', 1)")) {
 			return q.lastError();
 		}
+		*/
 	}
 
 	return QSqlError();

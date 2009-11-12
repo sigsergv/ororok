@@ -11,5 +11,7 @@
   <file>preferences-other.png</file>
   <file>tools-media-optical-format.png</file>
   <file>server-database.png</file>
+  <file>list-add.png</file>
+  <file>list-remove.png</file>
 </qresource>
 </RCC>

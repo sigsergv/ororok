@@ -1,4 +1,5 @@
 HEADERS += mainwindow.h \
+	application.h \
 	db.h \
 	updatethread.h \
 	formats.h \
@@ -19,6 +20,7 @@ HEADERS += mainwindow.h \
 
 SOURCES += main.cpp \
     mainwindow.cpp \
+    application.cpp \
     db.cpp \
     updatethread.cpp \
     formats.cpp \

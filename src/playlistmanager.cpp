@@ -10,6 +10,7 @@
 #include <QtDebug>
 
 #include "playlistmanager.h"
+#include "application.h"
 #include "playlistwidget.h"
 #include "playlistmodel.h"
 #include "player.h"
@@ -221,15 +222,13 @@ void PlaylistManager::requestTrackPlay()
 	PlaylistModel * model = targetPlaylist->model();
 
 	if (model->rowCount() == 0) {
-		QMessageBox::warning(QApplication::activeWindow(), tr("Error"),
-				tr("No tracks found in the current playlist"));
+		Ororok::warning(tr("Error"), tr("No tracks found in the current playlist"));
 		return;
 	}
 
 	QStringList activeTrack = model->activeTrack();
 	if (activeTrack.isEmpty()) {
-		QMessageBox::warning(QApplication::activeWindow(), tr("Error"),
-				tr("Playlist returned invalid track"));
+		Ororok::warning(tr("Error"), tr("Playlist returned invalid track"));
 		return;
 	}
 

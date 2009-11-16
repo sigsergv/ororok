@@ -10,6 +10,8 @@
 
 #include <QString>
 
+struct QSettings;
+
 namespace Ororok
 {
 
@@ -18,6 +20,8 @@ const int ALBUM_ITEM_PADDING = 2;
 
 QString imagesCachePath();
 QString profilePath();
+void initSettings();
+QSettings * settings();
 
 /**
  * generate unique (in the session) value

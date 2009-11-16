@@ -11,6 +11,7 @@
 #include <Phonon/MediaObject>
 
 #include "mainwindow.h"
+#include "settings.h"
 #include "updatethread.h"
 #include "collectiontreewidget.h"
 #include "collectionitemmodel.h"
@@ -120,6 +121,17 @@ MainWindow::MainWindow() :
 	connectSignals();
 	setWindowTitle(tr("Ororok — Music player and organizer"));
 	trackTimeChange(0, 0);
+
+	// load window geometry from the settings
+
+	QSettings * settings = Ororok::settings();
+	settings->beginGroup("MainWindow");
+	restoreGeometry(settings->value("geometry").toByteArray());
+	restoreState(settings->value("state").toByteArray());
+	settings->endGroup();
+
+	setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
+	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
 
 	// Debug code. test playlists
 	pm->playlist("new-playlist");
@@ -296,6 +308,8 @@ void MainWindow::connectSignals()
 	connect(player, SIGNAL(nextTrackNeeded()), this, SLOT(playerRequestedNextTrack()));
 }
 
+
+
 QFrame * MainWindow::createStatusBarSection(QWidget * widget)
 {
 	QFrame * f = new QFrame(this);
@@ -307,4 +321,37 @@ QFrame * MainWindow::createStatusBarSection(QWidget * widget)
 	layout->addWidget(widget);
 
 	return f;
+}
+
+void MainWindow::moveEvent(QMoveEvent * event)
+{
+	QSettings * settings = Ororok::settings();
+	settings->beginGroup("MainWindow");
+	settings->setValue("geometry", saveGeometry());
+	settings->setValue("state", saveState());
+	settings->endGroup();
+	event->accept();
+}
+
+void MainWindow::resizeEvent(QResizeEvent * event)
+{
+	QSettings * settings = Ororok::settings();
+	settings->beginGroup("MainWindow");
+	settings->setValue("geometry", saveGeometry());
+	settings->setValue("state", saveState());
+	settings->endGroup();
+	event->accept();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+	QSettings * settings = Ororok::settings();
+
+	// write layout settings and syns
+	settings->beginGroup("MainWindow");
+	settings->setValue("geometry", saveGeometry());
+	settings->setValue("state", saveState());
+	settings->endGroup();
+	settings->sync();
+	event->accept();
 }

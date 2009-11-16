@@ -42,6 +42,9 @@ protected slots:
 
 protected:
 	QFrame * createStatusBarSection(QWidget * widget);
+	void moveEvent(QMoveEvent * event);
+	void resizeEvent(QResizeEvent * event);
+	void closeEvent(QCloseEvent *event);
 
 private:
 	struct Private;

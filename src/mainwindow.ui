@@ -140,6 +140,11 @@
     <string>&amp;Configure Ororok</string>
    </property>
   </action>
+  <action name="actionSaveGeometry">
+   <property name="text">
+    <string>Save geometry</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

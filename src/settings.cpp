@@ -11,9 +11,27 @@
 
 static QString _imagesCachePath;
 static int lastUid = 0;
+static QSettings * _settings = 0;
 
 namespace Ororok
 {
+
+
+void initSettings()
+{
+	QCoreApplication::setApplicationName("Ororok");
+	QCoreApplication::setOrganizationName("regolit.com");
+	QCoreApplication::setOrganizationDomain("ororok.regolit.com");
+
+}
+
+QSettings * settings()
+{
+	if (0 == _settings) {
+		_settings = new QSettings(profilePath()+"/ororok.ini", QSettings::IniFormat);
+	}
+	return _settings;
+}
 
 QString profilePath()
 {

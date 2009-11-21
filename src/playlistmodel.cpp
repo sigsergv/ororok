@@ -7,6 +7,7 @@
 
 #include <QtDebug>
 #include <QtGui>
+#include <QtSql>
 
 #include "settings.h"
 #include "playlistmodel.h"
@@ -70,8 +71,8 @@ QVariant PlaylistModel::data(const QModelIndex & index, int role) const
 
 	if (ItemTrackInfoRole == role) {
 		QStringList trackInfo = p->storage[index.row()];
-		trackInfo[Ororok::TrackPlaylistId] = QString("%1").arg(p->uid);
-		trackInfo[Ororok::TrackNumInPlaylist] = QString("%1").arg(index.row());
+		trackInfo[Ororok::TrackPlaylistId] = QString::number(p->uid);
+		trackInfo[Ororok::TrackNumInPlaylist] = QString::number(index.row());;
 		return trackInfo;
 	}
 
@@ -168,7 +169,7 @@ Qt::ItemFlags PlaylistModel::flags(const QModelIndex & index) const
 QStringList PlaylistModel::mimeTypes() const
 {
 	QStringList mt;
-	mt << Ororok::TRACKS_MIME;
+	mt << Ororok::TRACKS_COLLECTION_IDS_MIME;
 	//mt << "text/uri-list";
 
 	return mt;
@@ -181,7 +182,7 @@ bool PlaylistModel::dropMimeData(const QMimeData *data,
 		return true;
 	}
 
-	if (!data->hasFormat(Ororok::TRACKS_MIME)) {
+	if (!data->hasFormat(Ororok::TRACKS_COLLECTION_IDS_MIME)) {
 		return false;
 	}
 
@@ -198,20 +199,59 @@ bool PlaylistModel::dropMimeData(const QMimeData *data,
 		beginRow = rowCount(QModelIndex());
 	}
 
-	QByteArray encodedData = data->data(Ororok::TRACKS_MIME);
+	QByteArray encodedData = data->data(Ororok::TRACKS_COLLECTION_IDS_MIME);
+	qDebug() << encodedData;
 	QDataStream stream(&encodedData, QIODevice::ReadOnly);
+	QStringList newItemsIds;
 	QList<QStringList> newItems;
-	int rows = 0;
 
 	while (!stream.atEnd()) {
+		int id;
+		stream >> id;
+		newItemsIds << QString::number(id);
+	}
+
+	QSqlDatabase db = QSqlDatabase::database();
+	QSqlQuery query(db);
+
+	QString queryStr = QString("SELECT t.id, t.title, t.filename, t.track, t.length, g.name, d.path, " // 0-6
+			"ar.name, t.year, al.name, t.length "
+			"FROM track t "
+			"LEFT JOIN genre g ON g.id=t.genre_id "
+			"LEFT JOIN artist ar ON ar.id=t.artist_id "
+			"LEFT JOIN album al ON al.id=t.album_id "
+			"LEFT JOIN dir d ON d.id=t.dir_id WHERE t.id IN (%1)").arg(newItemsIds.join(", "));
+
+	if (!query.exec(queryStr)) {
+		// TODO: display warning or something like
+		qDebug() << "query failed:" << query.lastError().text();
+		return false;
+	}
+
+	int rows = 0;
+	while (query.next()) {
 		QStringList ti;
-		stream >> ti;
+		// reserved 4 fields
+		ti << QString() << QString() << QString() << QString();
+
+		// filepath
+		ti << QString("%1/%2")
+				.arg(query.value(6).toString())
+				.arg(query.value(2).toString());
+		ti << query.value(3).toString(); // num
+		ti << query.value(1).toString(); // track title
+		ti << query.value(8).toString(); // year
+		ti << query.value(9).toString(); // album
+		ti << query.value(7).toString(); // artist
+		ti << query.value(5).toString(); // genre
+		ti << query.value(10).toString(); // length
 		newItems << ti;
 		rows++;
 	}
 
 	beginInsertRows(QModelIndex(), beginRow, beginRow+rows-1);
 	foreach (const QStringList & trackInfo, newItems) {
+		// fetch track from db
 		p->storage.insert(beginRow, trackInfo);
 		beginRow++;
 	}

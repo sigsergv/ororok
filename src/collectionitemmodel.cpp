@@ -100,6 +100,10 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 		return item->type();
 	}
 
+	if (ItemDbIdRole == role) {
+		return item->data["id"];
+	}
+
 	if (ItemAlbumCoverRole == role && CollectionTreeItem::Album == itemType) {
 		return item->data["cover_path"];
 	}
@@ -188,7 +192,7 @@ QStringList CollectionItemModel::mimeTypes() const
 {
 	QStringList mt;
 
-	mt << Ororok::TRACKS_MIME;
+	mt << Ororok::TRACKS_COLLECTION_IDS_MIME;
 
 	return mt;
 }
@@ -214,13 +218,14 @@ QMimeData * CollectionItemModel::mimeData(const QModelIndexList &indexes) const
 		findTracksInIndexesTree(index, trackIndexes);
 	}
 
+	QStringList ids;
+
 	Q_FOREACH (const QModelIndex & index, trackIndexes) {
 		// [trackPath, trackNo, title, album, year, album, artist, genre]
-		QStringList trackInfo = index.data(CollectionItemModel::ItemTrackInfoRole).toStringList();
-		//stream << Ororok::serializeTrackInfo(trackInfo);
-		stream << trackInfo;
+		int id = index.data(CollectionItemModel::ItemDbIdRole).toInt();
+		stream << id;
 	}
-	md->setData(Ororok::TRACKS_MIME, encodedData);
+	md->setData(Ororok::TRACKS_COLLECTION_IDS_MIME, encodedData);
 
 	return md;
 }

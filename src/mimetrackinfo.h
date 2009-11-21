@@ -21,6 +21,7 @@ enum TrackInfoField { TrackPlaylistId=0, TrackNumInPlaylist,
 	};
 
 const QString TRACKS_MIME("application/x-ororok-tracks");
+const QString TRACKS_COLLECTION_IDS_MIME("application/x-ororok-collection-track-ids");
 }
 
 #endif /* MIMETRACKINFO_H_ */

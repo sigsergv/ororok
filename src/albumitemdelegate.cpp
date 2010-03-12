@@ -39,6 +39,7 @@ void AlbumItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 			b = palette.highlight();
 		} else {
 			// draw not-selected frame
+			painter->setPen(QPen(palette.color(QPalette::Text)));
 			b = palette.brush(QPalette::Active, QPalette::Base);
 		}
 		painter->fillRect(option.rect, b);

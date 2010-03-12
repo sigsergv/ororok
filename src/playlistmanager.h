@@ -26,7 +26,7 @@ public:
 	 * @param name name of the playlist
 	 * @return
 	 */
-	PlaylistWidget * playlist(const QString & name, const QString & title=QString());
+	PlaylistWidget * playlist(const QString & name=QString(), const QString & title=QString());
 	QTabWidget * playlistsTabWidget();
 	QStringList fetchNextTrack();
 	QStringList fetchPrevTrack();

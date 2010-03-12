@@ -161,9 +161,14 @@ QVariant PlaylistModel::headerData(int section, Qt::Orientation orientation, int
 
 Qt::ItemFlags PlaylistModel::flags(const QModelIndex & index) const
 {
-	Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
+	//Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
+	Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
-	return Qt::ItemIsDropEnabled | defaultFlags;
+	if (!index.isValid()) {
+		// allow drops only to root node
+		flags |= Qt::ItemIsDropEnabled;
+	}
+	return flags;
 }
 
 QStringList PlaylistModel::mimeTypes() const

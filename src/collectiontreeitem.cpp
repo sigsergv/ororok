@@ -178,7 +178,8 @@ void CollectionTreeItem::fetchArtists(CollectionTreeItem * parent)
 	artist->row = n;
 	p->childItems[n] = artist;
 
-	query.prepare("SELECT artist.id, artist.name, COUNT(album.id) FROM artist INNER JOIN album ON artist.id=album.artist_id GROUP BY artist.id");
+	query.prepare("SELECT artist.id, artist.name, COUNT(album.id) FROM artist "
+			"INNER JOIN album ON artist.id=album.artist_id GROUP BY artist.id ORDER BY artist.name");
 	if (!query.exec()) {
 		// TODO: send fail signal?
 		return;

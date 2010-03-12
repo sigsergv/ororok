@@ -12,6 +12,9 @@
 //#include <QAbstractItemDelegate>
 
 //class AlbumItemDelegate : public QAbstractItemDelegate
+/**
+ * Class for drawing collection tree elements
+ */
 class AlbumItemDelegate : public QItemDelegate
 {
 	Q_OBJECT

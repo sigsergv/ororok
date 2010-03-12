@@ -134,7 +134,7 @@ MainWindow::MainWindow() :
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
 
 	// Debug code. test playlists
-	pm->playlist("new-playlist");
+	// pm->playlist("new-playlist");
 }
 
 void MainWindow::rescanCollection()
@@ -142,6 +142,12 @@ void MainWindow::rescanCollection()
 	// launch UpdateThread
 	p->pb->show();
 	p->ut->start();
+}
+
+void MainWindow::newPlaylist()
+{
+	PlaylistManager * pm = PlaylistManager::instance();
+	pm->playlist();
 }
 
 void MainWindow::stopRescanCollection()
@@ -289,6 +295,7 @@ void MainWindow::createActions()
 void MainWindow::connectSignals()
 {
 	connect(p->ui.actionQuit, SIGNAL(triggered()), this, SLOT(close()));
+	connect(p->ui.actionNewPlaylist, SIGNAL(triggered()), this, SLOT(newPlaylist()));
 	connect(p->ui.actionRescanCollection, SIGNAL(triggered()), this, SLOT(rescanCollection()));
 	connect(p->ui.actionReloadCollectionTree, SIGNAL(triggered()), this, SLOT(refreshCollectionTree()));
 	connect(p->ui.actionEditSettings, SIGNAL(triggered()), this, SLOT(editSettings()));

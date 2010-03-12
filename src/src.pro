@@ -16,7 +16,8 @@ HEADERS += mainwindow.h \
 	playlistitemdelegate.h \
 	player.h \
 	playlistmanager.h \
-	settingsdialog.h
+	settingsdialog.h \
+    edittreeview.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -37,7 +38,8 @@ SOURCES += main.cpp \
 	playlistitemdelegate.cpp \
 	player.cpp \
 	playlistmanager.cpp \
-	settingsdialog.cpp
+	settingsdialog.cpp \
+    edittreeview.cpp
 
 FORMS += mainwindow.ui \
 	testwidget.ui \

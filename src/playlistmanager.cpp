@@ -21,12 +21,14 @@ struct PlaylistManager::Private
 {
 	QHash<QString, PlaylistWidget*> playlists;
 	QTabWidget * playlistsTabWidget;
+	int index;
 };
 
 PlaylistManager::PlaylistManager()
 {
 	p = new Private;
 	p->playlistsTabWidget = 0;
+	p->index = 0;
 
 	Player * player = Player::instance();
 	connect(player, SIGNAL(trackChanged(const QStringList &)),
@@ -35,22 +37,29 @@ PlaylistManager::PlaylistManager()
 
 PlaylistWidget * PlaylistManager::playlist(const QString & name, const QString & title)
 {
+	QString playlistName(name);
+
+	if (name == "") {
+		p->index++;
+		playlistName = QString("playlist-%1").arg(p->index);
+	}
+
 	if (p->playlistsTabWidget == 0) {
 		return 0;
 	}
 
-	PlaylistWidget * pw = p->playlists.value(name, 0);
+	PlaylistWidget * pw = p->playlists.value(playlistName, 0);
 	if (0 == pw) {
 		// create playlist widget, load tracks if required and
 		// add to the hash
-		qDebug() << "create playlist " << name;
+		qDebug() << "create playlist " << playlistName;
 		QString playlistTitle(title);
 		if (playlistTitle.isEmpty()) {
-			playlistTitle = name;
+			playlistTitle = playlistName;
 		}
 
 		pw = new PlaylistWidget;
-		p->playlists[name] = pw;
+		p->playlists[playlistName] = pw;
 		pw->setParent(p->playlistsTabWidget);
 		p->playlistsTabWidget->addTab(pw, playlistTitle);
 
@@ -58,7 +67,7 @@ PlaylistWidget * PlaylistManager::playlist(const QString & name, const QString &
 				SLOT(requestTrackPlay(const QStringList &)));
 	}
 
-	return p->playlists[name];
+	return p->playlists[playlistName];
 }
 
 QTabWidget * PlaylistManager::playlistsTabWidget()

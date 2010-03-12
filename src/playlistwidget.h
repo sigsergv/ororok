@@ -35,6 +35,8 @@ signals:
 
 protected slots:
 	void playlistDoubleClicked(const QModelIndex & index);
+	void resizeEvent(QResizeEvent * event);
+	void deleteSelectedTracks();
 
 private:
 	struct Private;

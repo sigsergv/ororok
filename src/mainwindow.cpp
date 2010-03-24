@@ -266,7 +266,11 @@ void MainWindow::playerRequestedNextTrack()
 	PlaylistManager * pm = PlaylistManager::instance();
 
 	QStringList nextTrackInfo = pm->fetchNextTrack();
-	player->enqueue(nextTrackInfo);
+	if (!nextTrackInfo.isEmpty()) {
+		player->enqueue(nextTrackInfo);
+	} else {
+		playbackStop();
+	}
 }
 
 void MainWindow::editSettings()

@@ -46,6 +46,10 @@ SettingsDialog::SettingsDialog(QWidget * parent)
 	item->setIcon(QIcon(":server-database.png"));
 	item->setTextAlignment(Qt::AlignCenter);
 
+	item = p->ui.settingsGroupsTable->item(4, 0);
+	item->setIcon(QIcon(":preferences-desktop-keyboard.png"));
+	item->setTextAlignment(Qt::AlignCenter);
+
 	int w = p->ui.settingsGroupsTable->width();
 	p->ui.settingsGroupsTable->setColumnWidth(0, w);
 

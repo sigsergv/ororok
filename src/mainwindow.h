@@ -22,6 +22,7 @@ public:
 protected:
 	void createActions();
 	void connectSignals();
+	void loadGlobalShortcuts();
 
 protected slots:
 	void rescanCollection();
@@ -40,6 +41,9 @@ protected slots:
 	void trackTimeChange(qint64 time, qint64 totalTime);
 	void playerRequestedNextTrack();
 	void editSettings();
+
+	// global shortcuts
+	void testGlobalShortcut();
 
 protected:
 	QFrame * createStatusBarSection(QWidget * widget);

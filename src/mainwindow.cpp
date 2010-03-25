@@ -19,6 +19,7 @@
 #include "playlistwidget.h"
 #include "playlistmanager.h"
 #include "player.h"
+#include "globalshortcutmanager.h"
 
 #include "ui_mainwindow.h"
 
@@ -132,6 +133,8 @@ MainWindow::MainWindow() :
 
 	setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
+
+	loadGlobalShortcuts();
 
 	// Debug code. test playlists
 	// pm->playlist("new-playlist");
@@ -278,7 +281,6 @@ void MainWindow::editSettings()
 	// open settings edit dialog
 	SettingsDialog d(this);
 	d.exec();
-
 }
 
 void MainWindow::createActions()
@@ -319,7 +321,20 @@ void MainWindow::connectSignals()
 	connect(player, SIGNAL(nextTrackNeeded()), this, SLOT(playerRequestedNextTrack()));
 }
 
+void MainWindow::loadGlobalShortcuts()
+{
+	QSettings * settings = Ororok::settings();
 
+	GlobalShortcutManager * gsi = GlobalShortcutManager::instance();
+	gsi->connect(QKeySequence(Qt::META + Qt::Key_F11), this, SLOT(testGlobalShortcut()));
+	//GlobalShortcut * gs = new GlobalShortcut(QKeySequence(Qt::META + Qt::Key_F11));
+	//connect(gs, SIGNAL(activated()), this, SLOT(testGlobalShortcut()));
+}
+
+void MainWindow::testGlobalShortcut()
+{
+	QMessageBox::critical(0, "", "WHOO");
+}
 
 QFrame * MainWindow::createStatusBarSection(QWidget * widget)
 {

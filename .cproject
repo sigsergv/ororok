@@ -11,11 +11,13 @@
 </extensions>
 </storageModule>
 <storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
+<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
+<storageModule moduleId="scannerConfiguration"/>
+<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 <storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 <buildTargets>
 <target name="Qt Release Build" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>make</buildCommand>
-<buildArguments/>
 <buildTarget>release</buildTarget>
 <stopOnError>false</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
@@ -23,7 +25,6 @@
 </target>
 <target name="Qt Debug Build" path="" targetID="org.eclipse.cdt.make.MakeTargetBuilder">
 <buildCommand>make</buildCommand>
-<buildArguments/>
 <buildTarget>debug</buildTarget>
 <stopOnError>false</stopOnError>
 <useDefaultCommand>false</useDefaultCommand>
@@ -31,9 +32,6 @@
 </target>
 </buildTargets>
 </storageModule>
-<storageModule moduleId="org.eclipse.cdt.core.language.mapping"/>
-<storageModule moduleId="scannerConfiguration"/>
-<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 <storageModule moduleId="org.eclipse.cdt.core.pathentry">
 <pathentry base-path="/usr/include/qt4" include="" kind="inc" path="" system="true"/>
 <pathentry base-path="/usr/include/qt4" include="QtXmlPatterns" kind="inc" path="" system="true"/>
@@ -49,6 +47,7 @@
 <pathentry base-path="/usr/include/qt4" include="QtWebKit" kind="inc" path="" system="true"/>
 <pathentry base-path="/usr/include/qt4" include="QtDBus" kind="inc" path="" system="true"/>
 <pathentry base-path="/usr/include/qt4" include="QtSql" kind="inc" path="" system="true"/>
+<pathentry base-path="/usr/include/qt4" include="phonon" kind="inc" path="" system="true"/>
 <pathentry base-path="/usr/include/qt4" include="QtOpenGL" kind="inc" path="" system="true"/>
 <pathentry base-path="/usr/include/qt4" include="QtAssistant" kind="inc" path="" system="true"/>
 <pathentry base-path="/usr/include/qt4" include="QtXml" kind="inc" path="" system="true"/>
@@ -56,7 +55,7 @@
 <pathentry base-path="/usr/include/qt4" include="Qt3Support" kind="inc" path="" system="true"/>
 <pathentry base-path="/usr/include/qt4" include="QtDesigner" kind="inc" path="" system="true"/>
 <pathentry include="/usr/include/taglib" kind="inc" path="" system="true"/>
-<pathentry include="/usr/include/qt4/phonon" kind="inc" path="" system="true"/>
+<pathentry include="/usr/include" kind="inc" path="" system="true"/>
 <pathentry kind="src" path=""/>
 <pathentry kind="out" path=""/>
 </storageModule>

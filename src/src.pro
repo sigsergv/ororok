@@ -53,6 +53,9 @@ QT += xml
 QT += sql
 QT += phonon
 
+INCLUDEPATH = 3rdparty/globalshortcut
+include(3rdparty/globalshortcut/globalshortcut.pri)
+
 win32 { 
 	debug:DESTDIR = ../debug/
 	release:DESTDIR = ../release/

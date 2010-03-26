@@ -42,9 +42,6 @@ protected slots:
 	void playerRequestedNextTrack();
 	void editSettings();
 
-	// global shortcuts
-	void testGlobalShortcut();
-
 protected:
 	QFrame * createStatusBarSection(QWidget * widget);
 	void moveEvent(QMoveEvent * event);

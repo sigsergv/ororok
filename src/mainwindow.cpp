@@ -323,17 +323,36 @@ void MainWindow::connectSignals()
 
 void MainWindow::loadGlobalShortcuts()
 {
-	QSettings * settings = Ororok::settings();
-
 	GlobalShortcutManager * gsi = GlobalShortcutManager::instance();
-	gsi->connect(QKeySequence(Qt::META + Qt::Key_F11), this, SLOT(testGlobalShortcut()));
-	//GlobalShortcut * gs = new GlobalShortcut(QKeySequence(Qt::META + Qt::Key_F11));
-	//connect(gs, SIGNAL(activated()), this, SLOT(testGlobalShortcut()));
-}
 
-void MainWindow::testGlobalShortcut()
-{
-	QMessageBox::critical(0, "", "WHOO");
+	// first reset all global shortcuts
+	gsi->clear();
+
+	QSettings * settings = Ororok::settings();
+	settings->beginGroup("GlobalShortcuts");
+	QString s;
+
+	s = settings->value("prevTrack").toString();
+	if (s.length()) {
+		gsi->connect(QKeySequence(s), this, SLOT(playbackPrev()));
+	}
+
+	s = settings->value("stopTrack").toString();
+	if (s.length()) {
+		gsi->connect(QKeySequence(s), this, SLOT(playbackStop()));
+	}
+
+	s = settings->value("playPauseTrack").toString();
+	if (s.length()) {
+		gsi->connect(QKeySequence(s), this, SLOT(playbackPlayPause()));
+	}
+
+	s = settings->value("nextTrack").toString();
+	if (s.length()) {
+		gsi->connect(QKeySequence(s), this, SLOT(playbackNext()));
+	}
+
+	settings->endGroup();
 }
 
 QFrame * MainWindow::createStatusBarSection(QWidget * widget)

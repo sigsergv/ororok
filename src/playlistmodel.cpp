@@ -358,7 +358,32 @@ void PlaylistModel::markActiveTrackPlaying()
 		emit dataChanged(index(p->activeTrackNum, 0), index(p->activeTrackNum, VISIBLE_COLUMNS_NUM-1));
 	}
 }
+
 PlaylistModel::ActiveTrackState PlaylistModel::activeTrackState()
 {
 	return p->activeTrackState;
+}
+
+bool PlaylistModel::removeRows(int row, int count, const QModelIndex & parent)
+{
+	// we also have to move pointer of currently playing song,
+	// or remove it (and stop playing or switch to next track) if playing song was removed
+	// currentTrack could move only
+	qDebug() << "Delete " << count << "lines" << "begin from" << row;
+	int lastRow = row + count - 1;
+	beginRemoveRows(parent, row, lastRow);
+	// delete rows from p->storage
+	int offset = 0;
+	for (int i=lastRow; i>=row; i--) {
+		if (i < p->activeTrackNum) {
+			offset++;
+		}
+		if (i == p->activeTrackNum) {
+			qDebug() << "currently playing track deleted";
+		}
+		p->storage.removeAt(i);
+	}
+	p->activeTrackNum -= offset;
+	endRemoveRows();
+	return true;
 }

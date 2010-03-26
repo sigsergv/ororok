@@ -37,9 +37,10 @@ public:
 	void markActiveTrackPaused();
 	void markActiveTrackPlaying();
 	ActiveTrackState activeTrackState();
+	bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
 
-protected:
-	bool insertTrack(int pos, const QStringList & trackInfo);
+//protected:
+//	bool insertTrack(int pos, const QStringList & trackInfo);
 
 private:
 	struct Private;

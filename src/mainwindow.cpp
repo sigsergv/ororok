@@ -285,16 +285,16 @@ void MainWindow::editSettings()
 
 void MainWindow::createActions()
 {
-	p->actionPlaybackPrev = new QAction("Play previous track", this);
+	p->actionPlaybackPrev = new QAction(tr("Play previous track"), this);
 	p->actionPlaybackPrev->setIcon(QIcon(":/play-control-prev.png"));
 
-	p->actionPlaybackPlayPause = new QAction("Play/Pause", this);
+	p->actionPlaybackPlayPause = new QAction(tr("Play/Pause"), this);
 	p->actionPlaybackPlayPause->setIcon(QIcon(":play-control-playpause.png"));
 
-	p->actionPlaybackStop = new QAction("Stop", this);
+	p->actionPlaybackStop = new QAction(tr("Stop"), this);
 	p->actionPlaybackStop->setIcon(QIcon(":play-control-stop.png"));
 
-	p->actionPlaybackNext = new QAction("Play next track", this);
+	p->actionPlaybackNext = new QAction(tr("Play next track"), this);
 	p->actionPlaybackNext->setIcon(QIcon(":play-control-next.png"));
 }
 

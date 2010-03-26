@@ -18,7 +18,11 @@ struct PlaylistWidget::Private
 	QTreeView * tracksList;
 	PlaylistModel * model;
 	QSortFilterProxyModel * proxy;
+	QMenu * tracksContextMenu;
 	bool initialized;
+
+	// actions
+	QAction * deleteSelectedTracks;
 };
 
 PlaylistWidget::PlaylistWidget(QWidget * parent)
@@ -31,6 +35,7 @@ PlaylistWidget::PlaylistWidget(QWidget * parent)
 	p->filter = new QLineEdit(this);
 	layout->addWidget(p->filter);
 	p->tracksList = new EditTreeView(this);
+	p->tracksList->setContextMenuPolicy(Qt::CustomContextMenu);
 	p->tracksList->setAlternatingRowColors(true);
 	p->tracksList->setRootIsDecorated(false);
 	p->tracksList->setDragDropMode(QAbstractItemView::DropOnly);
@@ -44,6 +49,11 @@ PlaylistWidget::PlaylistWidget(QWidget * parent)
 	p->proxy = new QSortFilterProxyModel(this);
 	p->proxy->setSourceModel(p->model);
 	p->tracksList->setModel(p->proxy);
+
+	// create menus and actions
+
+	p->tracksContextMenu = new QMenu();
+	p->deleteSelectedTracks = p->tracksContextMenu->addAction(tr("Delete selected tracks"));
 
 	// resize columns
 	// get total width
@@ -70,6 +80,10 @@ PlaylistWidget::PlaylistWidget(QWidget * parent)
 			this, SLOT(playlistDoubleClicked(const QModelIndex &)));
 	connect(p->tracksList, SIGNAL(deleteKeyPressed()),
 			this, SLOT(deleteSelectedTracks()));
+	connect(p->deleteSelectedTracks, SIGNAL(triggered()),
+			this, SLOT(deleteSelectedTracks()));
+	connect(p->tracksList, SIGNAL(customContextMenuRequested(const QPoint &)),
+			this, SLOT(tracksContextMenu(const QPoint &)));
 }
 
 
@@ -87,7 +101,7 @@ QStringList PlaylistWidget::activeTrackInfo()
 {
 	// take selected track
 	QStringList trackInfo;
-	Q_FOREACH (const QModelIndex & index, p->tracksList->selectionModel()->selectedIndexes()) {
+	Q_FOREACH (const QModelIndex & index, p->tracksList->selectionModel()->selectedRows()) {
 		trackInfo = index.data(PlaylistModel::ItemTrackInfoRole).toStringList();
 		break;
 	}
@@ -112,5 +126,27 @@ void PlaylistWidget::resizeEvent(QResizeEvent * event)
 
 void PlaylistWidget::deleteSelectedTracks()
 {
-	qDebug() << "delete selected tracks";
+	// find selected tracks in the model and delete them!
+	// take selected track
+	//QStringList trackInfo;
+	QList<int> rows;
+	Q_FOREACH (const QModelIndex & index, p->tracksList->selectionModel()->selectedRows()) {
+		rows << index.row();
+	}
+	// sort "rows" and delete items from bottom to top
+	qSort(rows);
+	QListIterator<int> i(rows);
+	i.toBack();
+	while (i.hasPrevious()) {
+		p->model->removeRow(i.previous());
+	}
+}
+
+void PlaylistWidget::tracksContextMenu(const QPoint & pos)
+{
+	// if there is no tracks then disable some actions
+	bool tracksListEmpty = p->model->rowCount() == 0;
+
+	p->deleteSelectedTracks->setEnabled(!tracksListEmpty);
+	p->tracksContextMenu->popup(p->tracksList->viewport()->mapToGlobal(pos));
 }

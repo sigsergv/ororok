@@ -42,8 +42,9 @@ public:
 	bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
 	bool insertRows (int row, int count, const QModelIndex & parent = QModelIndex());
 
-//protected:
+protected:
 //	bool insertTrack(int pos, const QStringList & trackInfo);
+	int activeTrackNum();
 
 private:
 	struct Private;

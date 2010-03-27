@@ -279,6 +279,9 @@ bool PlaylistModel::dropMimeData(const QMimeData *data,
 			p->storage.insert(beginRow, trackInfo);
 			beginRow++;
 		}
+		if (row < p->activeTrackNum) {
+			p->activeTrackNum += newItems.count();
+		}
 		endInsertRows();
 		//qDebug() << "inserted rows: " << rows;
 		return true;
@@ -306,6 +309,8 @@ bool PlaylistModel::dropMimeData(const QMimeData *data,
 
 		// calculate new position of row "row"
 		int insertPos = row;
+		int newActiveTrackNum = p->activeTrackNum;
+		int savedActiveTrackNum = p->activeTrackNum;
 		int j=0;
 
 		if (rows.contains(row-1)) {
@@ -347,8 +352,26 @@ bool PlaylistModel::dropMimeData(const QMimeData *data,
 			return false;
 		}
 
+		if (rows.contains(savedActiveTrackNum)) {
+			// if active track is among selected tracks then after inserting
+			// it will be in position "insertPos+order", where "order" is a number
+			// of track in the selected tracks list
+			newActiveTrackNum = insertPos + rows.indexOf(savedActiveTrackNum);
+		} else {
+			// find total lines above "savedActiveTrackNum" before moving
+			for (j=0; j<insertCount; j++) {
+				if (rows.at(j) >= savedActiveTrackNum) {
+					break;
+				}
+			}
+			newActiveTrackNum -= j;
+			if (insertPos <= newActiveTrackNum) {
+				newActiveTrackNum += insertCount;
+			}
+		}
 
-		//qDebug() << "insert pos:" << insertPos << "insert count" << insertCount;
+		// update current playing track position
+		p->activeTrackNum = newActiveTrackNum;
 
 		//insertRows(insertPos, rows.count());
 		beginInsertRows(QModelIndex(), insertPos, insertPos + insertCount - 1);
@@ -356,6 +379,7 @@ bool PlaylistModel::dropMimeData(const QMimeData *data,
 			p->storage.insert(i+insertPos, removedRecords.at(i));
 		}
 		endInsertRows();
+
 		return true;
 	}
 
@@ -494,6 +518,14 @@ bool PlaylistModel::insertRows (int row, int count, const QModelIndex & parent)
 	for (int i=row; i<count+row; i++) {
 		p->storage.insert(i, QStringList());
 	}
+	if (row < p->activeTrackNum) {
+		p->activeTrackNum += count;
+	}
 	endInsertRows();
 	return true;
+}
+
+int PlaylistModel::activeTrackNum()
+{
+	return 0;
 }

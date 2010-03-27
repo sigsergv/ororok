@@ -38,9 +38,11 @@ PlaylistWidget::PlaylistWidget(QWidget * parent)
 	p->tracksList->setContextMenuPolicy(Qt::CustomContextMenu);
 	p->tracksList->setAlternatingRowColors(true);
 	p->tracksList->setRootIsDecorated(false);
-	p->tracksList->setDragDropMode(QAbstractItemView::DropOnly);
+	//p->tracksList->setDragDropMode(QAbstractItemView::DropOnly);
 	p->tracksList->setSelectionBehavior(QAbstractItemView::SelectRows);
 	p->tracksList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	p->tracksList->setDragEnabled(true);
+	p->tracksList->setDragDropMode(QAbstractItemView::DragDrop);
 	p->tracksList->setAcceptDrops(true);
 	layout->addWidget(p->tracksList);
 

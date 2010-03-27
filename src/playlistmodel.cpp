@@ -162,7 +162,7 @@ QVariant PlaylistModel::headerData(int section, Qt::Orientation orientation, int
 Qt::ItemFlags PlaylistModel::flags(const QModelIndex & index) const
 {
 	//Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
-	Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+	Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled;
 
 	if (!index.isValid()) {
 		// allow drops only to root node
@@ -174,10 +174,32 @@ Qt::ItemFlags PlaylistModel::flags(const QModelIndex & index) const
 QStringList PlaylistModel::mimeTypes() const
 {
 	QStringList mt;
-	mt << Ororok::TRACKS_COLLECTION_IDS_MIME;
+	mt << Ororok::TRACKS_COLLECTION_IDS_MIME << Ororok::TRACKS_PLAYLIST_ITEMS_MIME;
 	//mt << "text/uri-list";
 
 	return mt;
+}
+
+QMimeData * PlaylistModel::mimeData(const QModelIndexList &indexes) const
+{
+	QMimeData *md = new QMimeData();
+	QByteArray encodedData;
+	QDataStream stream(&encodedData, QIODevice::WriteOnly);
+
+	QList<int> rows;
+
+	Q_FOREACH (const QModelIndex & index, indexes) {
+		if (index.column() != 0) {
+			continue;
+		}
+		rows << index.row();
+	}
+
+	stream << rows;
+	//qDebug() << "Drag rows:" << rows;
+
+	md->setData(Ororok::TRACKS_PLAYLIST_ITEMS_MIME, encodedData);
+	return md;
 }
 
 bool PlaylistModel::dropMimeData(const QMimeData *data,
@@ -187,82 +209,158 @@ bool PlaylistModel::dropMimeData(const QMimeData *data,
 		return true;
 	}
 
-	if (!data->hasFormat(Ororok::TRACKS_COLLECTION_IDS_MIME)) {
-		return false;
+	if (data->hasFormat(Ororok::TRACKS_COLLECTION_IDS_MIME)) {
+		if (column > 0) {
+			return false;
+		}
+
+		int beginRow;
+		if (row != -1) {
+			beginRow = row;
+		} else if (parent.isValid()) {
+			beginRow = parent.row();
+		} else {
+			beginRow = rowCount(QModelIndex());
+		}
+
+		QByteArray encodedData = data->data(Ororok::TRACKS_COLLECTION_IDS_MIME);
+		qDebug() << encodedData;
+		QDataStream stream(&encodedData, QIODevice::ReadOnly);
+		QStringList newItemsIds;
+		QList<QStringList> newItems;
+
+		while (!stream.atEnd()) {
+			int id;
+			stream >> id;
+			newItemsIds << QString::number(id);
+		}
+
+		QSqlDatabase db = QSqlDatabase::database();
+		QSqlQuery query(db);
+
+		QString queryStr = QString("SELECT t.id, t.title, t.filename, t.track, t.length, g.name, d.path, " // 0-6
+				"ar.name, t.year, al.name, t.length "
+				"FROM track t "
+				"LEFT JOIN genre g ON g.id=t.genre_id "
+				"LEFT JOIN artist ar ON ar.id=t.artist_id "
+				"LEFT JOIN album al ON al.id=t.album_id "
+				"LEFT JOIN dir d ON d.id=t.dir_id WHERE t.id IN (%1)").arg(newItemsIds.join(", "));
+
+		if (!query.exec(queryStr)) {
+			// TODO: display warning or something like
+			qDebug() << "query failed:" << query.lastError().text();
+			return false;
+		}
+
+		int rows = 0;
+		while (query.next()) {
+			QStringList ti;
+			// reserved 4 fields
+			ti << QString() << QString() << QString() << QString();
+
+			// filepath
+			ti << QString("%1/%2")
+					.arg(query.value(6).toString())
+					.arg(query.value(2).toString());
+			ti << query.value(3).toString(); // num
+			ti << query.value(1).toString(); // track title
+			ti << query.value(8).toString(); // year
+			ti << query.value(9).toString(); // album
+			ti << query.value(7).toString(); // artist
+			ti << query.value(5).toString(); // genre
+			ti << query.value(10).toString(); // length
+			newItems << ti;
+			rows++;
+		}
+
+		beginInsertRows(QModelIndex(), beginRow, beginRow+rows-1);
+		foreach (const QStringList & trackInfo, newItems) {
+			// fetch track from db
+			p->storage.insert(beginRow, trackInfo);
+			beginRow++;
+		}
+		endInsertRows();
+		//qDebug() << "inserted rows: " << rows;
+		return true;
+
 	}
 
-	if (column > 0) {
-		return false;
+	if (data->hasFormat(Ororok::TRACKS_PLAYLIST_ITEMS_MIME)) {
+		QByteArray encodedData = data->data(Ororok::TRACKS_PLAYLIST_ITEMS_MIME);
+
+		QDataStream stream(&encodedData, QIODevice::ReadOnly);
+
+		if (stream.atEnd()) {
+			return false;
+		}
+
+		QList<int> rows;
+		stream >> rows;
+
+		// sort items if we want to keep order of tracks
+		// TODO: add config option for this
+		qSort(rows);
+
+		// find position where to insert rows
+		int insertCount = rows.count();
+
+		// calculate new position of row "row"
+		int insertPos = row;
+		int j=0;
+
+		if (rows.contains(row-1)) {
+			qDebug() << "contains";
+			for (int i=row-1; i>0; i--) {
+				if (!rows.contains(i)) {
+					break;
+				}
+				j++;
+			}
+			insertPos -= j;
+		}
+
+		for (j=0; j<insertCount; j++) {
+			 if (rows.at(j) >= insertPos) {
+				 break;
+			 }
+		}
+		qDebug() << j;
+ 		insertPos -= j;
+
+		// delete tracks from the store (and save in temporary location)
+		QList<QStringList> removedRecords;
+		QListIterator<int> i(rows);
+		i.toBack();
+
+		int cr;
+		while (i.hasPrevious()) {
+			cr = i.previous();
+			removedRecords.insert(0, p->storage.at(cr));
+			removeRow(cr);
+		}
+
+		//qDebug() << "Drop lines on row:()" << row;
+		//qDebug() << rows;
+		//qDebug() << removedRecords;
+
+		if (insertPos < 0) {
+			return false;
+		}
+
+
+		//qDebug() << "insert pos:" << insertPos << "insert count" << insertCount;
+
+		//insertRows(insertPos, rows.count());
+		beginInsertRows(QModelIndex(), insertPos, insertPos + insertCount - 1);
+		for (int i=0; i<insertCount; i++) {
+			p->storage.insert(i+insertPos, removedRecords.at(i));
+		}
+		endInsertRows();
+		return true;
 	}
 
-	int beginRow;
-	if (row != -1) {
-		beginRow = row;
-	} else if (parent.isValid()) {
-		beginRow = parent.row();
-	} else {
-		beginRow = rowCount(QModelIndex());
-	}
+	return false;
 
-	QByteArray encodedData = data->data(Ororok::TRACKS_COLLECTION_IDS_MIME);
-	qDebug() << encodedData;
-	QDataStream stream(&encodedData, QIODevice::ReadOnly);
-	QStringList newItemsIds;
-	QList<QStringList> newItems;
-
-	while (!stream.atEnd()) {
-		int id;
-		stream >> id;
-		newItemsIds << QString::number(id);
-	}
-
-	QSqlDatabase db = QSqlDatabase::database();
-	QSqlQuery query(db);
-
-	QString queryStr = QString("SELECT t.id, t.title, t.filename, t.track, t.length, g.name, d.path, " // 0-6
-			"ar.name, t.year, al.name, t.length "
-			"FROM track t "
-			"LEFT JOIN genre g ON g.id=t.genre_id "
-			"LEFT JOIN artist ar ON ar.id=t.artist_id "
-			"LEFT JOIN album al ON al.id=t.album_id "
-			"LEFT JOIN dir d ON d.id=t.dir_id WHERE t.id IN (%1)").arg(newItemsIds.join(", "));
-
-	if (!query.exec(queryStr)) {
-		// TODO: display warning or something like
-		qDebug() << "query failed:" << query.lastError().text();
-		return false;
-	}
-
-	int rows = 0;
-	while (query.next()) {
-		QStringList ti;
-		// reserved 4 fields
-		ti << QString() << QString() << QString() << QString();
-
-		// filepath
-		ti << QString("%1/%2")
-				.arg(query.value(6).toString())
-				.arg(query.value(2).toString());
-		ti << query.value(3).toString(); // num
-		ti << query.value(1).toString(); // track title
-		ti << query.value(8).toString(); // year
-		ti << query.value(9).toString(); // album
-		ti << query.value(7).toString(); // artist
-		ti << query.value(5).toString(); // genre
-		ti << query.value(10).toString(); // length
-		newItems << ti;
-		rows++;
-	}
-
-	beginInsertRows(QModelIndex(), beginRow, beginRow+rows-1);
-	foreach (const QStringList & trackInfo, newItems) {
-		// fetch track from db
-		p->storage.insert(beginRow, trackInfo);
-		beginRow++;
-	}
-	endInsertRows();
-	//qDebug() << "inserted rows: " << rows;
-	return true;
 }
 
 void PlaylistModel::selectActiveTrack(int n)
@@ -385,5 +483,17 @@ bool PlaylistModel::removeRows(int row, int count, const QModelIndex & parent)
 	}
 	p->activeTrackNum -= offset;
 	endRemoveRows();
+	return true;
+}
+
+// function inserts EMPTY rows so you have to alter them later
+bool PlaylistModel::insertRows (int row, int count, const QModelIndex & parent)
+{
+	Q_UNUSED(parent);
+	beginInsertRows(QModelIndex(), row, row + count - 1);
+	for (int i=row; i<count+row; i++) {
+		p->storage.insert(i, QStringList());
+	}
+	endInsertRows();
 	return true;
 }

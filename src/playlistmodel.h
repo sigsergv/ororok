@@ -25,6 +25,8 @@ public:
 	Qt::ItemFlags flags(const QModelIndex & index) const;
 
 	QStringList mimeTypes() const;
+
+	QMimeData * mimeData(const QModelIndexList &indexes) const;
 	bool dropMimeData(const QMimeData *data,
 			Qt::DropAction action, int row, int column, const QModelIndex &parent);
 	void selectActiveTrack(int n);
@@ -38,6 +40,7 @@ public:
 	void markActiveTrackPlaying();
 	ActiveTrackState activeTrackState();
 	bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
+	bool insertRows (int row, int count, const QModelIndex & parent = QModelIndex());
 
 //protected:
 //	bool insertTrack(int pos, const QStringList & trackInfo);

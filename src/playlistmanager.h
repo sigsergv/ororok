@@ -39,6 +39,9 @@ public slots:
 	void requestTrackPlay();
 	void trackPlayingStarted(const QStringList & trackInfo);
 
+protected slots:
+	void midTrackReached();
+
 private:
 	struct Private;
 	Private * p;

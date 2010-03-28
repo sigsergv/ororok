@@ -33,6 +33,8 @@ PlaylistManager::PlaylistManager()
 	Player * player = Player::instance();
 	connect(player, SIGNAL(trackChanged(const QStringList &)),
 			this, SLOT(trackPlayingStarted(const QStringList &)));
+	connect(player, SIGNAL(midTrackReached()),
+			this, SLOT(midTrackReached()));
 }
 
 PlaylistWidget * PlaylistManager::playlist(const QString & name, const QString & title)
@@ -266,6 +268,11 @@ void PlaylistManager::trackPlayingStarted(const QStringList & trackInfo)
 	if (model) {
 		model->markActiveTrackPlaying();
 	}
+}
+
+void PlaylistManager::midTrackReached()
+{
+	// submit track to lastfm
 }
 
 PlaylistManager * PlaylistManager::instance()

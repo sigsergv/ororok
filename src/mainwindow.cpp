@@ -72,6 +72,9 @@ MainWindow::MainWindow() :
 	p->ctw = new CollectionTreeWidget(this);
 	p->ui.collectionDock->setWidget(p->ctw);
 
+	// init lastfm
+	Ororok::initLastfm();
+
 	// initialize PlaylistManager
 	PlaylistManager * pm = PlaylistManager::instance();
 
@@ -136,9 +139,6 @@ MainWindow::MainWindow() :
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
 
 	loadGlobalShortcuts();
-
-	// init lastfm
-	ororok::initLastfm();
 
 	// Debug code. test playlists
 	// pm->playlist("new-playlist");

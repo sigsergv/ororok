@@ -22,29 +22,29 @@ const char * lastfm::ws::SharedSecret = LASTFM_API_SECRET;
 
 QString lastfm::ws::Username;
 
-ororok::lastfm::Response::Response(const QByteArray & reply)
+Ororok::lastfm::Response::Response(const QByteArray & reply)
 	: data(reply), errCode(0)
 {}
 
-int ororok::lastfm::Response::error()
+int Ororok::lastfm::Response::error()
 {
 	return errCode;
 }
 
-QString ororok::lastfm::Response::errorText()
+QString Ororok::lastfm::Response::errorText()
 {
 	return errText;
 }
 
-void ororok::lastfm::Response::setError(const QString & text, int code)
+void Ororok::lastfm::Response::setError(const QString & text, int code)
 {
 	errCode = code;
 	errText = text;
 }
 
-ororok::lastfm::Response ororok::lastfm::parseReply(QNetworkReply * reply)
+Ororok::lastfm::Response Ororok::lastfm::parseReply(QNetworkReply * reply)
 {
-	ororok::lastfm::Response lfr(reply->readAll());
+	Ororok::lastfm::Response lfr(reply->readAll());
 
 	if (!lfr.data.size()) {
 		lfr.setError("Malformed response");
@@ -95,7 +95,7 @@ ororok::lastfm::Response ororok::lastfm::parseReply(QNetworkReply * reply)
 	return lfr;
 }
 
-void ororok::initLastfm()
+void Ororok::initLastfm()
 {
 	QSettings * settings = Ororok::settings();
 	settings->beginGroup("LastFm");

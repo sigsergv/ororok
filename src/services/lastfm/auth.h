@@ -12,7 +12,7 @@
 
 struct QString;
 
-namespace ororok
+namespace Ororok
 {
 namespace lastfm
 {

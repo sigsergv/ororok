@@ -1,3 +1,5 @@
+DEFINES += OROROK_VERSION="\\\"0.0.1\\\""
+
 HEADERS += mainwindow.h \
 	application.h \
 	db.h \

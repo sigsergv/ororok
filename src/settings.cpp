@@ -16,10 +16,11 @@ static QSettings * _settings = 0;
 namespace Ororok
 {
 
-
 void initSettings()
 {
 	QCoreApplication::setApplicationName("Ororok");
+	//QCoreApplication::setApplicationVersion(OROROK_VERSION);
+	QCoreApplication::setApplicationVersion("1.0"); // required for lastfm
 	QCoreApplication::setOrganizationName("regolit.com");
 	QCoreApplication::setOrganizationDomain("ororok.regolit.com");
 

@@ -21,7 +21,7 @@ struct SettingsDialog::Private
 	Ui::SettingsDialog ui;
 	QNetworkReply * lastfmReply;
 	bool beforeClose; // set to true after OK attempt and before applying lastfm settings
-	ororok::lastfm::Auth * lastfmAuth;
+	Ororok::lastfm::Auth * lastfmAuth;
 };
 
 SettingsDialog::SettingsDialog(QWidget * parent)
@@ -30,7 +30,7 @@ SettingsDialog::SettingsDialog(QWidget * parent)
 	p = new Private;
 	p->ui.setupUi(this);
 	p->beforeClose = false;
-	p->lastfmAuth = new ororok::lastfm::Auth(this);
+	p->lastfmAuth = new Ororok::lastfm::Auth(this);
 
 	// set icons in the settings list
 

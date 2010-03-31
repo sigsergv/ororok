@@ -9,13 +9,13 @@
 #include <QtGui>
 #include <QtDebug>
 
-#include <lastfm/Scrobble>
-
 #include "playlistmanager.h"
 #include "application.h"
 #include "playlistwidget.h"
 #include "playlistmodel.h"
 #include "player.h"
+#include "mimetrackinfo.h"
+#include "services/lastfm/scrobbleradapter.h"
 
 PlaylistManager * PlaylistManager::inst = 0;
 
@@ -23,6 +23,7 @@ struct PlaylistManager::Private
 {
 	QHash<QString, PlaylistWidget*> playlists;
 	QTabWidget * playlistsTabWidget;
+	Ororok::lastfm::ScrobblerAdapter * lastfmScrobbler;
 	int index;
 };
 
@@ -31,6 +32,7 @@ PlaylistManager::PlaylistManager()
 	p = new Private;
 	p->playlistsTabWidget = 0;
 	p->index = 0;
+	p->lastfmScrobbler = new Ororok::lastfm::ScrobblerAdapter(this);
 
 	Player * player = Player::instance();
 	connect(player, SIGNAL(trackChanged(const QStringList &)),
@@ -280,6 +282,8 @@ void PlaylistManager::midTrackReached(const QStringList & trackInfo)
 	// submit track to lastfm
 	// find currently playing track and submit it
 	qDebug() << "submit track to lastfm";
+	p->lastfmScrobbler->nowPlaying(trackInfo[Ororok::TrackFieldTitle], trackInfo[Ororok::TrackFieldArtist],
+			trackInfo[Ororok::TrackFieldAlbum], trackInfo[Ororok::TrackFieldLength].toInt());
 }
 
 PlaylistManager * PlaylistManager::instance()

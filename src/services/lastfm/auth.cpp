@@ -11,23 +11,23 @@
 #include "lastfm.h"
 #include "auth.h"
 
-struct ororok::lastfm::Auth::Private
+struct Ororok::lastfm::Auth::Private
 {
 	QNetworkReply * lastfmReply;
 };
 
-ororok::lastfm::Auth::Auth(QObject * parent)
+Ororok::lastfm::Auth::Auth(QObject * parent)
 	: QObject(parent)
 {
 	p = new Private;
 }
 
-ororok::lastfm::Auth::~Auth()
+Ororok::lastfm::Auth::~Auth()
 {
 	delete p;
 }
 
-void ororok::lastfm::Auth::authenticate(const QString & username, const QString & password)
+void Ororok::lastfm::Auth::authenticate(const QString & username, const QString & password)
 {
 	::lastfm::ws::Username = username;
 
@@ -41,16 +41,16 @@ void ororok::lastfm::Auth::authenticate(const QString & username, const QString 
 	connect(p->lastfmReply, SIGNAL(finished()), this, SLOT(lastfmQueryFinished()));
 }
 
-void ororok::lastfm::Auth::reset()
+void Ororok::lastfm::Auth::reset()
 {
 	::lastfm::ws::SessionKey.clear();
 	::lastfm::ws::Username.clear();
 }
 
 
-void ororok::lastfm::Auth::lastfmQueryFinished()
+void Ororok::lastfm::Auth::lastfmQueryFinished()
 {
-	ororok::lastfm::Response lfr(ororok::lastfm::parseReply(p->lastfmReply));
+	Ororok::lastfm::Response lfr(Ororok::lastfm::parseReply(p->lastfmReply));
 	if (lfr.error()) {
 		// cleanup username and session data
 		reset();

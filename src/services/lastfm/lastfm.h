@@ -14,7 +14,7 @@
 #include <lastfm/misc.h>
 #include <lastfm/XmlQuery>
 
-namespace ororok
+namespace Ororok
 {
 namespace lastfm
 {

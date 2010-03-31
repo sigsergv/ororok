@@ -20,7 +20,7 @@
 #include "playlistmanager.h"
 #include "player.h"
 #include "globalshortcutmanager.h"
-#include "lastfm.h"
+#include "services/lastfm/lastfm.h"
 
 #include "ui_mainwindow.h"
 

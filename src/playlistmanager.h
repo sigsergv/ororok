@@ -40,7 +40,7 @@ public slots:
 	void trackPlayingStarted(const QStringList & trackInfo);
 
 protected slots:
-	void midTrackReached();
+	void midTrackReached(const QStringList & trackInfo);
 
 private:
 	struct Private;

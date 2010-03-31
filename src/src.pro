@@ -18,7 +18,9 @@ HEADERS += mainwindow.h \
 	playlistmanager.h \
 	settingsdialog.h \
     edittreeview.h \
-    lastfm.h
+    services/lastfm/lastfm.h \
+    services/lastfm/auth.h \
+    services/lastfm/scrobbleradapter.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -41,7 +43,9 @@ SOURCES += main.cpp \
 	playlistmanager.cpp \
 	settingsdialog.cpp \
     edittreeview.cpp \
-    lastfm.cpp
+    services/lastfm/lastfm.cpp \
+    services/lastfm/auth.cpp \
+    services/lastfm/scrobbleradapter.cpp
 
 FORMS += mainwindow.ui \
 	testwidget.ui \

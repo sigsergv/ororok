@@ -32,7 +32,9 @@ protected slots:
 	void addCollectionDir();
 	void removeCollectionDir();
 	void lastfmTestAuth();
-	void lastfmTestAuthRequest();
+
+	void lastfmSuccessAuth(const QString & name, const QString & sessionKey);
+	void lastfmFailedAuth(int error, const QString & errorText);
 
 protected:
 	void sqlErrorMsg(const QString & message, const QSqlError & error);

@@ -12,7 +12,7 @@
 #include "db.h"
 #include "application.h"
 #include "settingsdialog.h"
-#include "lastfm.h"
+#include "services/lastfm/auth.h"
 #include "settings.h"
 #include "ui_settingsdialog.h"
 
@@ -21,6 +21,7 @@ struct SettingsDialog::Private
 	Ui::SettingsDialog ui;
 	QNetworkReply * lastfmReply;
 	bool beforeClose; // set to true after OK attempt and before applying lastfm settings
+	ororok::lastfm::Auth * lastfmAuth;
 };
 
 SettingsDialog::SettingsDialog(QWidget * parent)
@@ -29,6 +30,7 @@ SettingsDialog::SettingsDialog(QWidget * parent)
 	p = new Private;
 	p->ui.setupUi(this);
 	p->beforeClose = false;
+	p->lastfmAuth = new ororok::lastfm::Auth(this);
 
 	// set icons in the settings list
 
@@ -166,8 +168,6 @@ void SettingsDialog::accept()
 		settings->remove("username");
 		settings->remove("sessionKey");
 		settings->endGroup();
-		lastfm::ws::SessionKey.clear();
-		lastfm::ws::Username.clear();
 		QDialog::accept();
 	}
 }
@@ -204,6 +204,10 @@ void SettingsDialog::connectSignals()
 			this, SLOT(removeCollectionDir()));
 	connect(p->ui.lastfmTestAuthButton, SIGNAL(clicked()),
 			this, SLOT(lastfmTestAuth()));
+	connect(p->lastfmAuth, SIGNAL(success(const QString &, const QString &)),
+			this, SLOT(lastfmSuccessAuth(const QString &, const QString &)));
+	connect(p->lastfmAuth, SIGNAL(failed(int, const QString &)),
+			this, SLOT(lastfmFailedAuth(int, const QString &)));
 }
 
 void SettingsDialog::tableSelectionChanged()
@@ -268,60 +272,37 @@ void SettingsDialog::lastfmTestAuth()
 
 	p->ui.lastfmTestAuthButton->setEnabled(false);
 
-	lastfm::ws::Username = user;
-
-	// test login/password
-	QMap<QString, QString> params;
-	params["method"] = "auth.getMobileSession";
-	params["username"] = user;
-	params["authToken"] = lastfm::md5( (user + lastfm::md5(pass.toUtf8()) ).toUtf8() );
-	p->lastfmReply = lastfm::ws::post(params);
+	p->lastfmAuth->authenticate(user, pass);
 
 	p->ui.lastfmTestLoginProgressBar->show();
 	p->ui.lastfmTestAuthButton->hide();
-	connect(p->lastfmReply, SIGNAL(finished()), this, SLOT(lastfmTestAuthRequest()));
-
 	p->ui.lastfmTestAuthButton->setEnabled(true);
-
-	qDebug() << user << pass;
 }
 
-void SettingsDialog::lastfmTestAuthRequest()
+void SettingsDialog::lastfmSuccessAuth(const QString & name, const QString & sessionKey)
 {
 	p->ui.lastfmTestLoginProgressBar->hide();
 	p->ui.lastfmTestAuthButton->show();
 
-	ororok::LastfmResponse lfr(ororok::parseLastfmReply(p->lastfmReply));
-	if (lfr.error()) {
-		// TODO: display error message
-		QMessageBox::critical(this, tr("Last.fm authentication error"), lfr.errorText());
-		// cleanup username and session data
-		lastfm::ws::SessionKey.clear();
-		lastfm::ws::Username.clear();
-		return;
-	}
-
 	// do not save anything during the test
 	if (p->beforeClose) {
-		const lastfm::XmlQuery lfm(lfr.data);
-		// replace username, just in case
-		lastfm::ws::Username = lfm["session"]["name"].text();
-
-		// remember session key, it's important to re-use it in the
-		// future, we don't want to login every time when application
-		// starts
-		lastfm::ws::SessionKey = lfm["session"]["key"].text();
-
 		QSettings * settings = Ororok::settings();
 		settings->beginGroup("LastFm");
-		settings->setValue("username", lastfm::ws::Username);
-		settings->setValue("sessionKey", lastfm::ws::SessionKey);
+		settings->setValue("username", name);
+		settings->setValue("sessionKey", sessionKey);
 		settings->endGroup();
 
 		// we're in the middle of dialog accepting so close window
 		QDialog::accept();
 	}
-	//qDebug() << lfr.data;
+}
+
+void SettingsDialog::lastfmFailedAuth(int error, const QString & errorText)
+{
+	p->ui.lastfmTestLoginProgressBar->hide();
+	p->ui.lastfmTestAuthButton->show();
+
+	QMessageBox::critical(this, tr("Last.fm authentication error"), errorText);
 }
 
 void SettingsDialog::sqlErrorMsg(const QString & message, const QSqlError & error)

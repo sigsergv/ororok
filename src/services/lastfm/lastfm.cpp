@@ -7,6 +7,9 @@
 
 #include <QtDebug>
 
+#include <lastfm/misc.h>
+#include <lastfm/ws.h>
+
 #include "lastfm.h"
 #include <QSettings>
 #include "settings.h"
@@ -19,29 +22,29 @@ const char * lastfm::ws::SharedSecret = LASTFM_API_SECRET;
 
 QString lastfm::ws::Username;
 
-ororok::LastfmResponse::LastfmResponse(const QByteArray & reply)
+ororok::lastfm::Response::Response(const QByteArray & reply)
 	: data(reply), errCode(0)
 {}
 
-int ororok::LastfmResponse::error()
+int ororok::lastfm::Response::error()
 {
 	return errCode;
 }
 
-QString ororok::LastfmResponse::errorText()
+QString ororok::lastfm::Response::errorText()
 {
 	return errText;
 }
 
-void ororok::LastfmResponse::setError(const QString & text, int code)
+void ororok::lastfm::Response::setError(const QString & text, int code)
 {
 	errCode = code;
 	errText = text;
 }
 
-ororok::LastfmResponse ororok::parseLastfmReply(QNetworkReply * reply)
+ororok::lastfm::Response ororok::lastfm::parseReply(QNetworkReply * reply)
 {
-	ororok::LastfmResponse lfr(reply->readAll());
+	ororok::lastfm::Response lfr(reply->readAll());
 
 	if (!lfr.data.size()) {
 		lfr.setError("Malformed response");
@@ -101,11 +104,11 @@ void ororok::initLastfm()
 	settings->endGroup();
 
 	if (!sessionKey.isEmpty() && !username.isEmpty()) {
-		lastfm::ws::Username = username;
-		lastfm::ws::SessionKey = sessionKey;
-		qDebug() << "Last.fm initialized for user" << lastfm::ws::Username;
+		::lastfm::ws::Username = username;
+		::lastfm::ws::SessionKey = sessionKey;
+		qDebug() << "Last.fm initialized for user" << ::lastfm::ws::Username;
 	} else {
-		lastfm::ws::SessionKey.clear();
-		lastfm::ws::Username.clear();
+		::lastfm::ws::SessionKey.clear();
+		::lastfm::ws::Username.clear();
 	}
 }

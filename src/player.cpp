@@ -26,6 +26,7 @@ struct Player::Private
 	Phonon::VolumeSlider * volumeSlider;
 
 	QStringList nextTrack;
+	QStringList currentTrack;
 	bool midTrackReached;
 };
 
@@ -92,8 +93,10 @@ void Player::start(const QStringList & trackInfo)
 	p->mediaObject->clear();
 	p->mediaObject->enqueue(f);
 	p->mediaObject->play();
+	p->currentTrack = trackInfo;
 	p->nextTrack.clear();
 	p->midTrackReached = false;
+	emit trackChanged(trackInfo);
 }
 
 void Player::enqueue(const QStringList & trackInfo)
@@ -110,7 +113,7 @@ void Player::tick(qint64 time)
 	// emit signal with track time
 	emit trackTimeChanged(time, totalTime);
 	if (!p->midTrackReached && time >= totalTime/2) {
-		emit midTrackReached();
+		emit midTrackReached(p->currentTrack);
 		p->midTrackReached = true;
 	}
 }
@@ -119,7 +122,7 @@ void Player::almostFinished()
 {
 	emit nextTrackNeeded();
 	if (!p->midTrackReached) {
-		emit midTrackReached();
+		emit midTrackReached(p->currentTrack);
 		p->midTrackReached = true;
 	}
 }
@@ -128,6 +131,7 @@ void Player::sourceShanged(const Phonon::MediaSource &)
 {
 	if (!p->nextTrack.isEmpty()) {
 		qDebug() << "playing next track, emit signal";
+		p->currentTrack = p->nextTrack;
 		emit trackChanged(p->nextTrack);
 	}
 	p->nextTrack.clear();

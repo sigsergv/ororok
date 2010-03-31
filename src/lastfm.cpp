@@ -61,7 +61,7 @@ ororok::LastfmResponse ororok::parseLastfmReply(QNetworkReply * reply)
 
 	QString const status = lfm.attribute("status");
 	QDomElement error = lfm.firstChildElement("error");
-	uint const n = lfm.childNodes().count();
+	//uint const n = lfm.childNodes().count();
 
 	// no elements beyond the lfm is perfectably acceptable <-- wtf?
 	// if (n == 0) // nothing useful in the response

@@ -8,7 +8,7 @@
 
 #include "collectiontreewidget.h"
 #include "collectionitemmodel.h"
-#include "albumitemdelegate.h"
+#include "collectionitemdelegate.h"
 #include "collectiontreefilter.h"
 
 struct CollectionTreeWidget::Private

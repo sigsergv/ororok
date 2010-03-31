@@ -185,6 +185,10 @@ void CollectionTreeItem::fetchArtists(CollectionTreeItem * parent)
 		return;
 	}
 
+	QChar prevLetter;
+	QString artistName;
+
+	CollectionTreeItem * letterArtist;
 	while (query.next()) {
 		n++;
 		artist = new CollectionTreeItem(Artist, parent);
@@ -193,6 +197,22 @@ void CollectionTreeItem::fetchArtists(CollectionTreeItem * parent)
 		artist->searchString = query.value(1).toString();
 		artist->row = n;
 		artist->fetchData();
+
+		// take first non-space character from artist's name
+		artistName = query.value(1).toString().trimmed();
+		QChar curLetter = artistName.at(0).toUpper();
+		if (curLetter != prevLetter) {
+			prevLetter = curLetter;
+			// append new "virtual" artist
+			letterArtist = new CollectionTreeItem(Artist, parent);
+			letterArtist->data["id"] = -2;
+			letterArtist->data["name"] = curLetter;
+			letterArtist->row = n;
+			artist->row = n + 1;
+			p->childItems[n] = letterArtist;
+			n++;
+		}
+
 		p->childItems[n] = artist;
 	}
 

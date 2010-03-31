@@ -112,6 +112,14 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 		return item->data["name"];
 	}
 
+	if (ItemArtistLetterRole == role && CollectionTreeItem::Artist == itemType) {
+		if (item->data["id"].toInt() == -2) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	if (ItemQuickSearchMatchedRole == role) {
 		// return QString object that contain
 		return item->matched;
@@ -182,6 +190,9 @@ Qt::ItemFlags CollectionItemModel::flags(const QModelIndex &index) const
 	Qt::ItemFlags defaultFlags = QAbstractItemModel::flags(index);
 
 	if (index.isValid()) {
+		if (index.data(ItemArtistLetterRole).toBool()) {
+			return defaultFlags;
+		}
 		return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
 	} else {
 		return Qt::ItemIsDropEnabled | defaultFlags;

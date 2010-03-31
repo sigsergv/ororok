@@ -70,6 +70,19 @@ void CollectionItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem
 		textPos.setY((baseRect.topLeft().y() + baseRect.bottomLeft().y())/2);
 		painter->drawText(textPos, index.data(Qt::DisplayRole).toString());
 		return;
+	} else if (itemType == CollectionTreeItem::Artist && index.data(CollectionItemModel::ItemArtistLetterRole).toBool()) {
+		// do not draw frame, selection etc
+
+		QRect baseRect(option.rect);
+		// draw character
+		baseRect.adjust(20, 0, 0, 0);
+		QFont f(painter->font());
+		f.setBold(true);
+		painter->setFont(f);
+		painter->drawText(baseRect, Qt::AlignVCenter|Qt::AlignLeft, index.data(Qt::DisplayRole).toString());
+		f.setBold(false);
+		painter->setFont(f);
+		return;
 	}
 	QItemDelegate::paint(painter, option, index);
 }

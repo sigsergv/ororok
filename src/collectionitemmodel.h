@@ -17,7 +17,7 @@ class CollectionItemModel : public QAbstractItemModel
 	Q_OBJECT
 public:
 	enum ItemRole {ItemTypeRole=Qt::UserRole+1, ItemAlbumCoverRole, ItemAlbumNameRole,
-		ItemQuickSearchMatchedRole, ItemTrackInfoRole, ItemDbIdRole};
+		ItemQuickSearchMatchedRole, ItemTrackInfoRole, ItemDbIdRole, ItemArtistLetterRole};
 
 	CollectionItemModel(QObject * parent);
 

@@ -31,6 +31,8 @@ protected slots:
 	void tableSelectionChanged();
 	void addCollectionDir();
 	void removeCollectionDir();
+	void lastfmTestAuth();
+	void lastfmTestAuthRequest();
 
 protected:
 	void sqlErrorMsg(const QString & message, const QSqlError & error);

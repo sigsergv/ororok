@@ -6,7 +6,7 @@ HEADERS += mainwindow.h \
 	collectiontreewidget.h \
 	collectionitemmodel.h \
 	collectiontreeitem.h \
-	albumitemdelegate.h \
+	collectionitemdelegate.h \
 	settings.h \
 	cache.h \
 	collectiontreefilter.h \
@@ -17,7 +17,8 @@ HEADERS += mainwindow.h \
 	player.h \
 	playlistmanager.h \
 	settingsdialog.h \
-    edittreeview.h
+    edittreeview.h \
+    lastfm.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -28,7 +29,7 @@ SOURCES += main.cpp \
     collectiontreewidget.cpp \
     collectionitemmodel.cpp \
     collectiontreeitem.cpp \
-    albumitemdelegate.cpp \
+    collectionitemdelegate.cpp \
     settings.cpp \
     cache.cpp \
     collectiontreefilter.cpp \
@@ -39,7 +40,8 @@ SOURCES += main.cpp \
 	player.cpp \
 	playlistmanager.cpp \
 	settingsdialog.cpp \
-    edittreeview.cpp
+    edittreeview.cpp \
+    lastfm.cpp
 
 FORMS += mainwindow.ui \
 	testwidget.ui \
@@ -52,6 +54,7 @@ CODECFORTR = UTF-8
 QT += xml
 QT += sql
 QT += phonon
+QT += network
 
 INCLUDEPATH = 3rdparty/globalshortcut
 include(3rdparty/globalshortcut/globalshortcut.pri)
@@ -63,6 +66,7 @@ win32 {
 unix {
 	CONFIG += link_pkgconfig
 	PKGCONFIG += taglib
+    LIBS += -llastfm
 }
 
 DESTDIR = ../

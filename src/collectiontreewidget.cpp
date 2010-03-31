@@ -46,7 +46,7 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 
 	createModel();
 
-	AlbumItemDelegate * delegate = new AlbumItemDelegate(this);
+	CollectionItemDelegate * delegate = new CollectionItemDelegate(this);
 	p->collectionTreeView->setItemDelegate(delegate);
 
 	//p->collectionTreeView->setModel(p->proxy);

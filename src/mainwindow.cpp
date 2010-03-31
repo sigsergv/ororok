@@ -20,6 +20,7 @@
 #include "playlistmanager.h"
 #include "player.h"
 #include "globalshortcutmanager.h"
+#include "lastfm.h"
 
 #include "ui_mainwindow.h"
 
@@ -135,6 +136,9 @@ MainWindow::MainWindow() :
 	setCorner(Qt::BottomLeftCorner, Qt::LeftDockWidgetArea);
 
 	loadGlobalShortcuts();
+
+	// init lastfm
+	ororok::initLastfm();
 
 	// Debug code. test playlists
 	// pm->playlist("new-playlist");

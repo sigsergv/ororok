@@ -9,6 +9,8 @@
 #include <QtGui>
 #include <QtDebug>
 
+#include <lastfm/Scrobble>
+
 #include "playlistmanager.h"
 #include "application.h"
 #include "playlistwidget.h"
@@ -273,6 +275,7 @@ void PlaylistManager::trackPlayingStarted(const QStringList & trackInfo)
 void PlaylistManager::midTrackReached()
 {
 	// submit track to lastfm
+	// find currently playing track and submit it
 }
 
 PlaylistManager * PlaylistManager::instance()

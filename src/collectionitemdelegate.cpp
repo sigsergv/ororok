@@ -7,20 +7,20 @@
 #include <QtGui>
 #include <QtDebug>
 
-#include "albumitemdelegate.h"
+#include "collectionitemdelegate.h"
 #include "collectiontreeitem.h"
 #include "collectionitemmodel.h"
 #include "settings.h"
 #include "cache.h"
 
-AlbumItemDelegate::AlbumItemDelegate(QObject *parent)
+CollectionItemDelegate::CollectionItemDelegate(QObject *parent)
 //		: QAbstractItemDelegate(parent)
 		: QItemDelegate(parent)
 {
 
 }
 
-void AlbumItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void CollectionItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
 	// get note type
 	int itemType = index.data(CollectionItemModel::ItemTypeRole).toInt();
@@ -74,7 +74,7 @@ void AlbumItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opt
 	QItemDelegate::paint(painter, option, index);
 }
 
-QSize AlbumItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QSize CollectionItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
 	int itemType = index.data(CollectionItemModel::ItemTypeRole).toInt();
 	QSize s = QItemDelegate::sizeHint(option, index);

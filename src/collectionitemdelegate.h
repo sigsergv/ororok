@@ -1,28 +1,28 @@
 /*
- * albumitemdelegate.h
+ * collectionitemdelegate.h
  *
  *  Created on: Oct 24, 2009
  *      Author: Sergei Stolyarov
  */
 
-#ifndef ALBUMITEMDELEGATE_H_
-#define ALBUMITEMDELEGATE_H_
+#ifndef COLLECTIONITEMDELEGATE_H_
+#define COLLECTIONITEMDELEGATE_H_
 
 #include <QItemDelegate>
 //#include <QAbstractItemDelegate>
 
-//class AlbumItemDelegate : public QAbstractItemDelegate
+//class CollectionItemDelegate : public QAbstractItemDelegate
 /**
  * Class for drawing collection tree elements
  */
-class AlbumItemDelegate : public QItemDelegate
+class CollectionItemDelegate : public QItemDelegate
 {
 	Q_OBJECT
 public:
-	AlbumItemDelegate(QObject *parent = 0);
+	CollectionItemDelegate(QObject *parent = 0);
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 	QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
 };
 
-#endif /* ALBUMITEMDELEGATE_H_ */
+#endif /* COLLECTIONITEMDELEGATE_H_ */

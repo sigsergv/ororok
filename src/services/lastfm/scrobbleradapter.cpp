@@ -51,4 +51,3 @@ void Ororok::lastfm::ScrobblerAdapter::nowPlaying(const QString & title, const Q
 		p->scrobbler->nowPlaying(p->currentTrack);
 	}
 }
-

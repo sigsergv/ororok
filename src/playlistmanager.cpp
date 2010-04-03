@@ -37,8 +37,8 @@ PlaylistManager::PlaylistManager()
 	Player * player = Player::instance();
 	connect(player, SIGNAL(trackChanged(const QStringList &)),
 			this, SLOT(trackPlayingStarted(const QStringList &)));
-	connect(player, SIGNAL(midTrackReached(const QStringList &)),
-			this, SLOT(midTrackReached(const QStringList &)));
+	connect(player, SIGNAL(midTrackReached(const QStringList &, const QDateTime &)),
+			this, SLOT(midTrackReached(const QStringList &, const QDateTime &)));
 }
 
 PlaylistWidget * PlaylistManager::playlist(const QString & name, const QString & title)
@@ -274,16 +274,18 @@ void PlaylistManager::trackPlayingStarted(const QStringList & trackInfo)
 	}
 
 	// send lastfm "nowplaying" notification
-	qDebug() << "send \"now playing\" notification to Last.fm";
+	qDebug() << "send \"now playing\" notification to Last.fm:" << trackInfo[Ororok::TrackFieldTitle];
+	p->lastfmScrobbler->nowPlaying(trackInfo[Ororok::TrackFieldTitle], trackInfo[Ororok::TrackFieldArtist],
+			trackInfo[Ororok::TrackFieldAlbum], trackInfo[Ororok::TrackFieldLength].toUInt());
 }
 
-void PlaylistManager::midTrackReached(const QStringList & trackInfo)
+void PlaylistManager::midTrackReached(const QStringList & trackInfo, const QDateTime & startTime)
 {
 	// submit track to lastfm
 	// find currently playing track and submit it
-	qDebug() << "submit track to lastfm";
-	p->lastfmScrobbler->nowPlaying(trackInfo[Ororok::TrackFieldTitle], trackInfo[Ororok::TrackFieldArtist],
-			trackInfo[Ororok::TrackFieldAlbum], trackInfo[Ororok::TrackFieldLength].toInt());
+	qDebug() << "submit track to lastfm:" << trackInfo[Ororok::TrackFieldTitle];
+	p->lastfmScrobbler->submit(trackInfo[Ororok::TrackFieldTitle], trackInfo[Ororok::TrackFieldArtist],	trackInfo[Ororok::TrackFieldAlbum],
+			trackInfo[Ororok::TrackFieldLength].toUInt(), trackInfo[Ororok::TrackFieldNo].toUInt(), startTime);
 }
 
 PlaylistManager * PlaylistManager::instance()

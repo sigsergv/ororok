@@ -5,6 +5,7 @@
  *      Author: Sergei Stolyarov
  */
 
+#include <math.h>
 #include <QtDebug>
 #include <lastfm/ws.h>
 #include <lastfm/Audioscrobbler>
@@ -34,7 +35,7 @@ Ororok::lastfm::ScrobblerAdapter::~ScrobblerAdapter()
 	delete p;
 }
 
-void Ororok::lastfm::ScrobblerAdapter::nowPlaying(const QString & title, const QString & artist, const QString & album, int duration)
+void Ororok::lastfm::ScrobblerAdapter::nowPlaying(const QString & title, const QString & artist, const QString & album, uint duration)
 {
 	p->currentTrack.stamp();
 	p->currentTrack.setTitle(title);
@@ -49,5 +50,35 @@ void Ororok::lastfm::ScrobblerAdapter::nowPlaying(const QString & title, const Q
 	p->currentTrack.setSource(::lastfm::Track::Player);
 	if (!p->currentTrack.isNull()) {
 		p->scrobbler->nowPlaying(p->currentTrack);
+	}
+}
+
+void Ororok::lastfm::ScrobblerAdapter::submit(const QString & title, const QString & artist, const QString & album,
+		uint duration, uint trackNum, QDateTime timeStarted)
+{
+	p->currentTrack.stamp();
+	p->currentTrack.setTitle(title);
+	p->currentTrack.setDuration(duration);
+	if (trackNum > 0) {
+		p->currentTrack.setTrackNumber(trackNum);
+	}
+
+	if (!artist.isEmpty()) {
+		p->currentTrack.setArtist(artist);
+	}
+	if (!album.isEmpty()) {
+		p->currentTrack.setAlbum(album);
+	}
+
+	p->currentTrack.setSource(::lastfm::Track::Player);
+	if (!p->currentTrack.isNull()) {
+		// check that submit is allowed
+		// submitted track must be played at least "duration/2"
+		// calc difference, in seconds
+		uint diff = abs( (timeStarted.toTime_t() - QDateTime::currentDateTime().toTime_t()) );
+		if (duration > 30 && diff > duration/2) {
+			p->scrobbler->cache(p->currentTrack);
+			p->scrobbler->submit();
+		}
 	}
 }

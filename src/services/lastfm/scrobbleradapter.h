@@ -7,6 +7,7 @@
 #include <QObject>
 
 struct QString;
+struct QDateTime;
 
 namespace Ororok
 {
@@ -20,7 +21,9 @@ public:
 	ScrobblerAdapter(QObject * parent);
 	~ScrobblerAdapter();
 
-	void nowPlaying(const QString & title, const QString & artist, const QString & album, int duration);
+	void nowPlaying(const QString & title, const QString & artist, const QString & album, uint duration);
+	void submit(const QString & title, const QString & artist, const QString & album,
+			uint duration, uint trackNum, QDateTime timeStarted);
 
 private:
 	struct Private;

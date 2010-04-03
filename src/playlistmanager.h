@@ -14,6 +14,7 @@ struct PlaylistWidget;
 struct QString;
 struct QStringList;
 struct QTabWidget;
+struct QDateTime;
 
 class PlaylistManager : public QObject
 {
@@ -40,7 +41,7 @@ public slots:
 	void trackPlayingStarted(const QStringList & trackInfo);
 
 protected slots:
-	void midTrackReached(const QStringList & trackInfo);
+	void midTrackReached(const QStringList & trackInfo, const QDateTime & startTime);
 
 private:
 	struct Private;

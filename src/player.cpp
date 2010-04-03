@@ -25,8 +25,11 @@ struct Player::Private
 	Phonon::SeekSlider * seekSlider;
 	Phonon::VolumeSlider * volumeSlider;
 
+	qint32 tickInterval;
 	QStringList nextTrack;
 	QStringList currentTrack;
+	QDateTime currentTrackStartTime;
+	qint64 currentTrackPlayingTime;
 	bool midTrackReached;
 };
 
@@ -53,6 +56,7 @@ Player::Player()
 			this, SLOT(sourceShanged(const Phonon::MediaSource &)));
 
 	Phonon::createPath(p->mediaObject, p->audioOutput);
+	p->tickInterval = p->mediaObject->tickInterval();
 }
 
 Phonon::SeekSlider * Player::seekSlider()
@@ -94,8 +98,10 @@ void Player::start(const QStringList & trackInfo)
 	p->mediaObject->enqueue(f);
 	p->mediaObject->play();
 	p->currentTrack = trackInfo;
+	p->currentTrackStartTime = QDateTime::currentDateTime();
 	p->nextTrack.clear();
 	p->midTrackReached = false;
+	p->currentTrackPlayingTime = 0;
 	emit trackChanged(trackInfo);
 }
 
@@ -109,12 +115,16 @@ void Player::enqueue(const QStringList & trackInfo)
 
 void Player::tick(qint64 time)
 {
+	Q_UNUSED(time);
 	qint64 totalTime = p->mediaObject->totalTime();
+	p->currentTrackPlayingTime += p->tickInterval;
+
 	// emit signal with track time
-	emit trackTimeChanged(time, totalTime);
-	if (!p->midTrackReached && time >= totalTime/2) {
-		emit midTrackReached(p->currentTrack);
+	emit trackTimeChanged(p->currentTrackPlayingTime, totalTime);
+	if (!p->midTrackReached && p->currentTrackPlayingTime >= 4000+totalTime/2) { // 4000 - 4 seconds
+		emit midTrackReached(p->currentTrack, p->currentTrackStartTime);
 		p->midTrackReached = true;
+		qDebug() << "(time, total) => " << p->currentTrackPlayingTime << totalTime;
 	}
 }
 
@@ -122,7 +132,7 @@ void Player::almostFinished()
 {
 	emit nextTrackNeeded();
 	if (!p->midTrackReached) {
-		emit midTrackReached(p->currentTrack);
+		emit midTrackReached(p->currentTrack, p->currentTrackStartTime);
 		p->midTrackReached = true;
 	}
 }
@@ -134,6 +144,8 @@ void Player::sourceShanged(const Phonon::MediaSource &)
 		p->currentTrack = p->nextTrack;
 		emit trackChanged(p->nextTrack);
 	}
+	p->midTrackReached = false;
+	p->currentTrackPlayingTime = 0;
 	p->nextTrack.clear();
 }
 

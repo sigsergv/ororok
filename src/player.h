@@ -31,7 +31,7 @@ signals:
 	void trackTimeChanged(qint64 time, qint64 totalTime);
 	void nextTrackNeeded();
 	void trackChanged(const QStringList & trackInfo);
-	void midTrackReached(const QStringList & trackInfo); // emitted when middle of playing track is reached
+	void midTrackReached(const QStringList & trackInfo, const QDateTime & startTime); // emitted when middle of playing track is reached
 
 public slots:
 	void stop();

@@ -19,6 +19,7 @@
 #include "playlistwidget.h"
 #include "playlistmanager.h"
 #include "player.h"
+#include "playingcontextwidget.h"
 #include "globalshortcutmanager.h"
 #include "services/lastfm/lastfm.h"
 
@@ -35,6 +36,7 @@ struct MainWindow::Private
 	Ui::MainWindow ui;
 	UpdateThread * ut;
 	CollectionTreeWidget * ctw;
+	PlayingContextWidget * pcw;
 	QProgressBar * pb;
 	//QFrame * pbSection;
 
@@ -71,6 +73,9 @@ MainWindow::MainWindow() :
 	p->ut = new UpdateThread(this);
 	p->ctw = new CollectionTreeWidget(this);
 	p->ui.collectionDock->setWidget(p->ctw);
+
+	p->pcw = new PlayingContextWidget(this);
+	p->ui.contextDock->setWidget(p->pcw);
 
 	// init lastfm
 	Ororok::initLastfm();
@@ -321,6 +326,8 @@ void MainWindow::connectSignals()
 
 	Player * player = Player::instance();
 
+	connect(player, SIGNAL(trackChanged(const QStringList &)),
+			p->pcw, SLOT(playerTrackStarted(const QStringList &)));
 	connect(player, SIGNAL(trackTimeChanged(qint64, qint64)), this, SLOT(trackTimeChange(qint64, qint64)));
 	connect(player, SIGNAL(nextTrackNeeded()), this, SLOT(playerRequestedNextTrack()));
 }

@@ -20,6 +20,7 @@ HEADERS += mainwindow.h \
 	playlistmanager.h \
 	settingsdialog.h \
     edittreeview.h \
+    playingcontextwidget.h \
     services/lastfm/lastfm.h \
     services/lastfm/auth.h \
     services/lastfm/scrobbleradapter.h
@@ -45,6 +46,7 @@ SOURCES += main.cpp \
 	playlistmanager.cpp \
 	settingsdialog.cpp \
     edittreeview.cpp \
+    playingcontextwidget.cpp \
     services/lastfm/lastfm.cpp \
     services/lastfm/auth.cpp \
     services/lastfm/scrobbleradapter.cpp
@@ -57,10 +59,7 @@ RESOURCES = ../resources/application.qrc
 TARGET = ororok
 CODECFORTR = UTF-8
 
-QT += xml
-QT += sql
-QT += phonon
-QT += network
+QT += xml sql phonon network webkit
 
 INCLUDEPATH = 3rdparty/globalshortcut
 include(3rdparty/globalshortcut/globalshortcut.pri)

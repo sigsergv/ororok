@@ -1,0 +1,12 @@
+syntax: glob
+
+.hgignore
+.settings
+src/Makefile*
+./Makefile
+*.o
+moc_*.cpp
+ui_*.h
+debug/*
+ororok
+collection.sqlite*

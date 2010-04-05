@@ -22,6 +22,7 @@ QString imagesCachePath();
 QString profilePath();
 void initSettings();
 QSettings * settings();
+QString version();
 
 /**
  * generate unique (in the session) value

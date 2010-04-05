@@ -34,6 +34,11 @@ QSettings * settings()
 	return _settings;
 }
 
+QString version()
+{
+	return QString(OROROK_VERSION);
+}
+
 QString profilePath()
 {
 	QDir dir;

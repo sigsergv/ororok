@@ -40,7 +40,7 @@ void PlayingContextWidget::playerTrackStarted(const QStringList & trackInfo)
 {
 	QString html;
 
-	html += tr("<h1>Now Playing</h1>");
+	//html += tr("<h1>Now Playing</h1>");
 	html += tr("<!--song title--><strong>%1</strong> by <!--artist name--><strong>%2</strong>")
 			.arg(trackInfo[Ororok::TrackFieldTitle]).
 			arg(trackInfo[Ororok::TrackFieldArtist]);

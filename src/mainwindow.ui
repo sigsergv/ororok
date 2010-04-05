@@ -22,7 +22,7 @@
      <x>0</x>
      <y>0</y>
      <width>749</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOrorok">
@@ -35,7 +35,7 @@
     <property name="title">
      <string>&amp;Help</string>
     </property>
-    <addaction name="actionAbout_Ororok"/>
+    <addaction name="actionAboutOrorok"/>
    </widget>
    <widget class="QMenu" name="menuCollection">
     <property name="title">
@@ -131,7 +131,7 @@
     <string>Reload collection tree</string>
    </property>
   </action>
-  <action name="actionAbout_Ororok">
+  <action name="actionAboutOrorok">
    <property name="text">
     <string>About Ororok</string>
    </property>

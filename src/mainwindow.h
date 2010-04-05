@@ -27,6 +27,7 @@ protected:
 protected slots:
 	void rescanCollection();
 	void newPlaylist();
+	void about();
 	void stopRescanCollection();
 	void updateThreadStarted();
 	void updateThreadFinished();

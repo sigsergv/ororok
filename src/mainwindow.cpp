@@ -21,6 +21,7 @@
 #include "player.h"
 #include "playingcontextwidget.h"
 #include "globalshortcutmanager.h"
+#include "aboutdialog.h"
 #include "services/lastfm/lastfm.h"
 
 #include "ui_mainwindow.h"
@@ -161,6 +162,14 @@ void MainWindow::newPlaylist()
 	PlaylistManager * pm = PlaylistManager::instance();
 	pm->playlist();
 }
+
+void MainWindow::about()
+{
+	AboutDialog a(this);
+	a.setModal(true);
+	a.exec();
+}
+
 
 void MainWindow::stopRescanCollection()
 {
@@ -314,6 +323,7 @@ void MainWindow::connectSignals()
 	connect(p->ui.actionRescanCollection, SIGNAL(triggered()), this, SLOT(rescanCollection()));
 	connect(p->ui.actionReloadCollectionTree, SIGNAL(triggered()), this, SLOT(refreshCollectionTree()));
 	connect(p->ui.actionEditSettings, SIGNAL(triggered()), this, SLOT(editSettings()));
+	connect(p->ui.actionAboutOrorok, SIGNAL(triggered()), this, SLOT(about()));
 	connect(p->ut, SIGNAL(started()), this, SLOT(updateThreadStarted()));
 	connect(p->ut, SIGNAL(finished()), this, SLOT(updateThreadFinished()));
 	connect(p->ut, SIGNAL(terminated()), this, SLOT(updateThreadTerminated()));

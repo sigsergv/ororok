@@ -21,6 +21,7 @@ HEADERS += mainwindow.h \
 	settingsdialog.h \
     edittreeview.h \
     playingcontextwidget.h \
+    aboutdialog.h \
     services/lastfm/lastfm.h \
     services/lastfm/auth.h \
     services/lastfm/scrobbleradapter.h
@@ -47,13 +48,15 @@ SOURCES += main.cpp \
 	settingsdialog.cpp \
     edittreeview.cpp \
     playingcontextwidget.cpp \
+    aboutdialog.cpp \
     services/lastfm/lastfm.cpp \
     services/lastfm/auth.cpp \
     services/lastfm/scrobbleradapter.cpp
 
 FORMS += mainwindow.ui \
 	testwidget.ui \
-	settingsdialog.ui
+	settingsdialog.ui \
+    aboutdialog.ui
 
 RESOURCES = ../resources/application.qrc
 TARGET = ororok

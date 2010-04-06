@@ -25,7 +25,10 @@
         </size>
        </property>
        <property name="text">
-        <string>ICON</string>
+        <string notr="true"/>
+       </property>
+       <property name="pixmap">
+        <pixmap resource="../resources/application.qrc">:/ororok-48.png</pixmap>
        </property>
       </widget>
      </item>
@@ -183,6 +186,8 @@ p, li { white-space: pre-wrap; }
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources/application.qrc"/>
+ </resources>
  <connections/>
 </ui>

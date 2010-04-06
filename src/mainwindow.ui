@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../resources/application.qrc">
+    <normaloff>:/ororok-32.png</normaloff>:/ororok-32.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout"/>
   </widget>
@@ -22,7 +26,7 @@
      <x>0</x>
      <y>0</y>
      <width>749</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOrorok">
@@ -155,6 +159,8 @@
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources/application.qrc"/>
+ </resources>
  <connections/>
 </ui>

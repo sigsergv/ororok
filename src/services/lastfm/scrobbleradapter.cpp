@@ -24,7 +24,7 @@ Ororok::lastfm::ScrobblerAdapter::ScrobblerAdapter(QObject * parent)
 {
 	p = new Private;
 	// TODO: replace "tst" with real client-id
-	p->scrobbler = new ::lastfm::Audioscrobbler("tst");
+	p->scrobbler = new ::lastfm::Audioscrobbler("oro");
 	//qDebug() << "::lastfm::ws::SessionKey" << ::lastfm::ws::SessionKey;
 	//qDebug() << "::lastfm::ws::Username" << ::lastfm::ws::Username;
 }

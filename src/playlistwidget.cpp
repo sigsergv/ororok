@@ -11,6 +11,7 @@
 #include "playlistmodel.h"
 #include "playlistitemdelegate.h"
 #include "edittreeview.h"
+#include "settings.h"
 
 struct PlaylistWidget::Private
 {
@@ -25,7 +26,7 @@ struct PlaylistWidget::Private
 	QAction * deleteSelectedTracks;
 };
 
-PlaylistWidget::PlaylistWidget(QWidget * parent)
+PlaylistWidget::PlaylistWidget(QString uid, PlaylistWidget::PlaylistType t, QWidget * parent)
 	: QWidget(parent)
 {
 	p = new Private;
@@ -46,7 +47,19 @@ PlaylistWidget::PlaylistWidget(QWidget * parent)
 	p->tracksList->setAcceptDrops(true);
 	layout->addWidget(p->tracksList);
 
-	p->model = new PlaylistModel(this);
+	// construct playlist name
+	QString storePath;
+	switch (t) {
+	case PlaylistTemporary:
+		storePath = Ororok::tmpPlaylistsStorePath();
+		break;
+
+	case PlaylistPermanent:
+		storePath = Ororok::playlistsStorePath();
+		break;
+	}
+
+	p->model = new PlaylistModel(storePath + "/" + uid, this);
 
 	p->proxy = new QSortFilterProxyModel(this);
 	p->proxy->setSourceModel(p->model);
@@ -54,7 +67,7 @@ PlaylistWidget::PlaylistWidget(QWidget * parent)
 
 	// create menus and actions
 
-	p->tracksContextMenu = new QMenu();
+	p->tracksContextMenu = new QMenu(this);
 	p->deleteSelectedTracks = p->tracksContextMenu->addAction(tr("Delete selected tracks"));
 
 	// resize columns

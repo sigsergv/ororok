@@ -19,6 +19,8 @@ const int ALBUM_ICON_SIZE = 35;
 const int ALBUM_ITEM_PADDING = 2;
 
 QString imagesCachePath();
+QString playlistsStorePath();
+QString tmpPlaylistsStorePath();
 QString profilePath();
 void initSettings();
 QSettings * settings();

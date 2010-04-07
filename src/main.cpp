@@ -7,6 +7,7 @@
 
 #include <QtGui>
 #include <QtSql>
+#include <stdlib.h>
 
 #include "mainwindow.h"
 #include "settings.h"
@@ -14,6 +15,9 @@
 
 int main(int argv, char *args[])
 {
+	// init rand
+	srand(QDateTime::currentDateTime().toUTC().toTime_t());
+
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
     QApplication app(argv, args);
 	app.setQuitOnLastWindowClosed(true);

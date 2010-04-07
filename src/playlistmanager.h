@@ -12,6 +12,7 @@
 
 struct PlaylistWidget;
 struct QString;
+struct QChar;
 struct QStringList;
 struct QTabWidget;
 struct QDateTime;
@@ -27,10 +28,15 @@ public:
 	 * @param name name of the playlist
 	 * @return
 	 */
-	PlaylistWidget * playlist(const QString & name=QString(), const QString & title=QString());
+	//PlaylistWidget * playlist(const QString & name=QString(), const QString & title=QString());
+	PlaylistWidget * createPlaylist(const QString & name=QString());
+	PlaylistWidget * loadPlaylist(const QChar & plType, const QString & uid, const QString & name);
 	QTabWidget * playlistsTabWidget();
 	QStringList fetchNextTrack();
 	QStringList fetchPrevTrack();
+
+protected:
+	PlaylistWidget * initPlaylistWidget(const QString & uid, const QChar & plType, const QString & name);
 
 public slots:
 	void requestTrackPause();
@@ -39,6 +45,8 @@ public slots:
 	void requestTrackPlay(const QStringList & trackInfo);
 	void requestTrackPlay();
 	void trackPlayingStarted(const QStringList & trackInfo);
+
+	void tabCloseRequested(int index);
 
 protected slots:
 	void midTrackReached(const QStringList & trackInfo, const QDateTime & startTime);

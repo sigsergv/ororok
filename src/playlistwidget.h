@@ -18,7 +18,10 @@ class PlaylistWidget : public QWidget
 	Q_OBJECT
 
 public:
-	PlaylistWidget(QWidget * parent = 0);
+	enum PlaylistType {PlaylistTemporary, PlaylistPermanent};
+
+	//PlaylistWidget(QWidget * parent = 0);
+	PlaylistWidget(QString uid, PlaylistType t, QWidget * parent = 0);
 	~PlaylistWidget();
 
 	/**

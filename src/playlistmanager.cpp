@@ -8,12 +8,14 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtDebug>
+#include <stdlib.h>
 
 #include "playlistmanager.h"
 #include "application.h"
 #include "playlistwidget.h"
 #include "playlistmodel.h"
 #include "player.h"
+#include "settings.h"
 #include "mimetrackinfo.h"
 #include "services/lastfm/scrobbleradapter.h"
 
@@ -40,7 +42,7 @@ PlaylistManager::PlaylistManager()
 	connect(player, SIGNAL(midTrackReached(const QStringList &, const QDateTime &)),
 			this, SLOT(midTrackReached(const QStringList &, const QDateTime &)));
 }
-
+/*
 PlaylistWidget * PlaylistManager::playlist(const QString & name, const QString & title)
 {
 	QString playlistName(name);
@@ -75,12 +77,94 @@ PlaylistWidget * PlaylistManager::playlist(const QString & name, const QString &
 
 	return p->playlists[playlistName];
 }
+*/
+
+PlaylistWidget * PlaylistManager::createPlaylist(const QString & name)
+{
+	QString playlistName(name);
+	if (name.isEmpty()) {
+		playlistName = tr("New Playlist");
+	}
+
+	QString storePath = Ororok::tmpPlaylistsStorePath();
+	QString plFilePath;
+	QString uid;
+
+	// allocate UID
+	while (true) {
+		QStringList uidc;
+		for (int i=0; i<4; i++) {
+			uidc.append(QString("%1").arg(rand(), 0, 16));
+		}
+		uidc << QString("%1").arg(QDateTime::currentDateTime().toUTC().toTime_t(), 0, 16);
+		uid = uidc.join("-");
+		plFilePath = storePath + "/" + uid;
+		QFileInfo fi(plFilePath);
+		if (!fi.exists()) {
+			break;
+		}
+	}
+
+	return initPlaylistWidget(uid, 't', playlistName);
+}
+
+PlaylistWidget * PlaylistManager::loadPlaylist(const QChar & plType, const QString & uid, const QString & name)
+{
+	QChar t(plType);
+	if (t != 't' && t != 'p') {
+		// unknown playlist type: neither 't'emporary nor 'p'ermanent
+		return 0;
+	}
+
+	QString storePath;
+	if (t == 't') {
+		storePath = Ororok::tmpPlaylistsStorePath();
+	} else {
+		storePath = Ororok::playlistsStorePath();
+	}
+	QString plFilePath = storePath + "/" + uid;
+
+	return initPlaylistWidget(uid, t, name);
+}
 
 QTabWidget * PlaylistManager::playlistsTabWidget()
 {
 	if (p->playlistsTabWidget == 0) {
 		p->playlistsTabWidget = new QTabWidget();
-		playlist("default", tr("Default"));
+		p->playlistsTabWidget->setTabsClosable(true);
+		connect(p->playlistsTabWidget, SIGNAL(tabCloseRequested(int)),
+				this, SLOT(tabCloseRequested(int)));
+
+		// load playlists definitions from the settings
+		QSettings * settings = Ororok::settings();
+		QStringList playlistDefs = settings->value("Playlists/current").toStringList();
+		settings->setValue("Playlists/current", QStringList());
+		foreach (QString playlistDef, playlistDefs) {
+			// split into the parts
+			// detect "type"
+			if (!playlistDef.startsWith("t:") && !playlistDef.startsWith("p:")) {
+				continue;
+			}
+			QChar plType(playlistDef[0]);
+
+			playlistDef = playlistDef.mid(2);
+			// find uid
+			int pos = playlistDef.indexOf(QChar(':'));
+			QString name;
+			QString uid;
+			if (-1 == pos) {
+				name = tr("Playlist");
+				uid = playlistDef;
+			} else {
+				uid = playlistDef.left(pos);
+				name = playlistDef.mid(pos+1);
+			}
+			//qDebug() << plType << uid << name;
+			loadPlaylist(plType, uid, name);
+		}
+		if (playlistDefs.length() == 0) {
+			createPlaylist(tr("Default"));
+		}
 	}
 
 	return p->playlistsTabWidget;
@@ -132,6 +216,25 @@ QStringList PlaylistManager::fetchPrevTrack()
 
 	return trackInfo;
 }
+
+PlaylistWidget * PlaylistManager::initPlaylistWidget(const QString & uid, const QChar & plType, const QString & name)
+{
+	PlaylistWidget * pw = new PlaylistWidget(uid, PlaylistWidget::PlaylistTemporary);
+	p->playlists[uid] = pw;
+	pw->setParent(p->playlistsTabWidget);
+	p->playlistsTabWidget->addTab(pw, name);
+
+	QSettings * settings = Ororok::settings();
+	QStringList settingsPlaylists = settings->value("Playlists/current", QStringList()).toStringList();
+	settingsPlaylists << plType + QString(":") + uid + QString(":") + name;
+	settings->setValue("Playlists/current", settingsPlaylists);
+
+	connect(pw, SIGNAL(trackPlayRequsted(const QStringList &)), this,
+			SLOT(requestTrackPlay(const QStringList &)));
+
+	return pw;
+}
+
 
 void PlaylistManager::requestTrackPause()
 {
@@ -277,6 +380,11 @@ void PlaylistManager::trackPlayingStarted(const QStringList & trackInfo)
 	qDebug() << "send \"now playing\" notification to Last.fm:" << trackInfo[Ororok::TrackFieldTitle];
 	p->lastfmScrobbler->nowPlaying(trackInfo[Ororok::TrackFieldTitle], trackInfo[Ororok::TrackFieldArtist],
 			trackInfo[Ororok::TrackFieldAlbum], trackInfo[Ororok::TrackFieldLength].toUInt());
+}
+
+void PlaylistManager::tabCloseRequested(int index)
+{
+	qDebug() << "close tab #" << index;
 }
 
 void PlaylistManager::midTrackReached(const QStringList & trackInfo, const QDateTime & startTime)

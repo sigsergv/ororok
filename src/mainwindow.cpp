@@ -160,7 +160,8 @@ void MainWindow::rescanCollection()
 void MainWindow::newPlaylist()
 {
 	PlaylistManager * pm = PlaylistManager::instance();
-	pm->playlist();
+	//pm->playlist();
+	//pm->createPlaylist();
 }
 
 void MainWindow::about()

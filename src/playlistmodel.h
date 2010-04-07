@@ -17,7 +17,7 @@ public:
 	enum ItemRole {ItemTrackInfoRole=Qt::UserRole+1, ItemTrackStateRole};
 	enum ActiveTrackState {TrackStateNotActive, TrackStateStopped, TrackStatePlaying, TrackStatePaused};
 
-	PlaylistModel(QObject * parent = 0);
+	PlaylistModel(const QString & playlistFile, QObject * parent = 0);
 	int rowCount(const QModelIndex & parent = QModelIndex()) const;
 	int columnCount(const QModelIndex & parent = QModelIndex()) const;
 	QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
@@ -45,6 +45,7 @@ public:
 protected:
 //	bool insertTrack(int pos, const QStringList & trackInfo);
 	int activeTrackNum();
+	void flushPlaylistFile();
 
 private:
 	struct Private;

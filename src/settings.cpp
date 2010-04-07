@@ -10,6 +10,8 @@
 #include "settings.h"
 
 static QString _imagesCachePath;
+static QString _playlistsPath;
+static QString _tmpPlaylistsPath;
 static int lastUid = 0;
 static QSettings * _settings = 0;
 
@@ -73,5 +75,37 @@ QString imagesCachePath()
 
 	return _imagesCachePath;
 }
+
+QString playlistsStorePath()
+{
+	if (_playlistsPath.isEmpty()) {
+		QDir dir;
+		QString path = profilePath() + "/playlists-store";
+		if (!dir.exists(path) && !dir.mkpath(path)) {
+			return QString();
+		}
+
+		_playlistsPath = path;
+	}
+
+	return _playlistsPath;
+}
+
+QString tmpPlaylistsStorePath()
+{
+	if (_tmpPlaylistsPath.isEmpty()) {
+		QDir dir;
+		QString path = profilePath() + "/tmp-playlists-store";
+		if (!dir.exists(path) && !dir.mkpath(path)) {
+			return QString();
+		}
+
+		_tmpPlaylistsPath = path;
+	}
+
+	return _tmpPlaylistsPath;
+}
+
+
 
 }

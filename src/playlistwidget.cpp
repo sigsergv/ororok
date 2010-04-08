@@ -12,10 +12,14 @@
 #include "playlistitemdelegate.h"
 #include "edittreeview.h"
 #include "settings.h"
+#include "desktopaccess.h"
 
 struct PlaylistWidget::Private
 {
 	QLineEdit * filter;
+	QPushButton * clearPlaylistButton;
+	QPushButton * shufflePlaylistButton;
+
 	QTreeView * tracksList;
 	PlaylistModel * model;
 	QSortFilterProxyModel * proxy;
@@ -32,9 +36,35 @@ PlaylistWidget::PlaylistWidget(QString uid, PlaylistWidget::PlaylistType t, QWid
 	p = new Private;
 
 	p->initialized = false;
-	QVBoxLayout * layout = new QVBoxLayout(this);
+	QLayout * layout;
+	//
+	//layout->addWidget(p->filter);
+
+	// create "toolbar" widget
+	layout = new QHBoxLayout(this);
+	p->clearPlaylistButton = new QPushButton(QIcon(":edit-clear-list-16x16.png"), QString(), this);
+	p->clearPlaylistButton->setFlat(true);
+	p->clearPlaylistButton->setFocusPolicy(Qt::NoFocus);
+	p->clearPlaylistButton->setIconSize(QSize(16,16));
+	p->clearPlaylistButton->setMaximumSize(22, 100);
+	p->clearPlaylistButton->setToolTip(tr("Remove all tracks from playlist, SHIFT+CLICK — delete all except selected"));
+	connect(p->clearPlaylistButton, SIGNAL(clicked()), this, SLOT(clearPlaylist()));
+	layout->addWidget(p->clearPlaylistButton);
+	p->shufflePlaylistButton = new QPushButton(QIcon(":shuffle-16x16.png"), QString(), this);
+	p->shufflePlaylistButton->setFlat(true);
+	p->shufflePlaylistButton->setFocusPolicy(Qt::NoFocus);
+	p->shufflePlaylistButton->setIconSize(QSize(16, 16));
+	p->shufflePlaylistButton->setMaximumSize(22, 100);
+	p->shufflePlaylistButton->setToolTip(tr("Shuffle playlist tracks"));
+	connect(p->shufflePlaylistButton, SIGNAL(clicked()), this, SLOT(shufflePlaylist()));
+	layout->addWidget(p->shufflePlaylistButton);
 	p->filter = new QLineEdit(this);
 	layout->addWidget(p->filter);
+	QWidget * tb = new QWidget(this);
+	tb->setLayout(layout);
+
+	layout = new QVBoxLayout(this);
+	layout->addWidget(tb);
 	p->tracksList = new EditTreeView(this);
 	p->tracksList->setContextMenuPolicy(Qt::CustomContextMenu);
 	p->tracksList->setAlternatingRowColors(true);
@@ -156,6 +186,23 @@ void PlaylistWidget::deleteSelectedTracks()
 		p->model->removeRow(i.previous());
 	}
 }
+
+void PlaylistWidget::clearPlaylist()
+{
+	if (Ororok::isShiftKeyPressed()) {
+		// crop playlist
+		qDebug() << "crop playlist";
+	} else {
+		// delete all items
+		p->model->removeRows(0, p->model->rowCount());
+	}
+}
+
+void PlaylistWidget::shufflePlaylist()
+{
+
+}
+
 
 void PlaylistWidget::tracksContextMenu(const QPoint & pos)
 {

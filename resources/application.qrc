@@ -16,5 +16,7 @@
   <file>list-remove.png</file>
   <file>ororok-32.png</file>
   <file>ororok-48.png</file>
+  <file>edit-clear-list-16x16.png</file>
+  <file>shuffle-16x16.png</file>
 </qresource>
 </RCC>

@@ -40,6 +40,8 @@ protected slots:
 	void playlistDoubleClicked(const QModelIndex & index);
 	void resizeEvent(QResizeEvent * event);
 	void deleteSelectedTracks();
+	void clearPlaylist();
+	void shufflePlaylist();
 	void tracksContextMenu(const QPoint & pos);
 
 private:

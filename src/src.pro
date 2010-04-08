@@ -22,6 +22,7 @@ HEADERS += mainwindow.h \
     edittreeview.h \
     playingcontextwidget.h \
     aboutdialog.h \
+    desktopaccess.h \
     services/lastfm/lastfm.h \
     services/lastfm/auth.h \
     services/lastfm/scrobbleradapter.h
@@ -49,6 +50,7 @@ SOURCES += main.cpp \
     edittreeview.cpp \
     playingcontextwidget.cpp \
     aboutdialog.cpp \
+    desktopaccess.cpp \
     services/lastfm/lastfm.cpp \
     services/lastfm/auth.cpp \
     services/lastfm/scrobbleradapter.cpp

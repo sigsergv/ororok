@@ -259,10 +259,8 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 
 			// extract info from the file
 			Q_FOREACH (const QFileInfo & fi, files) {
-				bool success;
-
 				// get file metadata
-				Ororok::MusicTrackMetadata * md = Ororok::getMusicFileMetadata(fi.filePath(), success);
+				Ororok::MusicTrackMetadata * md = Ororok::getMusicFileMetadata(fi.filePath());
 				int artistId = 0;
 				int albumId = 0;
 				int genreId = 0;

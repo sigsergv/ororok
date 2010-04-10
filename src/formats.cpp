@@ -20,7 +20,7 @@ QStringList Ororok::supportedFileExtensions()
 	return res;
 }
 
-Ororok::MusicTrackMetadata * Ororok::getMusicFileMetadata(const QString & filename, bool & success)
+Ororok::MusicTrackMetadata * Ororok::getMusicFileMetadata(const QString & filename)
 {
 	// try to open file and read metadata from there
 	TagLib::FileRef f(filename.toLocal8Bit().constData());

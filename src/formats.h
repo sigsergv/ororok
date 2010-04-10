@@ -27,7 +27,7 @@ struct MusicTrackMetadata
 };
 
 QStringList supportedFileExtensions();
-MusicTrackMetadata * getMusicFileMetadata(const QString & filename, bool & success);
+MusicTrackMetadata * getMusicFileMetadata(const QString & filename);
 
 }
 

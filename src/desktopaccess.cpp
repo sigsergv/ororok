@@ -27,11 +27,13 @@ bool Ororok::isShiftKeyPressed()
 	Display * d = QX11Info::display();
 	XkbStateRec state;
 
+	/*
 	if (!XkbGetState(d, XkbUseCoreKbd, &state)) {
 		return false;
 	}
+	*/
 
-	qDebug() << "sss" << state.mods;
+	XkbGetState(d, XkbUseCoreKbd, &state);
 
 	return static_cast<bool>(state.mods & SHIFT_MOD);
 #endif

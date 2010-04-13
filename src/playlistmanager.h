@@ -9,8 +9,8 @@
 #define PLAYLISTMANAGER_H_
 
 #include <QObject>
+#include "playlistwidget.h"
 
-struct PlaylistWidget;
 struct QString;
 struct QChar;
 struct QStringList;
@@ -50,6 +50,8 @@ public slots:
 
 protected slots:
 	void midTrackReached(const QStringList & trackInfo, const QDateTime & startTime);
+	void playlistTypeChanged(const QString & uid, PlaylistWidget::PlaylistType newType);
+	void playlistNameChanged(const QString & uid, const QString newName);
 
 private:
 	struct Private;

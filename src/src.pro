@@ -18,10 +18,11 @@ HEADERS += mainwindow.h \
 	playlistitemdelegate.h \
 	player.h \
 	playlistmanager.h \
-	settingsdialog.h \
     edittreeview.h \
     playingcontextwidget.h \
+	settingsdialog.h \
     aboutdialog.h \
+    renameplaylistdialog.h \
     desktopaccess.h \
     services/lastfm/lastfm.h \
     services/lastfm/auth.h \
@@ -46,10 +47,11 @@ SOURCES += main.cpp \
 	playlistitemdelegate.cpp \
 	player.cpp \
 	playlistmanager.cpp \
-	settingsdialog.cpp \
     edittreeview.cpp \
     playingcontextwidget.cpp \
+	settingsdialog.cpp \
     aboutdialog.cpp \
+    renameplaylistdialog.cpp \
     desktopaccess.cpp \
     services/lastfm/lastfm.cpp \
     services/lastfm/auth.cpp \
@@ -58,13 +60,14 @@ SOURCES += main.cpp \
 FORMS += mainwindow.ui \
 	testwidget.ui \
 	settingsdialog.ui \
-    aboutdialog.ui
+    aboutdialog.ui \
+    renameplaylistdialog.ui
 
 RESOURCES = ../resources/application.qrc
 TARGET = ororok
 CODECFORTR = UTF-8
 
-QT += xml sql phonon network webkit
+QT += xml sql phonon network webkit 
 
 INCLUDEPATH = 3rdparty/globalshortcut
 include(3rdparty/globalshortcut/globalshortcut.pri)
@@ -74,6 +77,7 @@ win32 {
 	release:DESTDIR = ../release/
 }
 unix {
+    INCLUDEPATH += /usr/include/phonon
 	CONFIG += link_pkgconfig
 	PKGCONFIG += taglib
     LIBS += -llastfm

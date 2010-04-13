@@ -12,6 +12,7 @@
 #include <lastfm/Track>
 
 #include "scrobbleradapter.h"
+#include "lastfm.h"
 
 struct Ororok::lastfm::ScrobblerAdapter::Private
 {
@@ -23,7 +24,12 @@ Ororok::lastfm::ScrobblerAdapter::ScrobblerAdapter(QObject * parent)
 	: QObject(parent)
 {
 	p = new Private;
-	// TODO: replace "tst" with real client-id
+
+	if (!Ororok::lastfm::enabled()) {
+		p->scrobbler = 0;
+		return;
+	}
+
 	p->scrobbler = new ::lastfm::Audioscrobbler("oro");
 	//qDebug() << "::lastfm::ws::SessionKey" << ::lastfm::ws::SessionKey;
 	//qDebug() << "::lastfm::ws::Username" << ::lastfm::ws::Username;
@@ -37,6 +43,10 @@ Ororok::lastfm::ScrobblerAdapter::~ScrobblerAdapter()
 
 void Ororok::lastfm::ScrobblerAdapter::nowPlaying(const QString & title, const QString & artist, const QString & album, uint duration)
 {
+	if (!Ororok::lastfm::enabled()) {
+		return;
+	}
+
 	p->currentTrack.stamp();
 	p->currentTrack.setTitle(title);
 	p->currentTrack.setDuration(duration);
@@ -56,6 +66,10 @@ void Ororok::lastfm::ScrobblerAdapter::nowPlaying(const QString & title, const Q
 void Ororok::lastfm::ScrobblerAdapter::submit(const QString & title, const QString & artist, const QString & album,
 		uint duration, uint trackNum, QDateTime timeStarted)
 {
+	if (!Ororok::lastfm::enabled()) {
+		return;
+	}
+
 	p->currentTrack.stamp();
 	p->currentTrack.setTitle(title);
 	p->currentTrack.setDuration(duration);

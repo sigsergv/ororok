@@ -17,6 +17,7 @@
 #include "player.h"
 #include "settings.h"
 #include "mimetrackinfo.h"
+#include "mainwindow.h"
 #include "services/lastfm/scrobbleradapter.h"
 
 PlaylistManager * PlaylistManager::inst = 0;
@@ -42,42 +43,6 @@ PlaylistManager::PlaylistManager()
 	connect(player, SIGNAL(midTrackReached(const QStringList &, const QDateTime &)),
 			this, SLOT(midTrackReached(const QStringList &, const QDateTime &)));
 }
-/*
-PlaylistWidget * PlaylistManager::playlist(const QString & name, const QString & title)
-{
-	QString playlistName(name);
-
-	if (name == "") {
-		p->index++;
-		playlistName = QString("playlist-%1").arg(p->index);
-	}
-
-	if (p->playlistsTabWidget == 0) {
-		return 0;
-	}
-
-	PlaylistWidget * pw = p->playlists.value(playlistName, 0);
-	if (0 == pw) {
-		// create playlist widget, load tracks if required and
-		// add to the hash
-		qDebug() << "create playlist " << playlistName;
-		QString playlistTitle(title);
-		if (playlistTitle.isEmpty()) {
-			playlistTitle = playlistName;
-		}
-
-		pw = new PlaylistWidget;
-		p->playlists[playlistName] = pw;
-		pw->setParent(p->playlistsTabWidget);
-		p->playlistsTabWidget->addTab(pw, playlistTitle);
-
-		connect(pw, SIGNAL(trackPlayRequsted(const QStringList &)), this,
-				SLOT(requestTrackPlay(const QStringList &)));
-	}
-
-	return p->playlists[playlistName];
-}
-*/
 
 PlaylistWidget * PlaylistManager::createPlaylist(const QString & name)
 {
@@ -219,7 +184,7 @@ QStringList PlaylistManager::fetchPrevTrack()
 
 PlaylistWidget * PlaylistManager::initPlaylistWidget(const QString & uid, const QChar & plType, const QString & name)
 {
-	PlaylistWidget * pw = new PlaylistWidget(uid, PlaylistWidget::PlaylistTemporary);
+	PlaylistWidget * pw = new PlaylistWidget(uid, PlaylistWidget::PlaylistTemporary, name);
 	p->playlists[uid] = pw;
 	pw->setParent(p->playlistsTabWidget);
 	p->playlistsTabWidget->addTab(pw, name);
@@ -395,6 +360,19 @@ void PlaylistManager::midTrackReached(const QStringList & trackInfo, const QDate
 	p->lastfmScrobbler->submit(trackInfo[Ororok::TrackFieldTitle], trackInfo[Ororok::TrackFieldArtist],	trackInfo[Ororok::TrackFieldAlbum],
 			trackInfo[Ororok::TrackFieldLength].toUInt(), trackInfo[Ororok::TrackFieldNo].toUInt(), startTime);
 }
+
+void PlaylistManager::playlistTypeChanged(const QString & uid, PlaylistWidget::PlaylistType newType)
+{
+	// update information about playlist in the settings storage
+	QSettings * settings = Ororok::settings();
+
+}
+
+void PlaylistManager::playlistNameChanged(const QString & uid, const QString newName)
+{
+	// update information about playlist in the settings storage
+}
+
 
 PlaylistManager * PlaylistManager::instance()
 {

@@ -26,6 +26,8 @@
 
 #include "ui_mainwindow.h"
 
+MainWindow * MainWindow::instance = 0;
+
 const QString STATUSBAR_QSS("QStatusBar{ "
 		"padding: 0;"
 		"}"
@@ -65,6 +67,8 @@ struct MainWindow::Private
 MainWindow::MainWindow() :
 	QMainWindow()
 {
+	MainWindow::instance = this;
+
 	QPalette palette = QApplication::palette();
 	QColor borderColor = palette.color(QPalette::Mid);
 	QString qss = STATUSBAR_QSS.arg(borderColor.name());
@@ -150,6 +154,11 @@ MainWindow::MainWindow() :
 	// pm->playlist("new-playlist");
 }
 
+MainWindow * MainWindow::inst()
+{
+	return instance;
+}
+
 void MainWindow::rescanCollection()
 {
 	// launch UpdateThread
@@ -160,8 +169,7 @@ void MainWindow::rescanCollection()
 void MainWindow::newPlaylist()
 {
 	PlaylistManager * pm = PlaylistManager::instance();
-	//pm->playlist();
-	//pm->createPlaylist();
+	pm->createPlaylist();
 }
 
 void MainWindow::about()

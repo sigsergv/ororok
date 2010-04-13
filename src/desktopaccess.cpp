@@ -28,6 +28,7 @@ bool Ororok::isShiftKeyPressed()
 	XkbStateRec state;
 
 	/*
+	// this code doesn't work for unknown reason: function always return false
 	if (!XkbGetState(d, XkbUseCoreKbd, &state)) {
 		return false;
 	}

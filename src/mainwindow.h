@@ -18,6 +18,7 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 public:
 	MainWindow();
+	static MainWindow * inst();
 
 protected:
 	void createActions();
@@ -50,6 +51,7 @@ protected:
 	void closeEvent(QCloseEvent *event);
 
 private:
+	static MainWindow * instance;
 	struct Private;
 	Private * p;
 };

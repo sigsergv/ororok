@@ -13,12 +13,15 @@
 #include "edittreeview.h"
 #include "settings.h"
 #include "desktopaccess.h"
+#include "mainwindow.h"
+#include "renameplaylistdialog.h"
 
 struct PlaylistWidget::Private
 {
 	QLineEdit * filter;
-	QPushButton * clearPlaylistButton;
-	QPushButton * shufflePlaylistButton;
+	QString uid;
+	QString name;
+	PlaylistType type;
 
 	QTreeView * tracksList;
 	PlaylistModel * model;
@@ -28,36 +31,49 @@ struct PlaylistWidget::Private
 
 	// actions
 	QAction * deleteSelectedTracks;
+
+	// methods
+	QPushButton * createToolbarButton(QWidget * parent, const QString & icon, const QString & tooltip)
+	{
+		QPushButton * b = new QPushButton(QIcon(icon), QString(), parent);
+		b->setFlat(true);
+		b->setFocusPolicy(Qt::NoFocus);
+		b->setIconSize(QSize(16,16));
+		b->setMaximumSize(22, 100);
+		b->setToolTip(tooltip);
+		return b;
+	}
 };
 
-PlaylistWidget::PlaylistWidget(QString uid, PlaylistWidget::PlaylistType t, QWidget * parent)
+PlaylistWidget::PlaylistWidget(QString uid, PlaylistWidget::PlaylistType t, const QString & name, QWidget * parent)
 	: QWidget(parent)
 {
 	p = new Private;
 
 	p->initialized = false;
+	p->uid = uid;
+	p->name = name;
+	p->type = t;
 	QLayout * layout;
 	//
 	//layout->addWidget(p->filter);
 
 	// create "toolbar" widget
+	QPushButton * b;
+
 	layout = new QHBoxLayout(this);
-	p->clearPlaylistButton = new QPushButton(QIcon(":edit-clear-list-16x16.png"), QString(), this);
-	p->clearPlaylistButton->setFlat(true);
-	p->clearPlaylistButton->setFocusPolicy(Qt::NoFocus);
-	p->clearPlaylistButton->setIconSize(QSize(16,16));
-	p->clearPlaylistButton->setMaximumSize(22, 100);
-	p->clearPlaylistButton->setToolTip(tr("Remove all tracks from playlist, SHIFT+CLICK — delete all except selected"));
-	connect(p->clearPlaylistButton, SIGNAL(clicked()), this, SLOT(clearPlaylist()));
-	layout->addWidget(p->clearPlaylistButton);
-	p->shufflePlaylistButton = new QPushButton(QIcon(":shuffle-16x16.png"), QString(), this);
-	p->shufflePlaylistButton->setFlat(true);
-	p->shufflePlaylistButton->setFocusPolicy(Qt::NoFocus);
-	p->shufflePlaylistButton->setIconSize(QSize(16, 16));
-	p->shufflePlaylistButton->setMaximumSize(22, 100);
-	p->shufflePlaylistButton->setToolTip(tr("Shuffle playlist tracks"));
-	connect(p->shufflePlaylistButton, SIGNAL(clicked()), this, SLOT(shufflePlaylist()));
-	layout->addWidget(p->shufflePlaylistButton);
+	b = p->createToolbarButton(this, ":edit-clear-list-16x16.png", tr("Remove all tracks from playlist, SHIFT+CLICK — delete all except selected"));
+	connect(b, SIGNAL(clicked()), this, SLOT(clearPlaylist()));
+	layout->addWidget(b);
+
+	b = p->createToolbarButton(this, ":edit-rename-16x16.png", tr("Rename playlist"));
+	connect(b, SIGNAL(clicked()), this, SLOT(renamePlaylist()));
+	layout->addWidget(b);
+
+	b = p->createToolbarButton(this, ":shuffle-16x16.png", tr("Shuffle playlist items"));
+	connect(b, SIGNAL(clicked()), this, SLOT(shufflePlaylist()));
+	layout->addWidget(b);
+
 	p->filter = new QLineEdit(this);
 	layout->addWidget(p->filter);
 	QWidget * tb = new QWidget(this);
@@ -203,6 +219,30 @@ void PlaylistWidget::shufflePlaylist()
 
 }
 
+void PlaylistWidget::renamePlaylist()
+{
+	// ask user about new playlist name
+	// also ask him to remember playlist
+	RenamePlaylistDialog r(MainWindow::inst());
+	bool remembered = p->type == PlaylistWidget::PlaylistPermanent;
+	r.setPlaylistName(p->name);
+	r.setPlaylistRemembered(remembered);
+	if (r.exec()) {
+		QString newName = r.playlistName();
+
+		if (remembered == r.isPlaylistRemembered() && p->name == newName) {
+			// no changes
+			return;
+		}
+		if (remembered != r.isPlaylistRemembered()) {
+			// playlist type changed
+		}
+		if (p->name == newName) {
+			// playlist name changed
+		}
+	}
+
+}
 
 void PlaylistWidget::tracksContextMenu(const QPoint & pos)
 {

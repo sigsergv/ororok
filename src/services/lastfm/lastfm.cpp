@@ -6,6 +6,7 @@
  */
 
 #include <QtDebug>
+#include <QCoreApplication>
 
 #include <lastfm/misc.h>
 #include <lastfm/ws.h>
@@ -21,6 +22,13 @@ const char * lastfm::ws::ApiKey = LASTFM_API_KEY;
 const char * lastfm::ws::SharedSecret = LASTFM_API_SECRET;
 
 QString lastfm::ws::Username;
+
+static bool lastfm_enabled;
+
+bool Ororok::lastfm::enabled()
+{
+	return ::lastfm_enabled;
+}
 
 Ororok::lastfm::Response::Response(const QByteArray & reply)
 	: data(reply), errCode(0)
@@ -97,6 +105,12 @@ Ororok::lastfm::Response Ororok::lastfm::parseReply(QNetworkReply * reply)
 
 void Ororok::initLastfm()
 {
+	::lastfm_enabled = -1 == QCoreApplication::arguments().indexOf(QString("--disable-lastfm"));
+
+	if (!Ororok::lastfm::enabled()) {
+		return;
+	}
+
 	QSettings * settings = Ororok::settings();
 	settings->beginGroup("LastFm");
 	QString sessionKey = settings->value("sessionKey").toString();

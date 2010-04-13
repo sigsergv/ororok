@@ -19,6 +19,8 @@ namespace Ororok
 namespace lastfm
 {
 
+bool enabled();
+
 struct Response
 {
 	QByteArray data;

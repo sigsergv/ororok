@@ -20,7 +20,6 @@ struct PlaylistWidget::Private
 {
 	QLineEdit * filter;
 	QString uid;
-	QString name;
 	PlaylistType type;
 
 	QTreeView * tracksList;
@@ -45,14 +44,13 @@ struct PlaylistWidget::Private
 	}
 };
 
-PlaylistWidget::PlaylistWidget(QString uid, PlaylistWidget::PlaylistType t, const QString & name, QWidget * parent)
+PlaylistWidget::PlaylistWidget(QString uid, PlaylistWidget::PlaylistType t, QWidget * parent)
 	: QWidget(parent)
 {
 	p = new Private;
 
 	p->initialized = false;
 	p->uid = uid;
-	p->name = name;
 	p->type = t;
 	QLayout * layout;
 	//
@@ -158,6 +156,11 @@ QString PlaylistWidget::uid()
 	return p->uid;
 }
 
+QString PlaylistWidget::name()
+{
+	return p->model->playlistName();
+}
+
 PlaylistModel * PlaylistWidget::model()
 {
 	return p->model;
@@ -230,12 +233,13 @@ void PlaylistWidget::renamePlaylist()
 	// also ask him to remember playlist
 	RenamePlaylistDialog r(MainWindow::inst());
 	bool remembered = p->type == PlaylistWidget::PlaylistPermanent;
-	r.setPlaylistName(p->name);
+	r.setPlaylistName(name());
 	r.setPlaylistRemembered(remembered);
 	if (r.exec()) {
 		QString newName = r.playlistName();
+		QString oldName = name();
 
-		if (remembered == r.isPlaylistRemembered() && p->name == newName) {
+		if (remembered == r.isPlaylistRemembered() && oldName == newName) {
 			// no changes
 			return;
 		}
@@ -258,10 +262,10 @@ void PlaylistWidget::renamePlaylist()
 
 			emit playlistTypeChanged(p->uid, p->type);
 		}
-		if (p->name != newName) {
+		if (oldName != newName) {
 			// playlist name changed
-			p->name = newName;
-			emit playlistNameChanged(p->uid, p->name);
+			p->model->setPlaylistName(newName);
+			emit playlistNameChanged(p->uid, newName);
 		}
 	}
 

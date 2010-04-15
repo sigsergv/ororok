@@ -24,6 +24,7 @@ HEADERS += mainwindow.h \
     aboutdialog.h \
     renameplaylistdialog.h \
     desktopaccess.h \
+    xmlplaylistreader.h \
     services/lastfm/lastfm.h \
     services/lastfm/auth.h \
     services/lastfm/scrobbleradapter.h
@@ -53,6 +54,7 @@ SOURCES += main.cpp \
     aboutdialog.cpp \
     renameplaylistdialog.cpp \
     desktopaccess.cpp \
+    xmlplaylistreader.cpp \
     services/lastfm/lastfm.cpp \
     services/lastfm/auth.cpp \
     services/lastfm/scrobbleradapter.cpp

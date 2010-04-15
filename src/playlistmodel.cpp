@@ -5,6 +5,7 @@
  *      Author: Sergei Stolyarov
  */
 
+#include <QtXml>
 #include <QtDebug>
 #include <QtGui>
 #include <QtSql>
@@ -12,13 +13,19 @@
 #include "settings.h"
 #include "playlistmodel.h"
 #include "mimetrackinfo.h"
+#include "xmlplaylistreader.h"
 
 enum VisibleColumns{ VisColumnTitle=0, VisColumnArtist, VisColumnAlbum, VisColumnLength,
 	VISIBLE_COLUMNS_NUM};
 
 struct PlaylistModel::Private
 {
-	int uid;
+	/**
+	 * playlist UID, unique in the current session
+	 */
+	int puid;
+	QString name;
+
 	QList<QStringList> storage;
 	QList<int> storageMap; // key is a visible column number, value - index in the "storage" row
 	int activeTrackNum;
@@ -30,7 +37,7 @@ PlaylistModel::PlaylistModel(const QString & playlistFile, QObject * parent)
 	: QAbstractTableModel(parent)
 {
 	p = new Private;
-	p->uid = Ororok::generateUid();
+	p->puid = Ororok::generateUid();
 	p->activeTrackNum = -1;
 	p->activeTrackState = TrackStatePlaying;
 	p->playlistFile = playlistFile;
@@ -40,39 +47,35 @@ PlaylistModel::PlaylistModel(const QString & playlistFile, QObject * parent)
 	p->storageMap << Ororok::TrackFieldAlbum;  // VisColumnAlbum
 	p->storageMap << Ororok::TrackFieldLength; // VisColumnLength
 
+	// Playlist is an XML file
 	// if there is no such file then playlist is empty
+	// so write default playlist with default name
 	QFileInfo fi(p->playlistFile);
 	if (!fi.exists()) {
+		p->name = QCoreApplication::translate("PlaylistWidget", "New Playlist");
 		// create file
 		QFile f(p->playlistFile);
 		f.open(QIODevice::WriteOnly | QIODevice::Text);
+		QXmlStreamWriter xml;
+		xml.setDevice(&f);
+		xml.writeStartDocument();
+		xml.writeStartElement("playlist");
+		xml.writeAttribute("version", "1.0");
+		xml.writeStartElement("info");
+		xml.writeTextElement("name", p->name);
+		xml.writeEndElement();
+		xml.writeEndDocument();
 		f.close();
 	} else {
 		// open file, read tracks and insert them into the model
 		QFile f(p->playlistFile);
 		if (f.open(QIODevice::ReadOnly)) {
-			QDataStream stream(&f);
-			QList<QStringList> playlistItems;
-			QStringList plItems;
+			Ororok::XmlPlaylistReader xpr(&f);
 
-			while (!stream.atEnd()) {
-				stream >> plItems;
-				if (plItems.length() != 8) {
-					// ignore that track
-					continue;
-				}
-				QStringList trackInfo = Ororok::emptyTrackInfo();
-				trackInfo[Ororok::TrackFieldPath] = plItems[0];
-				trackInfo[Ororok::TrackFieldNo] = plItems[1];
-				trackInfo[Ororok::TrackFieldTitle] = plItems[2];
-				trackInfo[Ororok::TrackFieldYear] = plItems[3];
-				trackInfo[Ororok::TrackFieldAlbum] = plItems[4];
-				trackInfo[Ororok::TrackFieldArtist] = plItems[5];
-				trackInfo[Ororok::TrackFieldGenre] = plItems[6];
-				trackInfo[Ororok::TrackFieldLength] = plItems[7];
-				playlistItems << trackInfo;
-			}
+			QList<QStringList> playlistItems = xpr.tracks();
+			p->name = xpr.name();
 			f.close();
+			qDebug() << playlistItems;
 
 			beginInsertRows(QModelIndex(), 0, playlistItems.length()-1);
 			foreach (QStringList trackInfo, playlistItems) {
@@ -82,6 +85,16 @@ PlaylistModel::PlaylistModel(const QString & playlistFile, QObject * parent)
 			qDebug() << "inserted rows" << playlistItems.length();
 		}
 	}
+}
+
+QString PlaylistModel::playlistName()
+{
+	return p->name;
+}
+
+QString PlaylistModel::setPlaylistName(const QString & name)
+{
+
 }
 
 void PlaylistModel::movePlaylistFile(const QString & newPath)
@@ -123,7 +136,7 @@ QVariant PlaylistModel::data(const QModelIndex & index, int role) const
 
 	if (ItemTrackInfoRole == role) {
 		QStringList trackInfo = p->storage[index.row()];
-		trackInfo[Ororok::TrackPlaylistId] = QString::number(p->uid);
+		trackInfo[Ororok::TrackPlaylistId] = QString::number(p->puid);
 		trackInfo[Ororok::TrackNumInPlaylist] = QString::number(index.row());;
 		return trackInfo;
 	}
@@ -458,7 +471,7 @@ void PlaylistModel::selectActiveTrack(int n)
 
 bool PlaylistModel::selectActiveTrack(const QStringList & trackInfo)
 {
-	if (trackInfo[Ororok::TrackPlaylistId].toInt() != p->uid) {
+	if (trackInfo[Ororok::TrackPlaylistId].toInt() != p->puid) {
 		// not our track, ignore
 		return false;
 	}
@@ -590,24 +603,32 @@ int PlaylistModel::activeTrackNum()
 void PlaylistModel::flushPlaylistFile()
 {
 	QFile f(p->playlistFile);
-	if (f.open(QIODevice::WriteOnly)) {
-		QDataStream stream(&f);
+	if (f.open(QIODevice::WriteOnly|QIODevice::Text)) {
+		QXmlStreamWriter xml;
+		xml.setAutoFormatting(true);
+		xml.setDevice(&f);
+		xml.writeStartDocument();
+		xml.writeStartElement("playlist");
+		xml.writeAttribute("version", "1.0");
+		xml.writeStartElement("info");
+		xml.writeTextElement("name", p->name);
+		xml.writeEndElement();
+		xml.writeStartElement("tracks");
 
 		foreach (const QStringList & trackInfo, p->storage) {
-			QStringList spl;
-			spl << trackInfo[Ororok::TrackFieldPath];
-			spl << trackInfo[Ororok::TrackFieldNo];
-			spl << trackInfo[Ororok::TrackFieldTitle];
-			spl << trackInfo[Ororok::TrackFieldYear];
-			spl << trackInfo[Ororok::TrackFieldAlbum];
-			spl << trackInfo[Ororok::TrackFieldArtist];
-			spl << trackInfo[Ororok::TrackFieldGenre];
-			spl << trackInfo[Ororok::TrackFieldLength];
-			//spl << trackInfo[Ororok::];
-			//spl << trackInfo[Ororok::];
-			//spl << trackInfo[Ororok::];
-			stream << spl;
+			xml.writeStartElement("track");
+			xml.writeAttribute("num", trackInfo[Ororok::TrackFieldNo]);
+			xml.writeAttribute("title", trackInfo[Ororok::TrackFieldTitle]);
+			xml.writeAttribute("year", trackInfo[Ororok::TrackFieldYear]);
+			xml.writeAttribute("album", trackInfo[Ororok::TrackFieldAlbum]);
+			xml.writeAttribute("artist", trackInfo[Ororok::TrackFieldArtist]);
+			xml.writeAttribute("genre", trackInfo[Ororok::TrackFieldGenre]);
+			xml.writeAttribute("length", trackInfo[Ororok::TrackFieldLength]);
+			xml.writeCharacters(trackInfo[Ororok::TrackFieldPath]);
+			xml.writeEndElement();
 		}
+		xml.writeEndElement();
+		xml.writeEndDocument();
 		f.close();
 
 		// TODO: now process playlistItems

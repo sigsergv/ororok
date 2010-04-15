@@ -25,7 +25,6 @@ private:
 	struct PlaylistInfo {
 		QString uid;
 		QChar type;
-		QString name;
 	};
 
 public:
@@ -37,7 +36,7 @@ public:
 	 * @return
 	 */
 	//PlaylistWidget * playlist(const QString & name=QString(), const QString & title=QString());
-	PlaylistWidget * createPlaylist(const QString & name=QString());
+	PlaylistWidget * createPlaylist();
 	PlaylistWidget * loadPlaylist(const PlaylistManager::PlaylistInfo & pi);
 	QTabWidget * playlistsTabWidget();
 	QStringList fetchNextTrack();

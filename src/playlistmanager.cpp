@@ -45,13 +45,8 @@ PlaylistManager::PlaylistManager()
 			this, SLOT(midTrackReached(const QStringList &, const QDateTime &)));
 }
 
-PlaylistWidget * PlaylistManager::createPlaylist(const QString & name)
+PlaylistWidget * PlaylistManager::createPlaylist()
 {
-	QString playlistName(name);
-	if (name.isEmpty()) {
-		playlistName = tr("New Playlist");
-	}
-
 	QString storePath = Ororok::tmpPlaylistsStorePath();
 	QString plFilePath;
 	QString uid;
@@ -74,7 +69,6 @@ PlaylistWidget * PlaylistManager::createPlaylist(const QString & name)
 	PlaylistManager::PlaylistInfo pi;
 	pi.uid = uid;
 	pi.type = 't';
-	pi.name = playlistName;
 
 	return initPlaylistWidget(pi);
 }
@@ -115,7 +109,7 @@ QTabWidget * PlaylistManager::playlistsTabWidget()
 		}
 
 		if (items.length() == 0) {
-			createPlaylist(tr("Default"));
+			createPlaylist();
 		}
 	}
 
@@ -171,14 +165,15 @@ QStringList PlaylistManager::fetchPrevTrack()
 
 PlaylistWidget * PlaylistManager::initPlaylistWidget(const PlaylistManager::PlaylistInfo & pi)
 {
-	PlaylistWidget * pw = new PlaylistWidget(pi.uid, PlaylistWidget::PlaylistTemporary, pi.name);
+	PlaylistWidget * pw = new PlaylistWidget(pi.uid, PlaylistWidget::PlaylistTemporary);
 	p->playlists[pi.uid] = pw;
 	pw->setParent(p->playlistsTabWidget);
-	p->playlistsTabWidget->addTab(pw, pi.name);
+	qDebug() << pw->name();
+	p->playlistsTabWidget->addTab(pw, pw->name());
 
 	QSettings * settings = Ororok::settings();
 	QStringList settingsPlaylists = settings->value("Playlists/current", QStringList()).toStringList();
-	settingsPlaylists << pi.type + QString(":") + pi.uid + QString(":") + pi.name;
+	settingsPlaylists << pi.type + QString(":") + pi.uid + QString(":") + pw->name();
 	settings->setValue("Playlists/current", settingsPlaylists);
 
 	connect(pw, SIGNAL(trackPlayRequsted(const QStringList &)), this,
@@ -386,7 +381,6 @@ void PlaylistManager::playlistNameChanged(const QString & uid, const QString & n
 	while (i.hasNext()) {
 		PlaylistManager::PlaylistInfo & pi = i.next();
 		if (pi.uid == uid) {
-			pi.name = newName;
 			altered = true;
 			break;
 		}
@@ -435,14 +429,12 @@ QList<PlaylistManager::PlaylistInfo> PlaylistManager::loadPlaylistItems()
 
 		playlistDef = playlistDef.mid(2);
 
-		// find uid
+		// find puid
 		int pos = playlistDef.indexOf(QChar(':'));
 		if (-1 == pos) {
-			pi.name = tr("Playlist");
 			pi.uid = playlistDef;
 		} else {
 			pi.uid = playlistDef.left(pos);
-			pi.name = playlistDef.mid(pos+1);
 		}
 		items.append(pi);
 	}
@@ -460,10 +452,6 @@ void PlaylistManager::savePlaylistItems(const QList<PlaylistManager::PlaylistInf
 		const PlaylistManager::PlaylistInfo & pi = i.next();
 		QString v;
 		v = QString("%1:%2").arg(pi.type).arg(pi.uid);
-		if (!pi.name.isEmpty()) {
-			v += ":";
-			v += pi.name;
-		}
 		values << v;
 	}
 	settings->setValue("Playlists/current", values);

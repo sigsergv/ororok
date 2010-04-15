@@ -18,6 +18,9 @@ public:
 	enum ActiveTrackState {TrackStateNotActive, TrackStateStopped, TrackStatePlaying, TrackStatePaused};
 
 	PlaylistModel(const QString & playlistFile, QObject * parent = 0);
+	QString playlistName();
+	QString setPlaylistName(const QString & name);
+
 	void movePlaylistFile(const QString & newPath);
 	int rowCount(const QModelIndex & parent = QModelIndex()) const;
 	int columnCount(const QModelIndex & parent = QModelIndex()) const;

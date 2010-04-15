@@ -21,9 +21,10 @@ public:
 	enum PlaylistType {PlaylistTemporary, PlaylistPermanent};
 
 	//PlaylistWidget(QWidget * parent = 0);
-	PlaylistWidget(QString uid, PlaylistType t, const QString & name, QWidget * parent = 0);
+	PlaylistWidget(QString uid, PlaylistType t, QWidget * parent = 0);
 	~PlaylistWidget();
 	QString uid();
+	QString name();
 
 	/**
 	 * fetch track that is playing now or selected for playing. If there

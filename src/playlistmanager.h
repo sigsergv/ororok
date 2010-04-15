@@ -9,6 +9,7 @@
 #define PLAYLISTMANAGER_H_
 
 #include <QObject>
+#include <QList>
 #include "playlistwidget.h"
 
 struct QString;
@@ -20,23 +21,30 @@ struct QDateTime;
 class PlaylistManager : public QObject
 {
 	Q_OBJECT
+private:
+	struct PlaylistInfo {
+		QString uid;
+		QChar type;
+		QString name;
+	};
+
 public:
 	static PlaylistManager * instance();
 	/**
-	 * get PlaylistWindget object, fetch existing or create new one
+	 * get PlaylistWidget object, fetch existing or create new one
 	 *
 	 * @param name name of the playlist
 	 * @return
 	 */
 	//PlaylistWidget * playlist(const QString & name=QString(), const QString & title=QString());
 	PlaylistWidget * createPlaylist(const QString & name=QString());
-	PlaylistWidget * loadPlaylist(const QChar & plType, const QString & uid, const QString & name);
+	PlaylistWidget * loadPlaylist(const PlaylistManager::PlaylistInfo & pi);
 	QTabWidget * playlistsTabWidget();
 	QStringList fetchNextTrack();
 	QStringList fetchPrevTrack();
 
 protected:
-	PlaylistWidget * initPlaylistWidget(const QString & uid, const QChar & plType, const QString & name);
+	PlaylistWidget * initPlaylistWidget(const PlaylistManager::PlaylistInfo & pi);
 
 public slots:
 	void requestTrackPause();
@@ -50,14 +58,17 @@ public slots:
 
 protected slots:
 	void midTrackReached(const QStringList & trackInfo, const QDateTime & startTime);
-	void playlistTypeChanged(const QString & uid, PlaylistWidget::PlaylistType newType);
-	void playlistNameChanged(const QString & uid, const QString newName);
+	void playlistTypeChanged(const QString & uid, int newType);
+	void playlistNameChanged(const QString & uid, const QString & newName);
 
 private:
+
 	struct Private;
 	Private * p;
 	static PlaylistManager * inst;
 	PlaylistManager();
+	QList<PlaylistInfo> loadPlaylistItems();
+	void savePlaylistItems(const QList<PlaylistInfo> & items);
 };
 
 

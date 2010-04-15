@@ -84,6 +84,14 @@ PlaylistModel::PlaylistModel(const QString & playlistFile, QObject * parent)
 	}
 }
 
+void PlaylistModel::movePlaylistFile(const QString & newPath)
+{
+	QFile f(p->playlistFile);
+	if (f.rename(newPath)) {
+		p->playlistFile = newPath;
+	}
+}
+
 int PlaylistModel::rowCount(const QModelIndex & index) const
 {
 	if (index.isValid()) {

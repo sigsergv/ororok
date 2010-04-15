@@ -153,6 +153,11 @@ PlaylistWidget::~PlaylistWidget()
 	delete p;
 }
 
+QString PlaylistWidget::uid()
+{
+	return p->uid;
+}
+
 PlaylistModel * PlaylistWidget::model()
 {
 	return p->model;
@@ -236,9 +241,27 @@ void PlaylistWidget::renamePlaylist()
 		}
 		if (remembered != r.isPlaylistRemembered()) {
 			// playlist type changed
+			p->type = r.isPlaylistRemembered() ? PlaylistWidget::PlaylistPermanent : PlaylistWidget::PlaylistTemporary;
+			// we have to move our playlist file to another location
+			QString storePath;
+			switch (p->type) {
+			case PlaylistTemporary:
+				storePath = Ororok::tmpPlaylistsStorePath();
+				break;
+
+			case PlaylistPermanent:
+				storePath = Ororok::playlistsStorePath();
+				break;
+			}
+
+			p->model->movePlaylistFile(storePath + "/" + p->uid);
+
+			emit playlistTypeChanged(p->uid, p->type);
 		}
-		if (p->name == newName) {
+		if (p->name != newName) {
 			// playlist name changed
+			p->name = newName;
+			emit playlistNameChanged(p->uid, p->name);
 		}
 	}
 

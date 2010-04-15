@@ -38,6 +38,7 @@ PlaylistManager::PlaylistManager()
 	p->lastfmScrobbler = new Ororok::lastfm::ScrobblerAdapter(this);
 
 	Player * player = Player::instance();
+
 	connect(player, SIGNAL(trackChanged(const QStringList &)),
 			this, SLOT(trackPlayingStarted(const QStringList &)));
 	connect(player, SIGNAL(midTrackReached(const QStringList &, const QDateTime &)),
@@ -70,28 +71,35 @@ PlaylistWidget * PlaylistManager::createPlaylist(const QString & name)
 		}
 	}
 
-	return initPlaylistWidget(uid, 't', playlistName);
+	PlaylistManager::PlaylistInfo pi;
+	pi.uid = uid;
+	pi.type = 't';
+	pi.name = playlistName;
+
+	return initPlaylistWidget(pi);
 }
 
-PlaylistWidget * PlaylistManager::loadPlaylist(const QChar & plType, const QString & uid, const QString & name)
+PlaylistWidget * PlaylistManager::loadPlaylist(const PlaylistManager::PlaylistInfo & pi)
 {
-	QChar t(plType);
-	if (t != 't' && t != 'p') {
+	if (pi.type != 't' && pi.type != 'p') {
 		// unknown playlist type: neither 't'emporary nor 'p'ermanent
 		return 0;
 	}
 
 	QString storePath;
-	if (t == 't') {
+	if (pi.type == 't') {
 		storePath = Ororok::tmpPlaylistsStorePath();
 	} else {
 		storePath = Ororok::playlistsStorePath();
 	}
-	QString plFilePath = storePath + "/" + uid;
+	QString plFilePath = storePath + "/" + pi.uid;
 
-	return initPlaylistWidget(uid, t, name);
+	return initPlaylistWidget(pi);
 }
 
+/*
+ * create playlists tab widget and initialize it if required
+ */
 QTabWidget * PlaylistManager::playlistsTabWidget()
 {
 	if (p->playlistsTabWidget == 0) {
@@ -100,34 +108,13 @@ QTabWidget * PlaylistManager::playlistsTabWidget()
 		connect(p->playlistsTabWidget, SIGNAL(tabCloseRequested(int)),
 				this, SLOT(tabCloseRequested(int)));
 
-		// load playlists definitions from the settings
-		QSettings * settings = Ororok::settings();
-		QStringList playlistDefs = settings->value("Playlists/current").toStringList();
-		settings->setValue("Playlists/current", QStringList());
-		foreach (QString playlistDef, playlistDefs) {
-			// split into the parts
-			// detect "type"
-			if (!playlistDef.startsWith("t:") && !playlistDef.startsWith("p:")) {
-				continue;
-			}
-			QChar plType(playlistDef[0]);
+		QList<PlaylistManager::PlaylistInfo> items = loadPlaylistItems();
 
-			playlistDef = playlistDef.mid(2);
-			// find uid
-			int pos = playlistDef.indexOf(QChar(':'));
-			QString name;
-			QString uid;
-			if (-1 == pos) {
-				name = tr("Playlist");
-				uid = playlistDef;
-			} else {
-				uid = playlistDef.left(pos);
-				name = playlistDef.mid(pos+1);
-			}
-			//qDebug() << plType << uid << name;
-			loadPlaylist(plType, uid, name);
+		foreach (const PlaylistManager::PlaylistInfo & pi, items) {
+			loadPlaylist(pi);
 		}
-		if (playlistDefs.length() == 0) {
+
+		if (items.length() == 0) {
 			createPlaylist(tr("Default"));
 		}
 	}
@@ -182,21 +169,24 @@ QStringList PlaylistManager::fetchPrevTrack()
 	return trackInfo;
 }
 
-PlaylistWidget * PlaylistManager::initPlaylistWidget(const QString & uid, const QChar & plType, const QString & name)
+PlaylistWidget * PlaylistManager::initPlaylistWidget(const PlaylistManager::PlaylistInfo & pi)
 {
-	PlaylistWidget * pw = new PlaylistWidget(uid, PlaylistWidget::PlaylistTemporary, name);
-	p->playlists[uid] = pw;
+	PlaylistWidget * pw = new PlaylistWidget(pi.uid, PlaylistWidget::PlaylistTemporary, pi.name);
+	p->playlists[pi.uid] = pw;
 	pw->setParent(p->playlistsTabWidget);
-	p->playlistsTabWidget->addTab(pw, name);
+	p->playlistsTabWidget->addTab(pw, pi.name);
 
 	QSettings * settings = Ororok::settings();
 	QStringList settingsPlaylists = settings->value("Playlists/current", QStringList()).toStringList();
-	settingsPlaylists << plType + QString(":") + uid + QString(":") + name;
+	settingsPlaylists << pi.type + QString(":") + pi.uid + QString(":") + pi.name;
 	settings->setValue("Playlists/current", settingsPlaylists);
 
 	connect(pw, SIGNAL(trackPlayRequsted(const QStringList &)), this,
 			SLOT(requestTrackPlay(const QStringList &)));
-
+	connect(pw, SIGNAL(playlistTypeChanged(const QString &, int)),
+			this, SLOT(playlistTypeChanged(const QString &, int)));
+	connect(pw, SIGNAL(playlistNameChanged(const QString &, const QString &)),
+			this, SLOT(playlistNameChanged(const QString &, const QString &)));
 	return pw;
 }
 
@@ -361,16 +351,59 @@ void PlaylistManager::midTrackReached(const QStringList & trackInfo, const QDate
 			trackInfo[Ororok::TrackFieldLength].toUInt(), trackInfo[Ororok::TrackFieldNo].toUInt(), startTime);
 }
 
-void PlaylistManager::playlistTypeChanged(const QString & uid, PlaylistWidget::PlaylistType newType)
+void PlaylistManager::playlistTypeChanged(const QString & uid, int newType)
 {
-	// update information about playlist in the settings storage
-	QSettings * settings = Ororok::settings();
+	if (newType != PlaylistWidget::PlaylistPermanent && newType != PlaylistWidget::PlaylistTemporary) {
+		return;
+	}
 
+	// load playlists, alter put back
+	QList<PlaylistManager::PlaylistInfo> items = loadPlaylistItems();
+	QMutableListIterator<PlaylistManager::PlaylistInfo> i(items);
+
+	bool altered = false;
+	while (i.hasNext()) {
+		PlaylistManager::PlaylistInfo & pi = i.next();
+		if (pi.uid == uid) {
+			pi.type = newType;
+			altered = true;
+			break;
+		}
+	}
+	if (altered) {
+		// change playlist type
+		savePlaylistItems(items);
+	}
 }
 
-void PlaylistManager::playlistNameChanged(const QString & uid, const QString newName)
+void PlaylistManager::playlistNameChanged(const QString & uid, const QString & newName)
 {
-	// update information about playlist in the settings storage
+	// load playlists, alter, put back
+	QList<PlaylistManager::PlaylistInfo> items = loadPlaylistItems();
+	QMutableListIterator<PlaylistManager::PlaylistInfo> i(items);
+
+	bool altered = false;
+	while (i.hasNext()) {
+		PlaylistManager::PlaylistInfo & pi = i.next();
+		if (pi.uid == uid) {
+			pi.name = newName;
+			altered = true;
+			break;
+		}
+	}
+	if (altered) {
+		savePlaylistItems(items);
+		// find tab and update tab title
+		// TODO: change also tab icon
+		int cnt = p->playlistsTabWidget->count();
+		for (int i=0; i<cnt; i++) {
+			PlaylistWidget * w = qobject_cast<PlaylistWidget*>(p->playlistsTabWidget->widget(i));
+			if (w->uid() == uid) {
+				p->playlistsTabWidget->setTabText(i, newName);
+				break;
+			}
+		}
+	}
 }
 
 
@@ -381,4 +414,57 @@ PlaylistManager * PlaylistManager::instance()
 	}
 
 	return PlaylistManager::inst;
+}
+
+QList<PlaylistManager::PlaylistInfo> PlaylistManager::loadPlaylistItems()
+{
+	QList<PlaylistManager::PlaylistInfo> items;
+
+	QSettings * settings = Ororok::settings();
+	QStringList playlistDefs = settings->value("Playlists/current").toStringList();
+	settings->setValue("Playlists/current", QStringList());
+	foreach (QString playlistDef, playlistDefs) {
+		// split into the parts
+		// detect "type"
+		if (!playlistDef.startsWith("t:") && !playlistDef.startsWith("p:")) {
+			continue;
+		}
+		PlaylistManager::PlaylistInfo pi;
+
+		pi.type = playlistDef[0];
+
+		playlistDef = playlistDef.mid(2);
+
+		// find uid
+		int pos = playlistDef.indexOf(QChar(':'));
+		if (-1 == pos) {
+			pi.name = tr("Playlist");
+			pi.uid = playlistDef;
+		} else {
+			pi.uid = playlistDef.left(pos);
+			pi.name = playlistDef.mid(pos+1);
+		}
+		items.append(pi);
+	}
+
+	return items;
+}
+
+void PlaylistManager::savePlaylistItems(const QList<PlaylistManager::PlaylistInfo> & items)
+{
+	QListIterator<PlaylistManager::PlaylistInfo> i(items);
+	QSettings * settings = Ororok::settings();
+	QStringList playlistDefs = settings->value("Playlists/current").toStringList();
+	QStringList values;
+	while(i.hasNext()) {
+		const PlaylistManager::PlaylistInfo & pi = i.next();
+		QString v;
+		v = QString("%1:%2").arg(pi.type).arg(pi.uid);
+		if (!pi.name.isEmpty()) {
+			v += ":";
+			v += pi.name;
+		}
+		values << v;
+	}
+	settings->setValue("Playlists/current", values);
 }

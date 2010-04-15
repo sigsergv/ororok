@@ -23,6 +23,7 @@ public:
 	//PlaylistWidget(QWidget * parent = 0);
 	PlaylistWidget(QString uid, PlaylistType t, const QString & name, QWidget * parent = 0);
 	~PlaylistWidget();
+	QString uid();
 
 	/**
 	 * fetch track that is playing now or selected for playing. If there
@@ -46,8 +47,8 @@ protected slots:
 	void tracksContextMenu(const QPoint & pos);
 
 signals:
-	void playlistTypeChanged(const QString & uid, PlaylistType newType);
-	void playlistNameChanged(const QString & uid, const QString newName);
+	void playlistTypeChanged(const QString & uid, int newType);
+	void playlistNameChanged(const QString & uid, const QString & newName);
 
 private:
 	struct Private;

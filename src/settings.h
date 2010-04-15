@@ -9,6 +9,8 @@
 #define SETTINGS_H_
 
 #include <QString>
+#include <QChar>
+#include <QList>
 
 struct QSettings;
 

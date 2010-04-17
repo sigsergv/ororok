@@ -76,6 +76,7 @@ MainWindow::MainWindow() :
 	p = new Private();
 	p->ui.setupUi(this);
 	p->ut = new UpdateThread(this);
+	connect(p->ut, SIGNAL(databaseAltered()), this, SLOT(refreshCollectionTree()));
 	p->ctw = new CollectionTreeWidget(this);
 	p->ui.collectionDock->setWidget(p->ctw);
 

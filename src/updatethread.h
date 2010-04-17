@@ -37,6 +37,7 @@ public:
 	enum ReturnAction
 	{
 		Continue,  // continue operations
+		ContinueNoChanges, // no changes were made during operation
 		Terminate, // terminate with rollback
 		Break      // break with commit
 	};
@@ -53,6 +54,9 @@ public:
 	UpdateThread::UpdateThreadError errorCode();
 
 	static QString errorToText(UpdateThreadError err);
+
+signals:
+	void databaseAltered();
 
 protected:
 	void run();

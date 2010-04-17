@@ -140,6 +140,8 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 	// find deleted directoris
 	QStringList deletedDirectories;
 	QStringList coverImages;
+	ReturnAction ra = ContinueNoChanges;
+
 	coverImages << "cover.jpg" << "cover.gif" << "cover.png" << "folder.jpg" << "folder.gif" << "folder.png";
 
 	qDebug() << ">> find deleted directories";
@@ -155,8 +157,9 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 	qDebug() << ">> deleted directories number: " << deletedDirectories.count();
 
 	if (deletedDirectories.length() > 0) {
-		QString t = deletedDirectories.join(", ");
 		qDebug() << "delete directories from db" << deletedDirectories;
+		QString t = deletedDirectories.join(", ");
+		ra = Continue;
 		p->query->prepare(
 				QString("DELETE FROM track WHERE dir_id IN (%1)").arg(t));
 		if (!p->query->exec()) {
@@ -183,6 +186,7 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 			"SELECT _d.path, _d.modtime FROM _dir AS _d LEFT JOIN dir AS d ON d.path=_d.path WHERE d.path IS NULL");
 	int cnt = 0;
 	while (p->query->next()) {
+		ra = Continue;
 		cnt++;
 		subq.bindValue(":path", p->query->value(0).toString());
 		subq.bindValue(":modtime", p->query->value(1).toString());
@@ -209,6 +213,7 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 
 	int dirsNum = updatedDirs.size();
 	if (dirsNum) {
+		ra = Continue;
 		// delete all tracks for updated and new directories
 		QStringList dirsIds;
 		Q_FOREACH (const QStringList & sl, updatedDirs) {
@@ -404,7 +409,7 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 	p->query->prepare(QString("DELETE FROM album WHERE id IN (%1)").arg(orphanedAlbums.join(", ")));
 	p->query->exec(); // ignore execution result
 
-	return Continue;
+	return ra;
 }
 
 typedef QList<QVariant> VariantList;
@@ -461,8 +466,8 @@ void UpdateThread::run() {
 
 	bool commit = true;
 
+	ReturnAction a;
 	Q_FOREACH (const QString & c, collections) {
-		ReturnAction a;
 		a = scanCollection(c);
 		if (Break == a) {
 			break;
@@ -474,8 +479,11 @@ void UpdateThread::run() {
 
 	emit progressPercentChanged(2);
 
-	if (commit && Terminate == updateCollections()) {
-		commit = false;
+	if (commit) {
+		a = updateCollections();
+		if (a == Terminate) {
+			commit = false;
+		}
 	}
 
 	p->query->exec("DROP TABLE _dir");
@@ -485,10 +493,16 @@ void UpdateThread::run() {
 	p->genresHash.clear();
 
 	if (commit) {
+		qDebug() << "commit changes";
 		p->db->commit();
 	} else {
 		p->db->rollback();
 	}
 	p->db = 0;
 	emit progressPercentChanged(100);
+	if (a == Continue) {
+		emit databaseAltered();
+	} else {
+		qDebug() << "No changes were made in the database so skip refreshing collections tree";
+	}
 }

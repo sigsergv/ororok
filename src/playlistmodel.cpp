@@ -75,7 +75,6 @@ PlaylistModel::PlaylistModel(const QString & playlistFile, QObject * parent)
 			QList<QStringList> playlistItems = xpr.tracks();
 			p->name = xpr.name();
 			f.close();
-			qDebug() << playlistItems;
 
 			beginInsertRows(QModelIndex(), 0, playlistItems.length()-1);
 			foreach (QStringList trackInfo, playlistItems) {

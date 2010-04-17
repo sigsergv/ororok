@@ -94,7 +94,6 @@ void Ororok::XmlPlaylistReader::readTracks()
 		if (p->xml->name() == "track") {
 			QStringList trackInfo = Ororok::emptyTrackInfo();
 
-			qDebug() << p->xml->attributes().hasAttribute("num");
 			trackInfo[Ororok::TrackFieldNo] = p->xml->attributes().value("num").toString();
 			trackInfo[Ororok::TrackFieldTitle] = p->xml->attributes().value("title").toString();
 			trackInfo[Ororok::TrackFieldYear] = p->xml->attributes().value("year").toString();

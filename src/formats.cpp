@@ -4,9 +4,13 @@
  *  Created on: Oct 20, 2009
  *      Author: Sergei Stolyarov
  */
+#include <QtDebug>
+
 #include "formats.h"
 #include <fileref.h>
 #include <mpegfile.h>
+#include <flacfile.h>
+#include <id3v2tag.h>
 #include <tag.h>
 
 #define S2Q(s) QString::fromUtf8(s.toCString(true))
@@ -40,5 +44,18 @@ Ororok::MusicTrackMetadata * Ororok::getMusicFileMetadata(const QString & filena
 	metadata->year = tag->year();
 	metadata->track = tag->track();
 	metadata->length = f.audioProperties()->length();
+
+	TagLib::MPEG::File * mf = dynamic_cast<TagLib::MPEG::File*>(f.file());
+	if (mf->ID3v2Tag(false)) {
+		TagLib::ID3v2::FrameList l = mf->ID3v2Tag(false)->frameListMap()["TCOM"];
+		if (!l.isEmpty()) {
+			metadata->composer = S2Q(l.front()->toString());
+		}
+
+		l = mf->ID3v2Tag(false)->frameListMap()["TEXT"];
+		if (!l.isEmpty()) {
+			metadata->lyricsAuthor = S2Q(l.front()->toString());
+		}
+	}
 	return metadata;
 }

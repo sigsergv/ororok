@@ -20,6 +20,8 @@ struct MusicTrackMetadata
 	QString album;
 	QString genre;
 	QString comment;
+	QString lyricsAuthor;
+	QString composer;
 	int track;
 	int year;
 	int bitrate;

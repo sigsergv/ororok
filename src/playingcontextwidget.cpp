@@ -79,12 +79,22 @@ void PlayingContextWidget::playerTrackStarted(const QStringList & trackInfo)
 				.arg(albumDir.absoluteFilePath(cover));
 	}
 
+
 	QString html = tr("<table border=\"0\"><tr>"
 			"<td><!--cover-->%1</div></td>"
 			"<td></div><!--song info-->%2</div></td>"
 			"</tr></table>")
 			.arg(coverHtml)
 			.arg(songInfoHtml);
+
+	if (!md->composer.isEmpty()) {
+		html += tr("<div>Composed by <strong>%1</strong></div>")
+				.arg(md->composer);
+	}
+	if (!md->lyricsAuthor.isEmpty()) {
+		html += tr("<div>Lyrics by <strong>%1</strong></div>")
+				.arg(md->lyricsAuthor);
+	}
 
 	p->webview->setHtml(html);
 }

@@ -168,7 +168,6 @@ PlaylistWidget * PlaylistManager::initPlaylistWidget(const PlaylistManager::Play
 	PlaylistWidget * pw = new PlaylistWidget(pi.uid, PlaylistWidget::PlaylistTemporary);
 	p->playlists[pi.uid] = pw;
 	pw->setParent(p->playlistsTabWidget);
-	qDebug() << pw->name();
 	p->playlistsTabWidget->addTab(pw, pw->name());
 
 	QSettings * settings = Ororok::settings();

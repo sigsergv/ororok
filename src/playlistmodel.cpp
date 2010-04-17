@@ -288,7 +288,6 @@ bool PlaylistModel::dropMimeData(const QMimeData *data,
 		}
 
 		QByteArray encodedData = data->data(Ororok::TRACKS_COLLECTION_IDS_MIME);
-		qDebug() << encodedData;
 		QDataStream stream(&encodedData, QIODevice::ReadOnly);
 		QStringList newItemsIds;
 		QList<QStringList> newItems;
@@ -343,12 +342,11 @@ bool PlaylistModel::dropMimeData(const QMimeData *data,
 			p->storage.insert(beginRow, trackInfo);
 			beginRow++;
 		}
-		if (row < p->activeTrackNum) {
+		if (row > 0 && row < p->activeTrackNum) {
 			p->activeTrackNum += newItems.count();
 		}
 		endInsertRows();
 		flushPlaylistFile();
-		//qDebug() << "inserted rows: " << rows;
 		return true;
 
 	}
@@ -394,7 +392,6 @@ bool PlaylistModel::dropMimeData(const QMimeData *data,
 				 break;
 			 }
 		}
-		qDebug() << j;
  		insertPos -= j;
 
 		// delete tracks from the store (and save in temporary location)

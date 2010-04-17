@@ -175,7 +175,6 @@ QStringList PlaylistWidget::activeTrackInfo()
 		break;
 	}
 
-	//qDebug() << rows;
 	return trackInfo;
 }
 
@@ -189,7 +188,6 @@ void PlaylistWidget::playlistDoubleClicked(const QModelIndex & index)
 void PlaylistWidget::resizeEvent(QResizeEvent * event)
 {
 	QWidget::resizeEvent(event);
-	//qDebug() << p->tracksList->width();
 	// TODO: resize columns to fit size
 }
 

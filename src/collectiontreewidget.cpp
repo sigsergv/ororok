@@ -6,6 +6,7 @@
  */
 #include <QtGui>
 
+#include "filterlineedit.h"
 #include "collectiontreewidget.h"
 #include "collectionitemmodel.h"
 #include "collectionitemdelegate.h"
@@ -14,9 +15,11 @@
 struct CollectionTreeWidget::Private
 {
 	QLineEdit * filter;
+	QPushButton * filterResetButton;
 	QTreeView * collectionTreeView;
 	CollectionItemModel * model;
 	CollectionTreeFilter * proxy;
+	QTimer * filterTimer;
 };
 
 CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
@@ -24,7 +27,19 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 {
 	p = new Private;
 
-	p->filter = new QLineEdit(this);
+	QLayout * filterLayout = new QHBoxLayout();
+	p->filterResetButton = new QPushButton(this);
+	p->filterResetButton->setIcon(QIcon(":edit-clear-locationbar-rtl-16x16.png"));
+	p->filterResetButton->setFlat(true);
+	p->filterResetButton->setMaximumWidth(22);
+	p->filterResetButton->setFocusPolicy(Qt::NoFocus);
+	p->filterResetButton->hide();
+	p->filterResetButton->setToolTip(tr("Click to reset collection filter"));
+
+	p->filter = new FilterLineEdit(this);
+	filterLayout->addWidget(p->filter);
+	filterLayout->addWidget(p->filterResetButton);
+
 	p->collectionTreeView = new QTreeView(this);
 	p->collectionTreeView->setHeaderHidden(true);
 	p->collectionTreeView->setDragEnabled(true);
@@ -40,7 +55,7 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 
 	//widget->show();
 	QVBoxLayout *layout = new QVBoxLayout(this);
-	layout->addWidget(p->filter);
+	layout->addLayout(filterLayout);
 	layout->addWidget(p->collectionTreeView);
 	this->setLayout(layout);
 
@@ -52,8 +67,16 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 	//p->collectionTreeView->setModel(p->proxy);
 	//p->collectionTreeView->setModel(p->model);
 
-	connect(p->filter, SIGNAL(returnPressed()), this, SLOT(filterActivated()));
+	p->filterTimer = new QTimer(this);
 
+	connect(p->filter, SIGNAL(textChanged(const QString &)),
+			this, SLOT(filterTextChanged(const QString &)));
+	connect(p->filterTimer, SIGNAL(timeout()),
+			this, SLOT(filterEditFinished()));
+	connect(p->filterResetButton, SIGNAL(clicked()),
+			this, SLOT(resetFilter()));
+	connect(p->filter, SIGNAL(escapeKeyPressed()),
+			this, SLOT(resetFilter()));
 }
 
 bool CollectionTreeWidget::reloadTree()
@@ -62,13 +85,18 @@ bool CollectionTreeWidget::reloadTree()
 	return true;
 }
 
-void CollectionTreeWidget::filterActivated()
+void CollectionTreeWidget::applyFilter()
 {
 	QString filterText = p->filter->text();
 	qDebug() << "filter activated with text: " << filterText;
 	//p->proxy->invalidate();
 	p->model->markItemsMatchString(filterText);
 	p->proxy->setFilterFixedString(filterText);
+}
+
+void CollectionTreeWidget::resetFilter()
+{
+	p->filter->setText("");
 }
 
 void CollectionTreeWidget::createModel()
@@ -87,4 +115,18 @@ void CollectionTreeWidget::createModel()
 	p->proxy = newProxy;
 	p->model = newModel;
 
+}
+
+void CollectionTreeWidget::filterTextChanged(const QString & text)
+{
+	bool filterEmpty = text.isEmpty();
+	p->filterResetButton->setVisible(!filterEmpty);
+	p->filterTimer->stop();
+	p->filterTimer->start(500);
+}
+
+void CollectionTreeWidget::filterEditFinished()
+{
+	p->filterTimer->stop();
+	applyFilter();
 }

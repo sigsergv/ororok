@@ -19,6 +19,7 @@ HEADERS += mainwindow.h \
 	player.h \
 	playlistmanager.h \
     edittreeview.h \
+    filterlineedit.h \
     playingcontextwidget.h \
 	settingsdialog.h \
     aboutdialog.h \
@@ -49,6 +50,7 @@ SOURCES += main.cpp \
 	player.cpp \
 	playlistmanager.cpp \
     edittreeview.cpp \
+    filterlineedit.cpp \
     playingcontextwidget.cpp \
 	settingsdialog.cpp \
     aboutdialog.cpp \

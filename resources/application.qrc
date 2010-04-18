@@ -21,5 +21,6 @@
   <file>document-save-16x16.png</file>
   <file>edit-rename-16x16.png</file>
   <file>flag-16x16.png</file>
+  <file>edit-clear-locationbar-rtl-16x16.png</file>
 </qresource>
 </RCC>

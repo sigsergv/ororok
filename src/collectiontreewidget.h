@@ -18,9 +18,11 @@ public:
 	bool reloadTree();
 
 protected slots:
-	void filterActivated();
+	void applyFilter();
+	void resetFilter();
 	void createModel();
-
+	void filterTextChanged(const QString & text);
+	void filterEditFinished();
 private:
 	struct Private;
 	Private * p;

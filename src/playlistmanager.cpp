@@ -35,7 +35,7 @@ PlaylistManager::PlaylistManager()
 	p = new Private;
 	p->playlistsTabWidget = 0;
 	p->index = 0;
-	p->lastfmScrobbler = new Ororok::lastfm::ScrobblerAdapter(this);
+	p->lastfmScrobbler = new Ororok::lastfm::ScrobblerAdapter(0);
 
 	Player * player = Player::instance();
 

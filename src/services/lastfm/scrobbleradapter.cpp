@@ -25,7 +25,7 @@ Ororok::lastfm::ScrobblerAdapter::ScrobblerAdapter(QObject * parent)
 {
 	p = new Private;
 
-	if (!Ororok::lastfm::enabled()) {
+	if (!Ororok::lastfm::isSubmitEnabled()) {
 		p->scrobbler = 0;
 		return;
 	}
@@ -43,9 +43,11 @@ Ororok::lastfm::ScrobblerAdapter::~ScrobblerAdapter()
 
 void Ororok::lastfm::ScrobblerAdapter::nowPlaying(const QString & title, const QString & artist, const QString & album, uint duration)
 {
-	if (!Ororok::lastfm::enabled()) {
+	if (!Ororok::lastfm::isSubmitEnabled()) {
 		return;
 	}
+
+	qDebug() << "send \"now playing\" notification to Last.fm:" << title;
 
 	p->currentTrack.stamp();
 	p->currentTrack.setTitle(title);
@@ -66,7 +68,7 @@ void Ororok::lastfm::ScrobblerAdapter::nowPlaying(const QString & title, const Q
 void Ororok::lastfm::ScrobblerAdapter::submit(const QString & title, const QString & artist, const QString & album,
 		uint duration, uint trackNum, QDateTime timeStarted)
 {
-	if (!Ororok::lastfm::enabled()) {
+	if (!Ororok::lastfm::isSubmitEnabled()) {
 		return;
 	}
 

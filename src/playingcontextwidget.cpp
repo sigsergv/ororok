@@ -29,7 +29,7 @@ PlayingContextWidget::PlayingContextWidget(QWidget * parent, Qt::WindowFlags f)
 	layout->addWidget(p->webview);
 	//view->show();
 	this->setLayout(layout);
-	p->webview->setHtml(tr("<i>Playing track info</i>")); // init with empty text
+	p->webview->setHtml(tr("<i>Playing track info</i>"));
 }
 
 PlayingContextWidget::~PlayingContextWidget()

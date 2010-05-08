@@ -325,8 +325,6 @@ void PlaylistManager::trackPlayingStarted(const QStringList & trackInfo)
 		model->markActiveTrackPlaying();
 	}
 
-	// send lastfm "nowplaying" notification
-	qDebug() << "send \"now playing\" notification to Last.fm:" << trackInfo[Ororok::TrackFieldTitle];
 	p->lastfmScrobbler->nowPlaying(trackInfo[Ororok::TrackFieldTitle], trackInfo[Ororok::TrackFieldArtist],
 			trackInfo[Ororok::TrackFieldAlbum], trackInfo[Ororok::TrackFieldLength].toUInt());
 }

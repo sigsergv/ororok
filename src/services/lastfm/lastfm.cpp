@@ -23,11 +23,11 @@ const char * lastfm::ws::SharedSecret = LASTFM_API_SECRET;
 
 QString lastfm::ws::Username;
 
-static bool lastfm_enabled;
+static bool lastfm_submit_enabled;
 
-bool Ororok::lastfm::enabled()
+bool Ororok::lastfm::isSubmitEnabled()
 {
-	return ::lastfm_enabled;
+	return ::lastfm_submit_enabled;
 }
 
 Ororok::lastfm::Response::Response(const QByteArray & reply)
@@ -105,11 +105,7 @@ Ororok::lastfm::Response Ororok::lastfm::parseReply(QNetworkReply * reply)
 
 void Ororok::initLastfm()
 {
-	::lastfm_enabled = -1 == QCoreApplication::arguments().indexOf(QString("--disable-lastfm"));
-
-	if (!Ororok::lastfm::enabled()) {
-		return;
-	}
+	::lastfm_submit_enabled = -1 == QCoreApplication::arguments().indexOf(QString("--disable-lastfm-submit"));
 
 	QSettings * settings = Ororok::settings();
 	settings->beginGroup("LastFm");

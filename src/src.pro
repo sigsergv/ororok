@@ -21,6 +21,7 @@ HEADERS += mainwindow.h \
     edittreeview.h \
     filterlineedit.h \
     playingcontextwidget.h \
+    lastfmcontextwidget.h \
 	settingsdialog.h \
     aboutdialog.h \
     renameplaylistdialog.h \
@@ -52,6 +53,7 @@ SOURCES += main.cpp \
     edittreeview.cpp \
     filterlineedit.cpp \
     playingcontextwidget.cpp \
+    lastfmcontextwidget.cpp \
 	settingsdialog.cpp \
     aboutdialog.cpp \
     renameplaylistdialog.cpp \

@@ -19,7 +19,7 @@ namespace Ororok
 namespace lastfm
 {
 
-bool enabled();
+bool isSubmitEnabled();
 
 struct Response
 {

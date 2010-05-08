@@ -11,6 +11,7 @@
 #include <QWidget>
 
 struct QStringList;
+struct QUrl;
 
 class LastfmContextWidget : public QWidget
 {
@@ -24,6 +25,8 @@ public slots:
 
 protected slots:
 	void trackGetInfoRequestFinished();
+	void artistGetInfoRequestFinished();
+	void linkClicked(const QUrl &);
 
 private:
 	struct Private;

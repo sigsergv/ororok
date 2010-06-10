@@ -22,6 +22,7 @@ public:
 	~ScrobblerAdapter();
 
 	void nowPlaying(const QString & title, const QString & artist, const QString & album, uint duration);
+	void love(const QString & title, const QString & artist, const QString & album);
 	void submit(const QString & title, const QString & artist, const QString & album,
 			uint duration, uint trackNum, QDateTime timeStarted);
 

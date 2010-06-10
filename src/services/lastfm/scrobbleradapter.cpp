@@ -65,6 +65,29 @@ void Ororok::lastfm::ScrobblerAdapter::nowPlaying(const QString & title, const Q
 	}
 }
 
+void Ororok::lastfm::ScrobblerAdapter::love(const QString & title, const QString & artist, const QString & album)
+{
+	if (!Ororok::lastfm::isSubmitEnabled()) {
+		return;
+	}
+
+	qDebug() << "Love lastfm track" << title << artist << album;
+
+	p->currentTrack.stamp();
+	p->currentTrack.setTitle(title);
+	if (!artist.isEmpty()) {
+		p->currentTrack.setArtist(artist);
+	}
+	if (!album.isEmpty()) {
+		p->currentTrack.setAlbum(album);
+	}
+
+	p->currentTrack.setSource(::lastfm::Track::Player);
+	if (!p->currentTrack.isNull()) {
+		p->currentTrack.love();
+	}
+}
+
 void Ororok::lastfm::ScrobblerAdapter::submit(const QString & title, const QString & artist, const QString & album,
 		uint duration, uint trackNum, QDateTime timeStarted)
 {

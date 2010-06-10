@@ -54,6 +54,7 @@ public slots:
 	void trackPlayingStarted(const QStringList & trackInfo);
 
 	void tabCloseRequested(int index);
+	void lastfmLoveCurrentTrack();
 
 protected slots:
 	void midTrackReached(const QStringList & trackInfo, const QDateTime & startTime);

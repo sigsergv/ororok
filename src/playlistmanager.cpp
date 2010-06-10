@@ -334,6 +334,27 @@ void PlaylistManager::tabCloseRequested(int index)
 	qDebug() << "close tab #" << index;
 }
 
+void PlaylistManager::lastfmLoveCurrentTrack()
+{
+	// find playlist that owns currently playing track and process it
+	PlaylistWidget *  targetPlaylist = 0;
+
+	Q_FOREACH (PlaylistWidget * pw, p->playlists) {
+		if (PlaylistModel::TrackStatePlaying == pw->model()->activeTrackState()) {
+			targetPlaylist = pw;
+			break;
+		}
+	}
+
+	if (targetPlaylist) {
+		PlaylistModel * model = targetPlaylist->model();
+		QStringList activeTrack = model->activeTrack();
+		p->lastfmScrobbler->love(activeTrack[Ororok::TrackFieldTitle], activeTrack[Ororok::TrackFieldArtist],
+				activeTrack[Ororok::TrackFieldAlbum]);
+	}
+
+}
+
 void PlaylistManager::midTrackReached(const QStringList & trackInfo, const QDateTime & startTime)
 {
 	// submit track to lastfm

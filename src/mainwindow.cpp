@@ -24,6 +24,7 @@
 #include "globalshortcutmanager.h"
 #include "aboutdialog.h"
 #include "services/lastfm/lastfm.h"
+#include "services/lastfm/scrobbleradapter.h"
 
 #include "ui_mainwindow.h"
 
@@ -388,6 +389,12 @@ void MainWindow::loadGlobalShortcuts()
 	s = settings->value("nextTrack").toString();
 	if (s.length()) {
 		gsi->connect(QKeySequence(s), this, SLOT(playbackNext()));
+	}
+
+	PlaylistManager * pm = PlaylistManager::instance();
+	s = settings->value("lastfmLoveTrack").toString();
+	if (s.length()) {
+		gsi->connect(QKeySequence(s), pm, SLOT(lastfmLoveCurrentTrack()));
 	}
 
 	settings->endGroup();

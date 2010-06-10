@@ -79,13 +79,23 @@ void PlayingContextWidget::playerTrackStarted(const QStringList & trackInfo)
 				.arg(albumDir.absoluteFilePath(cover));
 	}
 
-
+	QString genreHtml;
+	if (!md->genre.isEmpty()) {
+		genreHtml = tr("Genre: <strong>%1</strong>")
+				.arg(md->genre);
+	}
 	QString html = tr("<table border=\"0\"><tr>"
 			"<td><!--cover-->%1</div></td>"
-			"<td></div><!--song info-->%2</div></td>"
+			"<td>"
+			"<div><!--song info-->%2</div>"
+			"<div><!--bitrate-->Bitrate: <strong>%3</strong> kbps</div>"
+			"<div><!--genre-->%4</div>"
+			"</td>"
 			"</tr></table>")
 			.arg(coverHtml)
-			.arg(songInfoHtml);
+			.arg(songInfoHtml)
+			.arg(md->bitrate)
+			.arg(genreHtml);
 
 	if (!md->composer.isEmpty()) {
 		html += tr("<div>Composed by <strong>%1</strong></div>")

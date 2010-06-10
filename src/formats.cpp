@@ -46,6 +46,10 @@ Ororok::MusicTrackMetadata * Ororok::getMusicFileMetadata(const QString & filena
 	metadata->length = f.audioProperties()->length();
 
 	TagLib::MPEG::File * mf = dynamic_cast<TagLib::MPEG::File*>(f.file());
+	TagLib::MPEG::Properties * ap = mf->audioProperties();
+
+	metadata->bitrate = ap->bitrate();
+
 	if (mf->ID3v2Tag(false)) {
 		TagLib::ID3v2::FrameList l = mf->ID3v2Tag(false)->frameListMap()["TCOM"];
 		if (!l.isEmpty()) {
@@ -55,6 +59,11 @@ Ororok::MusicTrackMetadata * Ororok::getMusicFileMetadata(const QString & filena
 		l = mf->ID3v2Tag(false)->frameListMap()["TEXT"];
 		if (!l.isEmpty()) {
 			metadata->lyricsAuthor = S2Q(l.front()->toString());
+		}
+
+		l = mf->ID3v2Tag(false)->frameListMap()["GENRE"];
+		if (!l.isEmpty()) {
+			metadata->genre = S2Q(l.front()->toString());
 		}
 	}
 	return metadata;

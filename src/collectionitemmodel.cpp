@@ -173,6 +173,12 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 		if (trackNum != 0) {
 			trackTitle = QString("%1 - ").arg(trackNum);
 		}
+		CollectionTreeItem * parent = item->parent();
+		if (CollectionTreeItem::Album == parent->type()
+				&& parent->data["artist_id"].toString() == QString("-1"))
+		{
+			trackTitle += QString("%1 - ").arg( item->data["artist"].toString() );
+		}
 		trackTitle += item->data["title"].toString();
 		return trackTitle;
 	}

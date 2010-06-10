@@ -243,6 +243,7 @@ void CollectionTreeItem::fetchAlbums(CollectionTreeItem * parent)
 	while (query.next()) {
 		album = new CollectionTreeItem(Album, parent);
 		album->data.clear();
+		album->data["artist_id"] = parent->data["id"];
 		album->data["id"] = query.value(0);
 		album->data["name"] = query.value(1);
 		album->data["cover_path"] = query.value(2);
@@ -287,6 +288,13 @@ void CollectionTreeItem::fetchTracks(CollectionTreeItem * parent)
 
 	int n = 0;
 
+	bool va_album = false;
+	if (parent->type() == CollectionTreeItem::Album
+			&& parent->data["artist_id"].toString() == QString("-1"))
+	{
+		va_album = true;
+	}
+
 	while (query.next()) {
 		track = new CollectionTreeItem(Track, parent);
 		track->data.clear();
@@ -298,7 +306,11 @@ void CollectionTreeItem::fetchTracks(CollectionTreeItem * parent)
 		track->data["genre"] = query.value(5);
 		track->data["path"] = query.value(6);
 		track->data["artist"] = query.value(7);
+		//track->data["album_artist_id"] = album_artist_id;
 		track->searchString = query.value(1).toString();
+		if (va_album) {
+			track->searchString += QString(" ") + track->data["artist"].toString();
+		}
 		//track->fetchData();
 		//qDebug() << track->searchString;
 		track->row = n;

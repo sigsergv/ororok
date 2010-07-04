@@ -111,6 +111,12 @@ void PlaylistModel::movePlaylistFile(const QString & newPath)
 	}
 }
 
+void PlaylistModel::removePlaylistFile()
+{
+	QFile f(p->playlistFile);
+	f.remove();
+}
+
 int PlaylistModel::rowCount(const QModelIndex & index) const
 {
 	if (index.isValid()) {

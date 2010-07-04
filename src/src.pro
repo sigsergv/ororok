@@ -1,6 +1,7 @@
 DEFINES += OROROK_VERSION="\\\"0.0.1\\\""
 
 HEADERS += mainwindow.h \
+    ororok.h \
 	application.h \
 	db.h \
 	updatethread.h \
@@ -17,7 +18,9 @@ HEADERS += mainwindow.h \
 	mimetrackinfo.h \
 	playlistitemdelegate.h \
 	player.h \
-	playlistmanager.h \
+    playlistmanager.h \
+    maintabstabwidget.h \
+    maintabswidget.h \
     edittreeview.h \
     filterlineedit.h \
     playingcontextwidget.h \
@@ -49,7 +52,9 @@ SOURCES += main.cpp \
 	mimetrackinfo.cpp \
 	playlistitemdelegate.cpp \
 	player.cpp \
-	playlistmanager.cpp \
+    playlistmanager.cpp \
+    maintabstabwidget.cpp \
+    maintabswidget.cpp \
     edittreeview.cpp \
     filterlineedit.cpp \
     playingcontextwidget.cpp \

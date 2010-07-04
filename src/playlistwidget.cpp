@@ -20,7 +20,7 @@ struct PlaylistWidget::Private
 {
 	QLineEdit * filter;
 	QString uid;
-	PlaylistType type;
+	Ororok::PlaylistType type;
 
 	QTreeView * tracksList;
 	PlaylistModel * model;
@@ -44,8 +44,8 @@ struct PlaylistWidget::Private
 	}
 };
 
-PlaylistWidget::PlaylistWidget(QString uid, PlaylistWidget::PlaylistType t, QWidget * parent)
-	: QWidget(parent)
+PlaylistWidget::PlaylistWidget(QString uid, Ororok::PlaylistType t, QWidget * parent)
+	: MainTabsWidget(parent)
 {
 	p = new Private;
 
@@ -94,11 +94,11 @@ PlaylistWidget::PlaylistWidget(QString uid, PlaylistWidget::PlaylistType t, QWid
 	// construct playlist name
 	QString storePath;
 	switch (t) {
-	case PlaylistTemporary:
+	case Ororok::PlaylistTemporary:
 		storePath = Ororok::tmpPlaylistsStorePath();
 		break;
 
-	case PlaylistPermanent:
+	case Ororok::PlaylistPermanent:
 		storePath = Ororok::playlistsStorePath();
 		break;
 	}
@@ -148,6 +148,7 @@ PlaylistWidget::PlaylistWidget(QString uid, PlaylistWidget::PlaylistType t, QWid
 
 PlaylistWidget::~PlaylistWidget()
 {
+	qDebug() << "destroy playlist widget";
 	delete p;
 }
 
@@ -164,6 +165,68 @@ QString PlaylistWidget::name()
 PlaylistModel * PlaylistWidget::model()
 {
 	return p->model;
+}
+
+/**
+ * tab is about to close so decide what to do: ask user etc
+ */
+bool PlaylistWidget::close()
+{
+	QMessageBox boxConfirm;
+	bool doClose = false;
+	if (p->type == Ororok::PlaylistTemporary) {
+		boxConfirm.setText(tr("You are trying to close temporary playlist. Please choose one of the actions"));
+		//boxConfirm.setInformativeText(tr("asdasd"));
+		boxConfirm.addButton(tr("Do not remember and close"), QMessageBox::AcceptRole);
+		boxConfirm.addButton(tr("Remember and close"), QMessageBox::YesRole);
+		boxConfirm.addButton(tr("Don't close"), QMessageBox::RejectRole);
+		int btn = boxConfirm.exec();
+		if (QMessageBox::AcceptRole == btn) {
+			// clicked [Do not remember and close] button
+			// so we have to destroy playlist file
+			emit deletePlaylist(p->uid, true);
+			doClose = true;
+		} else if (QMessageBox::YesRole == btn) {
+			// clicked [Remember and close] button
+			// change playlist type, remove it from the settings and close
+			emit playlistTypeChanged(p->uid, Ororok::PlaylistPermanent);
+			emit deletePlaylist(p->uid, false);
+		} else {
+			// clicked [Don't close] button
+			doClose = false;
+		}
+	} else if (p->type == Ororok::PlaylistPermanent) {
+		QSettings * settings = Ororok::settings();
+		settings->beginGroup("MainWindow");
+		bool ask = settings->value("askPermanentPlaylistCloseConfirmation", true).toBool();
+		settings->endGroup();
+
+		if (ask) {
+			boxConfirm.setText(tr("You are going to close permanent playlist. I.e. it's saved and could be restored later via menu."));
+			boxConfirm.addButton(tr("Close"), QMessageBox::AcceptRole);
+			boxConfirm.addButton(tr("Close and never ask later"), QMessageBox::YesRole);
+			boxConfirm.addButton(tr("Don't close"), QMessageBox::RejectRole);
+			int btn = boxConfirm.exec();
+			if (QMessageBox::AcceptRole == btn) {
+				// clicked [Close] button
+				emit deletePlaylist(p->uid, false);
+				doClose = true;
+			} else if (QMessageBox::YesRole == btn) {
+				// clicked [Close and never ask later] button
+				settings->beginGroup("MainWindow");
+				settings->setValue("askPermanentPlaylistCloseConfirmation", false);
+				settings->endGroup();
+				emit deletePlaylist(p->uid, false);
+				doClose = true;
+			} else {
+				doClose = false;
+			}
+		} else {
+			doClose = true;
+		}
+	}
+
+	return doClose;
 }
 
 QStringList PlaylistWidget::activeTrackInfo()
@@ -230,7 +293,7 @@ void PlaylistWidget::renamePlaylist()
 	// ask user about new playlist name
 	// also ask him to remember playlist
 	RenamePlaylistDialog r(MainWindow::inst());
-	bool remembered = p->type == PlaylistWidget::PlaylistPermanent;
+	bool remembered = p->type == Ororok::PlaylistPermanent;
 	r.setPlaylistName(name());
 	r.setPlaylistRemembered(remembered);
 	if (r.exec()) {
@@ -243,15 +306,15 @@ void PlaylistWidget::renamePlaylist()
 		}
 		if (remembered != r.isPlaylistRemembered()) {
 			// playlist type changed
-			p->type = r.isPlaylistRemembered() ? PlaylistWidget::PlaylistPermanent : PlaylistWidget::PlaylistTemporary;
+			p->type = r.isPlaylistRemembered() ? Ororok::PlaylistPermanent : Ororok::PlaylistTemporary;
 			// we have to move our playlist file to another location
 			QString storePath;
 			switch (p->type) {
-			case PlaylistTemporary:
+			case Ororok::PlaylistTemporary:
 				storePath = Ororok::tmpPlaylistsStorePath();
 				break;
 
-			case PlaylistPermanent:
+			case Ororok::PlaylistPermanent:
 				storePath = Ororok::playlistsStorePath();
 				break;
 			}
@@ -264,6 +327,7 @@ void PlaylistWidget::renamePlaylist()
 			// playlist name changed
 			p->model->setPlaylistName(newName);
 			emit playlistNameChanged(p->uid, newName);
+			emit pageTitleChanged(this, newName);
 		}
 	}
 

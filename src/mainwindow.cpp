@@ -18,6 +18,7 @@
 #include "settingsdialog.h"
 #include "playlistwidget.h"
 #include "playlistmanager.h"
+#include "maintabstabwidget.h"
 #include "player.h"
 #include "playingcontextwidget.h"
 #include "lastfmcontextwidget.h"
@@ -41,6 +42,7 @@ struct MainWindow::Private
 	Ui::MainWindow ui;
 	UpdateThread * ut;
 	CollectionTreeWidget * ctw;
+	MainTabsTabWidget * mtw;
 	PlayingContextWidget * pcw;
 	LastfmContextWidget * lcw;
 	QProgressBar * pb;
@@ -95,7 +97,8 @@ MainWindow::MainWindow() :
 	// initialize PlaylistManager
 	PlaylistManager * pm = PlaylistManager::instance();
 
-	this->setCentralWidget(pm->playlistsTabWidget());
+	p->mtw = new MainTabsTabWidget(this);
+	this->setCentralWidget(p->mtw);
 
 	//statusBar()->layout()->setContentsMargins(0, 0, 10, 0);
 	statusBar()->setSizeGripEnabled(false);
@@ -176,7 +179,8 @@ void MainWindow::rescanCollection()
 void MainWindow::newPlaylist()
 {
 	PlaylistManager * pm = PlaylistManager::instance();
-	pm->createPlaylist();
+	PlaylistWidget * pw = pm->createPlaylist();
+	p->mtw->addTab(pw, pw->name());
 }
 
 void MainWindow::about()

@@ -8,20 +8,19 @@
 #ifndef PLAYLISTWIDGET_H_
 #define PLAYLISTWIDGET_H_
 
-#include <QWidget>
+#include "maintabswidget.h"
+#include "ororok.h"
 
 struct QModelIndex;
 struct PlaylistModel;
 
-class PlaylistWidget : public QWidget
+class PlaylistWidget : public MainTabsWidget
 {
 	Q_OBJECT
 
 public:
-	enum PlaylistType {PlaylistTemporary, PlaylistPermanent};
-
 	//PlaylistWidget(QWidget * parent = 0);
-	PlaylistWidget(QString uid, PlaylistType t, QWidget * parent = 0);
+	PlaylistWidget(QString uid, Ororok::PlaylistType t, QWidget * parent = 0);
 	~PlaylistWidget();
 	QString uid();
 	QString name();
@@ -34,9 +33,13 @@ public:
 	 */
 	QStringList activeTrackInfo();
 	PlaylistModel * model();
+	virtual bool close();
 
 signals:
 	void trackPlayRequsted(const QStringList & trackInfo);
+	void playlistTypeChanged(const QString & uid, Ororok::PlaylistType newType);
+	void playlistNameChanged(const QString & uid, const QString & newName);
+	void deletePlaylist(const QString & uid, bool removeFile);
 
 protected slots:
 	void playlistDoubleClicked(const QModelIndex & index);
@@ -46,10 +49,6 @@ protected slots:
 	void shufflePlaylist();
 	void renamePlaylist();
 	void tracksContextMenu(const QPoint & pos);
-
-signals:
-	void playlistTypeChanged(const QString & uid, int newType);
-	void playlistNameChanged(const QString & uid, const QString & newName);
 
 private:
 	struct Private;

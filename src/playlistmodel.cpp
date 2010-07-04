@@ -91,9 +91,16 @@ QString PlaylistModel::playlistName()
 	return p->name;
 }
 
+/**
+ * set playlist name in the playlist file
+ * @param name new playlist name
+ * @return
+ */
 QString PlaylistModel::setPlaylistName(const QString & name)
 {
-
+	p->name = name;
+	flushPlaylistFile();
+	return name;
 }
 
 void PlaylistModel::movePlaylistFile(const QString & newPath)

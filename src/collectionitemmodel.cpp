@@ -148,6 +148,95 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 		return ti;
 	}
 
+	if (role == Qt::ToolTipRole) {
+		// create tooltip text
+		QString tip;
+
+		QSqlDatabase db = QSqlDatabase::database();
+		QSqlQuery query(db);
+
+		switch (item->type()) {
+		case CollectionTreeItem::Album: {
+			// display in the tooltip:
+			// album name, year, number of tracks, [cover], [tracks]
+
+			query.prepare("SELECT track.track, track.title, track.length, genre.name FROM track "
+					//"LEFT JOIN artist ON artist.id=track.artist_id "
+					"LEFT JOIN genre ON track.genre_id=genre.id "
+					"WHERE album_id=:albumId");
+			query.bindValue(":albumId", item->data.value("id", "-1"));
+			if (!query.exec()) {
+				return "";
+			}
+
+			int tracks_cnt = 0;
+			int total_len = 0;
+			QSet<QString> genres;
+
+			while (query.next()) {
+				//query.value(1)
+				tracks_cnt++;
+				total_len += query.value(2).toInt();
+				genres.insert(query.value(3).toString());
+			}
+
+			QString total_len_str = QString("%1").arg(total_len % 60, 2, 10, QChar('0'));
+			total_len /= 60;
+			total_len_str = QString::number(total_len) + QString(":") + total_len_str;
+
+			tip = "<table border=\"0\"><tr>";
+
+			if (!item->data.value("cover_path", "").toString().isEmpty()) {
+				tip += QString("<td><img src=\"%1\" width=\"150\"></td>")
+						.arg(item->data.value("cover_path", "").toString());
+			}
+
+			tip += "<td valign=\"top\">";
+
+			tip += tr("<!--ctree: album tooltip--><div><em><strong>%1</strong></em></div>"
+					"<div>&nbsp;<!--empty line--><div>"
+					"<div>Total tracks/length: <strong><em>%2 / %3</em></strong></div>"
+					"<div>Genres: <strong><em>%4</em></strong></div>")
+				.arg(item->data.value("name", tr("Unknown album name")).toString())
+				.arg(tracks_cnt)
+				.arg(total_len_str)
+				.arg(QStringList(genres.toList()).join(", "));
+
+			tip += tr("</td></tr></table><!--ctree: end of album tooltip-->");
+
+			}
+			break;
+
+		case CollectionTreeItem::Track: {
+			// display track name, length, genre, performer
+			int track_len = item->data.value("length", "0").toInt();
+
+			QString track_len_str = QString("%1").arg(track_len % 60, 2, 10, QChar('0'));
+			track_len /= 60;
+			track_len_str = QString::number(track_len) + QString(":") + track_len_str;
+
+			tip = tr("<!--ctree: artist tooltip--><div><strong><em>%1</em></strong></div>"
+					"<div>by <strong><em>%2</em></strong></div>"
+					"<div>length: <strong><em>%3</em></strong></div>"
+					"<div>genre: <strong><em>%4</em></strong></div>")
+					.arg(item->data.value("title", tr("Empty title")).toString())
+					.arg(item->data.value("artist", tr("Unknown artist")).toString())
+					.arg(track_len_str)
+					.arg(item->data.value("genre", tr("Unknown genre")).toString());
+			}
+			break;
+
+		case CollectionTreeItem::Artist:
+			break;
+
+		case CollectionTreeItem::Root:
+			break;
+		}
+
+		// strip html comments because they are not parsed by richtext engine
+		return tip.replace(QRegExp("<!--[^>]+-->"), "");
+	}
+
 	if (role != Qt::DisplayRole) {
 		return QVariant();
 	}

@@ -160,9 +160,10 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 			// display in the tooltip:
 			// album name, year, number of tracks, [cover], [tracks]
 
-			query.prepare("SELECT track.track, track.title, track.length, genre.name FROM track "
+			query.prepare("SELECT track.track, track.title, track.length, genre.name, dir.modtime FROM track "
 					//"LEFT JOIN artist ON artist.id=track.artist_id "
 					"LEFT JOIN genre ON track.genre_id=genre.id "
+					"LEFT JOIN dir ON track.dir_id=dir.id "
 					"WHERE album_id=:albumId");
 			query.bindValue(":albumId", item->data.value("id", "-1"));
 			if (!query.exec()) {
@@ -173,12 +174,19 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 			int total_len = 0;
 			QSet<QString> genres;
 
+			int modtime = 0;
 			while (query.next()) {
 				//query.value(1)
 				tracks_cnt++;
 				total_len += query.value(2).toInt();
 				genres.insert(query.value(3).toString());
+				int lt = query.value(4).toInt();
+				if (lt > modtime) {
+					modtime = lt;
+				}
 			}
+			QDateTime dt = QDateTime::fromTime_t(modtime);
+			QString modtime_str = dt.toString("yyyy-MM-dd h:mm");
 
 			QString total_len_str = QString("%1").arg(total_len % 60, 2, 10, QChar('0'));
 			total_len /= 60;
@@ -196,11 +204,13 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 			tip += tr("<!--ctree: album tooltip--><div><em><strong>%1</strong></em></div>"
 					"<div>&nbsp;<!--empty line--><div>"
 					"<div>Total tracks/length: <strong><em>%2 / %3</em></strong></div>"
-					"<div>Genres: <strong><em>%4</em></strong></div>")
+					"<div>Genres: <strong><em>%4</em></strong></div>"
+					"<div>Modified: <strong><em>%5</em></strong></div></div>")
 				.arg(item->data.value("name", tr("Unknown album name")).toString())
 				.arg(tracks_cnt)
 				.arg(total_len_str)
-				.arg(QStringList(genres.toList()).join(", "));
+				.arg(QStringList(genres.toList()).join(", "))
+				.arg(modtime_str);
 
 			tip += tr("</td></tr></table><!--ctree: end of album tooltip-->");
 
@@ -209,6 +219,25 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 
 		case CollectionTreeItem::Track: {
 			// display track name, length, genre, performer
+			query.prepare("SELECT t.id, d.modtime FROM track t "
+					"LEFT JOIN dir d ON d.id=t.dir_id "
+					"WHERE t.id=:trackId");
+			query.bindValue(":trackId", item->data.value("id", "-1"));
+
+			if (!query.exec()) {
+				return "";
+			}
+
+			int modtime = 0;
+			QString modtime_str;
+
+			if (query.next()) {
+				// query.value(1)
+				modtime = query.value(1).toInt();
+				QDateTime dt = QDateTime::fromTime_t(modtime);
+				modtime_str = dt.toString("yyyy-MM-dd h:mm");
+			}
+
 			int track_len = item->data.value("length", "0").toInt();
 
 			QString track_len_str = QString("%1").arg(track_len % 60, 2, 10, QChar('0'));
@@ -217,12 +246,14 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 
 			tip = tr("<!--ctree: artist tooltip--><div><strong><em>%1</em></strong></div>"
 					"<div>by <strong><em>%2</em></strong></div>"
-					"<div>length: <strong><em>%3</em></strong></div>"
-					"<div>genre: <strong><em>%4</em></strong></div>")
+					"<div>Length: <strong><em>%3</em></strong></div>"
+					"<div>Genre: <strong><em>%4</em></strong></div>"
+					"<div>Added: <strong><em>%5</em></strong></div></div>")
 					.arg(item->data.value("title", tr("Empty title")).toString())
 					.arg(item->data.value("artist", tr("Unknown artist")).toString())
 					.arg(track_len_str)
-					.arg(item->data.value("genre", tr("Unknown genre")).toString());
+					.arg(item->data.value("genre", tr("Unknown genre")).toString())
+					.arg(modtime_str);
 			}
 			break;
 

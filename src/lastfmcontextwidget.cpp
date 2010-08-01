@@ -126,7 +126,7 @@ void LastfmContextWidget::trackGetInfoRequestFinished()
 			"<!--listeners count-->, <strong>%6</strong> listeners"
 			"</div>"
 			"<div><!--loved info-->%7</div>")
-			.arg(QString("<a href=\"http://www.last.fm/music/%1\">%2</a>")
+			.arg(QString("<a href=\"%1\">%2</a>")
 					.arg(artistUrl)
 					.arg(p->currentArtist))
 			.arg(QString("<a href=\"%1\">%2</a>")

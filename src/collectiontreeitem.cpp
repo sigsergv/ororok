@@ -228,7 +228,7 @@ void CollectionTreeItem::fetchAlbums(CollectionTreeItem * parent)
 	QSqlQuery query(db);
 
 	query.prepare("SELECT album.id, album.name, image.path, album.year FROM album LEFT JOIN image ON "
-			"album.image_id=image.id WHERE artist_id=:artistId ");
+			"album.image_id=image.id WHERE artist_id=:artistId ORDER BY album.year");
 	query.bindValue(":artistId", parent->data["id"]);
 
 	if (!query.exec()) {

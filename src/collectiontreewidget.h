@@ -23,6 +23,7 @@ protected slots:
 	void createModel();
 	void filterTextChanged(const QString & text);
 	void filterEditFinished();
+	void dateFilterChanged(int index);
 private:
 	struct Private;
 	Private * p;

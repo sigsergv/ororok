@@ -14,11 +14,13 @@
 
 struct CollectionTreeWidget::Private
 {
-	QLineEdit * filter;
+	QLineEdit * quickSearchFilter;
+	QComboBox * dateFilterCombo;
 	QPushButton * filterResetButton;
 	QTreeView * collectionTreeView;
 	CollectionItemModel * model;
-	CollectionTreeFilter * proxy;
+	CollectionTreeFilter * quickSearchProxy;
+	CollectionTreeFilter * dateFilterProxy;
 	QTimer * filterTimer;
 };
 
@@ -36,8 +38,8 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 	p->filterResetButton->hide();
 	p->filterResetButton->setToolTip(tr("Click to reset collection filter"));
 
-	p->filter = new FilterLineEdit(this);
-	filterLayout->addWidget(p->filter);
+	p->quickSearchFilter = new FilterLineEdit(this);
+	filterLayout->addWidget(p->quickSearchFilter);
 	filterLayout->addWidget(p->filterResetButton);
 
 	p->collectionTreeView = new QTreeView(this);
@@ -49,12 +51,21 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 	p->collectionTreeView->setDragDropMode(QAbstractItemView::DragOnly);
 	p->collectionTreeView->setSelectionBehavior(QAbstractItemView::SelectRows);
 
-	p->proxy = 0;
+	p->dateFilterCombo = new QComboBox(this);
+	p->dateFilterCombo->addItem(tr("Show all"), -1);
+	p->dateFilterCombo->addItem(tr("Show added in the last week only"), 7);
+	p->dateFilterCombo->addItem(tr("Show added in the last month only"), 30);
+	p->dateFilterCombo->addItem(tr("Show added in the last 3 months only"), 90);
+
+	p->quickSearchProxy = 0;
+	p->dateFilterProxy = 0;
+
 	p->model = 0;
-	//layout->addWidget(filter);
+	//layout->addWidget(quickSearchFilter);
 
 	//widget->show();
 	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->addWidget(p->dateFilterCombo);
 	layout->addLayout(filterLayout);
 	layout->addWidget(p->collectionTreeView);
 	this->setLayout(layout);
@@ -64,19 +75,22 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 	CollectionItemDelegate * delegate = new CollectionItemDelegate(this);
 	p->collectionTreeView->setItemDelegate(delegate);
 
-	//p->collectionTreeView->setModel(p->proxy);
+	//p->collectionTreeView->setModel(p->quickSearchProxy);
 	//p->collectionTreeView->setModel(p->model);
 
 	p->filterTimer = new QTimer(this);
 
-	connect(p->filter, SIGNAL(textChanged(const QString &)),
+	connect(p->quickSearchFilter, SIGNAL(textChanged(const QString &)),
 			this, SLOT(filterTextChanged(const QString &)));
 	connect(p->filterTimer, SIGNAL(timeout()),
 			this, SLOT(filterEditFinished()));
 	connect(p->filterResetButton, SIGNAL(clicked()),
 			this, SLOT(resetFilter()));
-	connect(p->filter, SIGNAL(escapeKeyPressed()),
+	connect(p->quickSearchFilter, SIGNAL(escapeKeyPressed()),
 			this, SLOT(resetFilter()));
+	connect(p->dateFilterCombo, SIGNAL(currentIndexChanged(int)),
+			this, SLOT(dateFilterChanged(int)));
+
 }
 
 bool CollectionTreeWidget::reloadTree()
@@ -87,32 +101,38 @@ bool CollectionTreeWidget::reloadTree()
 
 void CollectionTreeWidget::applyFilter()
 {
-	QString filterText = p->filter->text();
+	QString filterText = p->quickSearchFilter->text();
 	qDebug() << "filter activated with text: " << filterText;
-	//p->proxy->invalidate();
-	p->model->markItemsMatchString(filterText);
-	p->proxy->setFilterFixedString(filterText);
+	//p->quickSearchProxy->invalidate();
+	p->model->markItemsMatchQuickSearchString(filterText);
+	p->quickSearchProxy->setFilterFixedString(filterText);
 }
 
 void CollectionTreeWidget::resetFilter()
 {
-	p->filter->setText("");
+	p->quickSearchFilter->setText("");
 }
 
 void CollectionTreeWidget::createModel()
 {
 	CollectionItemModel * newModel = new CollectionItemModel(this);
 	newModel->setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
-	CollectionTreeFilter * newProxy = new CollectionTreeFilter(this);
-	newProxy->setFilterKeyColumn(0);
-	//newProxy->setSupportedDragActions(Qt::CopyAction);
-	//p->proxy->setDynamicSortFilter(true);
-	newProxy->setSourceModel(newModel);
+	CollectionTreeFilter * newQuickSearchProxy = new CollectionTreeFilter(CollectionItemModel::ItemQuickSearchMatchedRole, this);
+	CollectionTreeFilter * newDateFilterProxy = new CollectionTreeFilter(CollectionItemModel::ItemDatePeriodMatchedRole, this);
 
-	p->collectionTreeView->setModel(newProxy);
-	delete p->proxy;
+	newQuickSearchProxy->setFilterKeyColumn(0);
+	//newProxy->setSupportedDragActions(Qt::CopyAction);
+	//p->quickSearchProxy->setDynamicSortFilter(true);
+	newQuickSearchProxy->setSourceModel(newModel);
+	newDateFilterProxy->setSourceModel(newQuickSearchProxy);
+
+	//p->collectionTreeView->setModel(newQuickSearchProxy);
+	p->collectionTreeView->setModel(newDateFilterProxy);
+
+	delete p->quickSearchProxy;
 	delete p->model;
-	p->proxy = newProxy;
+	p->quickSearchProxy = newQuickSearchProxy;
+	p->dateFilterProxy = newDateFilterProxy;
 	p->model = newModel;
 
 }
@@ -129,4 +149,22 @@ void CollectionTreeWidget::filterEditFinished()
 {
 	p->filterTimer->stop();
 	applyFilter();
+}
+
+void CollectionTreeWidget::dateFilterChanged(int index)
+{
+    if (index == -1) {
+		return;
+	}
+
+	QVariant data = p->dateFilterCombo->itemData(index, Qt::UserRole);
+	bool bOk;
+	int days = data.toInt(&bOk);
+	if (!bOk || days < 0) {
+		days = -1;
+	}
+	p->model->markItemsMatchDatePeriod(days);
+	p->dateFilterProxy->setFilterFixedString(""); // value doesn't matter
+	//p->quickSearchProxy->setFilterFixedString(""); // value doesn't matter
+
 }

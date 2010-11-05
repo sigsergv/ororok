@@ -54,7 +54,7 @@ PlaylistWidget::PlaylistWidget(QString uid, Ororok::PlaylistType t, QWidget * pa
 	p->type = t;
 	QLayout * layout;
 	//
-	//layout->addWidget(p->filter);
+	//layout->addWidget(p->quickSearchFilter);
 
 	// create "toolbar" widget
 	QPushButton * b;

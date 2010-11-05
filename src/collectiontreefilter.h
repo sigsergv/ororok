@@ -14,9 +14,10 @@ class CollectionTreeFilter : public QSortFilterProxyModel
 {
 	Q_OBJECT
 public:
-	CollectionTreeFilter(QObject * parent = 0);
+	CollectionTreeFilter(int role, QObject * parent = 0);
 
 protected:
+	int matchRole;
 	bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
 
 };

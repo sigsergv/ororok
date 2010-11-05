@@ -14,11 +14,15 @@
 struct CollectionTreeItem::Private
 {
 	CollectionTreeItemType type;
-	QHash<int, CollectionTreeItem*> childItems;
+	QList<CollectionTreeItem*> childItems;
 	CollectionTreeItem * parentItem;
-	int row;
 	int rowsCount;
 };
+
+bool CollectionTreeItemCmp(const CollectionTreeItem * a1, const CollectionTreeItem * a2)
+{
+	return QString::compare(a1->data["name"].toString(), a2->data["name"].toString(), Qt::CaseInsensitive) < 0;
+}
 
 CollectionTreeItem::CollectionTreeItem(CollectionTreeItemType t, CollectionTreeItem * parent)
 {
@@ -26,26 +30,23 @@ CollectionTreeItem::CollectionTreeItem(CollectionTreeItemType t, CollectionTreeI
 	p->type = t;
 	p->parentItem = parent;
 	p->rowsCount = -1;
-	matched = true;
+	quickSearchMatched = true;
+	datePeriodMatched = true;
 	searchString = "";
 }
 
 CollectionTreeItem::~CollectionTreeItem()
 {
 	// TODO: delete all elements from p->childItems
-	QHashIterator<int, CollectionTreeItem*> i(p->childItems);
 	QList<CollectionTreeItem*> itemsToDelete;
 
-	while (i.hasNext()) {
-		itemsToDelete << *i.next();
-	}
-	p->childItems.clear();
-	Q_FOREACH (CollectionTreeItem * item, itemsToDelete) {
+	Q_FOREACH (CollectionTreeItem * item, p->childItems) {
 		delete item;
 	}
+	p->childItems.clear();
 	delete p;
 
-	qDebug() << ">> deleted tree item";
+	//qDebug() << ">> deleted tree item";
 }
 
 CollectionTreeItem::CollectionTreeItemType CollectionTreeItem::type()
@@ -55,7 +56,7 @@ CollectionTreeItem::CollectionTreeItemType CollectionTreeItem::type()
 
 CollectionTreeItem * CollectionTreeItem::child(int n)
 {
-	return p->childItems[n];
+	return p->childItems.at(n);
 }
 
 CollectionTreeItem * CollectionTreeItem::parent()
@@ -117,39 +118,99 @@ void CollectionTreeItem::fetchData()
  * mark all items that match given string "match"
  * @param match
  */
-bool CollectionTreeItem::markItemMatchString(const QString & match)
+bool CollectionTreeItem::markItemsMatchQuickSearchString(const QString & match)
 {
 	if (searchString.contains(match, Qt::CaseInsensitive)) {
-		// mark this and all child nodes as matched
-		//qDebug() << "matched" << searchString;
+		// mark this and all child nodes as quickSearchMatched
+		//qDebug() << "quickSearchMatched" << searchString;
 		markChildrenMatched(true);
 		return true;
 	}
 
 	bool m = false;
-	for (QHash<int, CollectionTreeItem*>::iterator i = p->childItems.begin();
-			i != p->childItems.end(); i++)
-	{
-		m = (*i)->markItemMatchString(match) || m;
+	foreach (CollectionTreeItem * item, p->childItems) {
+		m = item->markItemsMatchQuickSearchString(match) || m;
 	}
-	matched = m;
+	quickSearchMatched = m;
 	return m;
 }
 
+bool CollectionTreeItem::markItemsMatchDatePeriod(int age)
+{
+    if (p->type == Root || p->type == Artist) {
+		bool m = false;
+		foreach (CollectionTreeItem * item, p->childItems) {
+			m = item->markItemsMatchDatePeriod(age) || m;
+		}
+		datePeriodMatched = m;
+	} else if (p->type == Album) {
+		int modtime = data["modtime"].toInt();
+		if (modtime <= 0) {
+			datePeriodMatched = true;
+		} else {
+			//qDebug() << data["name"] << data["modtime"];
+			datePeriodMatched = modtime > age;
+		}
+		// mark tracks if album is quickSearchMatched
+		foreach (CollectionTreeItem * item, p->childItems) {
+			item->datePeriodMatched = datePeriodMatched;
+		}
+	}
+	return datePeriodMatched;
+
+}
+
 /**
- * mark all children as matched/unmatched
+ * mark all children as quickSearchMatched/unmatched
  * @param match
  * @param item
  */
 void CollectionTreeItem::markChildrenMatched(bool match)
 {
-	matched = match;
-	for (QHash<int, CollectionTreeItem*>::iterator i = p->childItems.begin();
-			i != p->childItems.end(); i++)
-	{
-		(*i)->markChildrenMatched(match);
+	quickSearchMatched = match;
+	foreach (CollectionTreeItem * item, p->childItems) {
+		item->markChildrenMatched(match);
 	}
 }
+
+/**
+ * restore letters items after putting quicksearch or date marks
+ * @return
+ */
+void CollectionTreeItem::restoreLetterItems() {
+	if (p->type != Root) {
+		return;
+	}
+
+	QHash<QChar, bool> visible;
+	QHash<QChar, CollectionTreeItem*> letters;
+
+	// walk through the artists
+	foreach (CollectionTreeItem * item, p->childItems) {
+		qDebug() << item->data["name"].toString();
+		QChar letter = item->data["name"].toString().at(0).toUpper();
+
+		if (item->data["id"].toInt() == -2) {
+			// this is a letter "album"
+			letters[letter] = item;
+		} else {
+			// remember it if it's not marked
+			if (item->quickSearchMatched && item->datePeriodMatched) {
+				visible[letter] = true;
+			}
+		}
+	}
+
+	Q_FOREACH(QChar letter, visible.keys())
+	{
+		if (!letters.contains(letter)) {
+			continue;
+		}
+		letters[letter]->datePeriodMatched = true;
+		letters[letter]->quickSearchMatched = true;
+	}
+}
+
 
 void CollectionTreeItem::fetchArtists(CollectionTreeItem * parent)
 {
@@ -159,7 +220,7 @@ void CollectionTreeItem::fetchArtists(CollectionTreeItem * parent)
 
 	p->childItems.clear();
 
-	// TODO: apply filter
+	// TODO: apply quickSearchFilter
 	query.prepare("SELECT COUNT(*) FROM album WHERE artist_id=-1");
 	if (!query.exec()) {
 		// TODO: send fail signal?
@@ -167,56 +228,73 @@ void CollectionTreeItem::fetchArtists(CollectionTreeItem * parent)
 	}
 	query.next();
 
-	int n = 0;
+	//int n = 0;
 
 	CollectionTreeItem * artist;
-	artist = new CollectionTreeItem(Artist, parent);
-	artist->data["id"] = -1;
-	artist->data["name"] = "{Various Artists}";
-	artist->searchString = "{Various Artists}";
-	artist->fetchData();
-	artist->row = n;
-	p->childItems[n] = artist;
 
+	// sort manually because sqlite sorting is horrible
 	query.prepare("SELECT artist.id, artist.name, COUNT(album.id) FROM artist "
-			"INNER JOIN album ON artist.id=album.artist_id GROUP BY artist.id ORDER BY artist.name");
+			"INNER JOIN album ON artist.id=album.artist_id GROUP BY artist.id");
 	if (!query.exec()) {
 		// TODO: send fail signal?
 		return;
 	}
 
-	QChar prevLetter;
 	QString artistName;
 
-	CollectionTreeItem * letterArtist;
+	QList<CollectionTreeItem*> items;
+
 	while (query.next()) {
-		n++;
+		//n++;
 		artist = new CollectionTreeItem(Artist, parent);
 		artist->data["id"] = query.value(0);
 		artist->data["name"] = query.value(1);
 		artist->searchString = query.value(1).toString();
-		artist->row = n;
 		artist->fetchData();
 
+		/*
 		// take first non-space character from artist's name
-		artistName = query.value(1).toString().trimmed();
-		QChar curLetter = artistName.at(0).toUpper();
-		if (curLetter != prevLetter) {
-			prevLetter = curLetter;
-			// append new "virtual" artist
-			letterArtist = new CollectionTreeItem(Artist, parent);
-			letterArtist->data["id"] = -2;
-			letterArtist->data["name"] = curLetter;
-			letterArtist->row = n;
-			artist->row = n + 1;
-			p->childItems[n] = letterArtist;
-			n++;
-		}
+		*/
 
-		p->childItems[n] = artist;
+		items.append(artist);
 	}
 
-	p->rowsCount = n + 1;
+	// sort p->childItems
+	qSort(items.begin(), items.end(), CollectionTreeItemCmp);
+
+	// add letters
+	QChar prevLetter;
+	QList< QPair<int,QChar> > letterPos;
+	int n = 0;
+	foreach (const CollectionTreeItem * item, items) {
+		QChar letter = item->data["name"].toString().at(0).toUpper();
+		if (letter != prevLetter) {
+			letterPos.append(QPair<int,QChar>(n, letter));
+			prevLetter = letter;
+		}
+		n++;
+	}
+
+	// add "Various Artists"
+	artist = new CollectionTreeItem(Artist, parent);
+	artist->data["id"] = -1;
+	artist->data["name"] = "{Various Artists}";
+	artist->searchString = "{Various Artists}";
+	artist->fetchData();
+	items.insert(0, artist);
+
+	QPair<int,QChar> e;
+	int offset = 1;
+	foreach (e, letterPos) {
+		artist = new CollectionTreeItem(Artist, parent);
+		artist->data["id"] = -2;
+		artist->data["name"] = e.second;
+		items.insert(e.first + offset, artist);
+		offset++;
+	}
+
+	p->childItems = items;
+	p->rowsCount = items.length();
 }
 
 /**
@@ -256,8 +334,7 @@ void CollectionTreeItem::fetchAlbums(CollectionTreeItem * parent)
 		} else {
 			album->searchString = name;
 		}
-		album->row = n;
-		p->childItems[n] = album;
+		p->childItems.append(album);
 		n++;
 	}
 
@@ -273,7 +350,7 @@ void CollectionTreeItem::fetchTracks(CollectionTreeItem * parent)
 	QSqlDatabase db = QSqlDatabase::database();
 	QSqlQuery query(db);
 
-	query.prepare("SELECT t.id, t.title, t.filename, t.track, t.length, g.name, d.path, ar.name FROM track t "
+	query.prepare("SELECT t.id, t.title, t.filename, t.track, t.length, g.name, d.path, ar.name, d.modtime FROM track t "
 			"LEFT JOIN genre g ON g.id=t.genre_id "
 			"LEFT JOIN artist ar ON ar.id=t.artist_id "
 			"LEFT JOIN dir d ON d.id=t.dir_id WHERE album_id=:albumId");
@@ -295,7 +372,10 @@ void CollectionTreeItem::fetchTracks(CollectionTreeItem * parent)
 		va_album = true;
 	}
 
-	while (query.next()) {
+    int maxModtime = 0;
+	int modtime = 0;
+
+    while (query.next()) {
 		track = new CollectionTreeItem(Track, parent);
 		track->data.clear();
 		track->data["id"] = query.value(0);
@@ -307,16 +387,23 @@ void CollectionTreeItem::fetchTracks(CollectionTreeItem * parent)
 		track->data["path"] = query.value(6);
 		track->data["artist"] = query.value(7);
 		//track->data["album_artist_id"] = album_artist_id;
+
+        modtime = query.value(8).toInt();
+		if (modtime > maxModtime) {
+			maxModtime = modtime;
+		}
+		track->data["modtime"] = modtime;
+
 		track->searchString = query.value(1).toString();
 		if (va_album) {
 			track->searchString += QString(" ") + track->data["artist"].toString();
 		}
 		//track->fetchData();
 		//qDebug() << track->searchString;
-		track->row = n;
-		p->childItems[n] = track;
+		p->childItems.append(track);
 		n++;
 	}
 
+    parent->data["modtime"] = maxModtime;
 	p->rowsCount = n;
 }

@@ -122,7 +122,11 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 
 	if (ItemQuickSearchMatchedRole == role) {
 		// return QString object that contain
-		return item->matched;
+		return item->quickSearchMatched;
+	}
+
+    if (ItemDatePeriodMatchedRole == role) {
+		return item->datePeriodMatched;
 	}
 
 	if (ItemTrackInfoRole == role && CollectionTreeItem::Track == itemType) {
@@ -306,9 +310,27 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 	return QString("type: %1").arg(item->type());
 }
 
-void CollectionItemModel::markItemsMatchString(const QString & match)
+void CollectionItemModel::markItemsMatchQuickSearchString(const QString & match)
 {
-	p->rootTreeItem->markItemMatchString(match);
+	p->rootTreeItem->markItemsMatchQuickSearchString(match);
+	p->rootTreeItem->restoreLetterItems();
+}
+
+void CollectionItemModel::markItemsMatchDatePeriod(int days)
+{
+	int age = 0;
+
+	if (days >= 0) {
+		// calculate min age
+		QDateTime d = QDateTime::currentDateTime();
+		d.setTime(QTime(0, 0, 0));
+		// subtract specified amount of days
+		age = d.toTime_t() - days * 86400;
+	}
+
+	qDebug() << age << days;
+	p->rootTreeItem->markItemsMatchDatePeriod(age);
+	p->rootTreeItem->restoreLetterItems();
 }
 
 Qt::ItemFlags CollectionItemModel::flags(const QModelIndex &index) const

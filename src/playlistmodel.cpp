@@ -11,6 +11,7 @@
 #include <QtSql>
 
 #include "settings.h"
+#include "playlistmanager.h"
 #include "playlistmodel.h"
 #include "mimetrackinfo.h"
 #include "xmlplaylistreader.h"
@@ -578,6 +579,8 @@ bool PlaylistModel::removeRows(int row, int count, const QModelIndex & parent)
 		}
 		if (i == p->activeTrackNum) {
 			qDebug() << "currently playing track deleted";
+			PlaylistManager * pm = PlaylistManager::instance();
+			pm->requestTrackStop();
 		}
 		p->storage.removeAt(i);
 	}

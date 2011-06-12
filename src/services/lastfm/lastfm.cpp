@@ -59,7 +59,7 @@ Ororok::lastfm::Response Ororok::lastfm::parseReply(QNetworkReply * reply)
 		return lfr;
 	}
 
-	qDebug() << "XML Response:" << lfr.data;
+	//qDebug() << "XML Response:" << lfr.data;
 
 	QDomDocument xml;
 	xml.setContent(lfr.data);
@@ -116,7 +116,7 @@ void Ororok::initLastfm()
 	if (!sessionKey.isEmpty() && !username.isEmpty()) {
 		::lastfm::ws::Username = username;
 		::lastfm::ws::SessionKey = sessionKey;
-		qDebug() << "Last.fm initialized for user" << ::lastfm::ws::Username;
+		//qDebug() << "Last.fm initialized for user" << ::lastfm::ws::Username;
 	} else {
 		::lastfm::ws::SessionKey.clear();
 		::lastfm::ws::Username.clear();

@@ -67,7 +67,7 @@ void LastfmContextWidget::playerTrackStarted(const QStringList & trackInfo)
 
 void LastfmContextWidget::trackGetInfoRequestFinished()
 {
-	qDebug() << "track search finished";
+	qDebug() << "track search in lastfm finished";
 	if (!p->trackGetInfoReply) {
 		return;
 	}

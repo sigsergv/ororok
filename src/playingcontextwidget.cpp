@@ -6,7 +6,7 @@
  */
 #include <QtGui>
 #include <QtDebug>
- #include <QtWebKit>
+#include <QtWebKit>
 
 #include "playingcontextwidget.h"
 #include "mimetrackinfo.h"

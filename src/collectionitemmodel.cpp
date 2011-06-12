@@ -358,7 +358,6 @@ QStringList CollectionItemModel::mimeTypes() const
 
 QMimeData * CollectionItemModel::mimeData(const QModelIndexList &indexes) const
 {
-	QMimeData *md = new QMimeData();
 	QByteArray encodedData;
 	QDataStream stream(&encodedData, QIODevice::WriteOnly);
 	// we should form list of tracks, but list of indexes may contain albums or artists
@@ -384,8 +383,10 @@ QMimeData * CollectionItemModel::mimeData(const QModelIndexList &indexes) const
 		int id = index.data(CollectionItemModel::ItemDbIdRole).toInt();
 		stream << id;
 	}
+	QMimeData *md = new QMimeData();
 	md->setData(Ororok::TRACKS_COLLECTION_IDS_MIME, encodedData);
 
+	qDebug() << "total indexes" << trackIndexes.count();
 	return md;
 }
 
@@ -395,6 +396,9 @@ void CollectionItemModel::findTracksInIndexesTree(const QModelIndex & index, QMo
 		target << index;
 		return;
 	}
+
+	CollectionTreeItem * ix;
+	ix = static_cast<CollectionTreeItem*>(index.internalPointer());
 
 	int count = rowCount(index);
 

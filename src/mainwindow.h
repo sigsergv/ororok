@@ -12,6 +12,7 @@
 
 struct UpdateThread;
 struct QFrame;
+struct MainTabsTabWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -19,6 +20,7 @@ class MainWindow : public QMainWindow
 public:
 	MainWindow();
 	static MainWindow * inst();
+	MainTabsTabWidget * tabs();
 
 protected:
 	void createActions();

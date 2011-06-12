@@ -26,6 +26,7 @@ public:
 	QStringList fetchPrevTrack();
 	QList<Ororok::PlaylistInfo> loadPlaylistItems();
 	PlaylistWidget * loadPlaylist(const Ororok::PlaylistInfo & pi);
+	PlaylistWidget * activePlaylist();
 
 public slots:
 	void requestTrackPause();

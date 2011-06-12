@@ -95,7 +95,7 @@ MainWindow::MainWindow() :
 	Ororok::initLastfm();
 
 	// initialize PlaylistManager
-	PlaylistManager * pm = PlaylistManager::instance();
+	//PlaylistManager * pm = PlaylistManager::instance();
 
 	p->mtw = new MainTabsTabWidget(this);
 	this->setCentralWidget(p->mtw);
@@ -167,6 +167,11 @@ MainWindow::MainWindow() :
 MainWindow * MainWindow::inst()
 {
 	return instance;
+}
+
+MainTabsTabWidget * MainWindow::tabs()
+{
+	return p->mtw;
 }
 
 void MainWindow::rescanCollection()

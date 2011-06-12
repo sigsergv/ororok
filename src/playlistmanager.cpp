@@ -427,6 +427,21 @@ void PlaylistManager::deletePlaylist(const QString & uid, bool removeFile)
 	p->playlists.remove(uid);
 }
 
+PlaylistWidget * PlaylistManager::activePlaylist()
+{
+	MainTabsTabWidget * mtw = MainWindow::inst()->tabs();
+	QWidget * w = mtw->currentWidget();
+	PlaylistWidget * res = 0;
+	Q_FOREACH (PlaylistWidget * pw, p->playlists) {
+		if (pw == w) {
+			res = pw;
+			break;
+		}
+	}
+
+	return res;
+}
+
 QList<Ororok::PlaylistInfo> PlaylistManager::loadPlaylistItems()
 {
 	QList<Ororok::PlaylistInfo> items;

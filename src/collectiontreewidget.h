@@ -24,6 +24,8 @@ protected slots:
 	void filterTextChanged(const QString & text);
 	void filterEditFinished();
 	void dateFilterChanged(int index);
+	void itemContextMenu(const QPoint & pos);
+	void appendItemToCurrentPlaylist();
 private:
 	struct Private;
 	Private * p;

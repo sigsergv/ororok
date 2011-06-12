@@ -7,6 +7,9 @@
 #include <QtGui>
 
 #include "filterlineedit.h"
+#include "playlistmanager.h"
+#include "playlistmodel.h"
+#include "playlistwidget.h"
 #include "collectiontreewidget.h"
 #include "collectionitemmodel.h"
 #include "collectionitemdelegate.h"
@@ -22,6 +25,8 @@ struct CollectionTreeWidget::Private
 	CollectionTreeFilter * quickSearchProxy;
 	CollectionTreeFilter * dateFilterProxy;
 	QTimer * filterTimer;
+	QMenu * itemContextMenu;
+	QAction * appendToCurrentPlaylist;
 };
 
 CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
@@ -47,6 +52,7 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 	p->collectionTreeView->setDragEnabled(true);
 	p->collectionTreeView->setAcceptDrops(false);
 	p->collectionTreeView->setDropIndicatorShown(true);
+	p->collectionTreeView->setContextMenuPolicy(Qt::CustomContextMenu);
 	p->collectionTreeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	p->collectionTreeView->setDragDropMode(QAbstractItemView::DragOnly);
 	p->collectionTreeView->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -78,6 +84,10 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 	//p->collectionTreeView->setModel(p->quickSearchProxy);
 	//p->collectionTreeView->setModel(p->model);
 
+	// init menus and actions
+	p->itemContextMenu = new QMenu(this);
+	p->appendToCurrentPlaylist = p->itemContextMenu->addAction(tr("Append to current playlist"));
+
 	p->filterTimer = new QTimer(this);
 
 	connect(p->quickSearchFilter, SIGNAL(textChanged(const QString &)),
@@ -90,7 +100,10 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 			this, SLOT(resetFilter()));
 	connect(p->dateFilterCombo, SIGNAL(currentIndexChanged(int)),
 			this, SLOT(dateFilterChanged(int)));
-
+	connect(p->collectionTreeView, SIGNAL(customContextMenuRequested(const QPoint &)),
+			this, SLOT(itemContextMenu(const QPoint &)));
+	connect(p->appendToCurrentPlaylist, SIGNAL(triggered()),
+			this, SLOT(appendItemToCurrentPlaylist()));
 }
 
 bool CollectionTreeWidget::reloadTree()
@@ -167,4 +180,31 @@ void CollectionTreeWidget::dateFilterChanged(int index)
 	p->dateFilterProxy->setFilterFixedString(""); // value doesn't matter
 	//p->quickSearchProxy->setFilterFixedString(""); // value doesn't matter
 
+}
+
+void CollectionTreeWidget::itemContextMenu(const QPoint & pos)
+{
+	p->itemContextMenu->popup(p->collectionTreeView->viewport()->mapToGlobal(pos));
+}
+
+void CollectionTreeWidget::appendItemToCurrentPlaylist()
+{
+	QItemSelectionModel * sm = p->collectionTreeView->selectionModel();
+	// use CollectionItemModel::mimeData to fetch mime data for selected items
+	// and the use PlaylistModel::dropMimeData to append to current playlist
+
+	// we have to translate indexes!
+	QModelIndexList translated;
+	foreach (const QModelIndex & index, sm->selectedIndexes()) {
+		QModelIndex newIndex = p->quickSearchProxy->mapToSource(p->dateFilterProxy->mapToSource(index));
+		translated.append(newIndex);
+	}
+
+	QMimeData * md = p->model->mimeData(translated);
+	PlaylistManager * pm = PlaylistManager::instance();
+	PlaylistWidget * apw = pm->activePlaylist();
+	if (!apw) {
+		return;
+	}
+	apw->model()->dropMimeData(md, Qt::CopyAction, -1, 0, QModelIndex());
 }

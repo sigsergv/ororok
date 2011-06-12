@@ -591,7 +591,7 @@ bool PlaylistModel::removeRows(int row, int count, const QModelIndex & parent)
 }
 
 // function inserts EMPTY rows so you have to alter them later
-bool PlaylistModel::insertRows (int row, int count, const QModelIndex & parent)
+bool PlaylistModel::insertRows(int row, int count, const QModelIndex & parent)
 {
 	Q_UNUSED(parent);
 	beginInsertRows(QModelIndex(), row, row + count - 1);

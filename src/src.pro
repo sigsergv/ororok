@@ -91,7 +91,7 @@ unix {
     INCLUDEPATH += /usr/include/phonon
 	CONFIG += link_pkgconfig
 	PKGCONFIG += taglib
-    LIBS += -llastfm
+    LIBS += -llastfm -lX11
 }
 
 DESTDIR = ../

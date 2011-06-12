@@ -315,7 +315,6 @@ void PlaylistManager::trackPlayingStarted(const QStringList & trackInfo)
 		model->markActiveTrackPlaying();
 	}
 
-	qDebug() << 123;
 	p->lastfmScrobbler->nowPlaying(trackInfo[Ororok::TrackFieldTitle], trackInfo[Ororok::TrackFieldArtist],
 			trackInfo[Ororok::TrackFieldAlbum], trackInfo[Ororok::TrackFieldLength].toUInt());
 }
@@ -375,7 +374,7 @@ void PlaylistManager::playlistTypeChanged(const QString & uid, Ororok::PlaylistT
 	}
 }
 
-void PlaylistManager::playlistNameChanged(const QString & uid, const QString & newName)
+void PlaylistManager::playlistNameChanged(const QString & uid, const QString &)
 {
 	// load playlists, alter, put back
 	QList<Ororok::PlaylistInfo> items = loadPlaylistItems();
@@ -423,6 +422,9 @@ void PlaylistManager::deletePlaylist(const QString & uid, bool removeFile)
 		}
 		savePlaylistItems(items);
 	}
+
+	// we must also remove playlist widget from the list p->playlists
+	p->playlists.remove(uid);
 }
 
 QList<Ororok::PlaylistInfo> PlaylistManager::loadPlaylistItems()

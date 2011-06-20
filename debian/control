@@ -1,0 +1,16 @@
+Source: ororok
+Section: sound
+Priority: extra
+Maintainer: Sergei Stolyarov <sergei@regolit.com>
+Build-Depends: debhelper (>= 7.0.50~), libqt4-dev (>= 4:4.6)
+Standards-Version: 3.9.1
+Homepage: http://code.google.com/p/ororok/
+Vcs-Hg: https://ororok.googlecode.com/hg
+Vcs-Browser: http://code.google.com/p/ororok/source/browse/
+
+Package: ororok
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Simple audio player and music collection organizer
+ Simple music library collection organizer inspired by Amarok-1.4
+ media player.

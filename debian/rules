@@ -42,7 +42,7 @@ binary-arch: build install
 	dh_installexamples
 	dh_installman
 	dh_link
-	dh_strip --dbg-package=my-application-dbg
+#	dh_strip --dbg-package=ororok-dbg
 	dh_compress
 	dh_fixperms
 	dh_installdeb

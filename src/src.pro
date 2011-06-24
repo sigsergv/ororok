@@ -87,11 +87,42 @@ win32 {
 	debug:DESTDIR = ../debug/
 	release:DESTDIR = ../release/
 }
+
 unix {
-    INCLUDEPATH += /usr/include/phonon
+	INCLUDEPATH += /usr/include/phonon
 	CONFIG += link_pkgconfig
 	PKGCONFIG += taglib
-    LIBS += -llastfm -lX11
+	LIBS += -llastfm -lX11
+
+	#VARIABLES
+	isEmpty(PREFIX) {
+	PREFIX = /usr
+	}
+	BINDIR = $$PREFIX/bin
+	DATADIR =$$PREFIX/share
+
+	DEFINES += DATADIR=\\\"$$DATADIR\\\" PKGDATADIR=\\\"$$PKGDATADIR\\\"
+
+	#MAKE INSTALL
+
+	target.path =$$BINDIR
+
+	desktop.path = $$DATADIR/applications/ororok
+	desktop.files += $${TARGET}.desktop
+
+	#service.path = $$DATADIR/dbus-1/services
+	#service.files += $${TARGET}.service
+
+	icon16.path = $$DATADIR/icons/hicolor/16x16/apps/
+	icon16.files = ../icons/16x16/ororok.png
+
+	icon32.path = $$DATADIR/icons/hicolor/32x32/apps/
+	icon32.files = ../icons/32x32/ororok.png
+
+	icon48.path = $$DATADIR/icons/hicolor/48x48/apps/
+	icon48.files = ../icons/48x48/ororok.png
+
+	INSTALLS += target desktop icon16 icon32 icon48
 }
 
 DESTDIR = ../

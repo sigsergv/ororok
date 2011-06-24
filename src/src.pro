@@ -107,8 +107,8 @@ unix {
 
 	target.path =$$BINDIR
 
-	desktop.path = $$DATADIR/applications/ororok
-	desktop.files += $${TARGET}.desktop
+	desktop.path = $$DATADIR/applications
+	desktop.files += ../ororok.desktop
 
 	#service.path = $$DATADIR/dbus-1/services
 	#service.files += $${TARGET}.service

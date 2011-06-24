@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+
+Type=Application
+
+Name=Audacious
+GenericName=Music player and collection organizer
+GenericName[ru]=Аудиоплеер и организатор коллекции музыки
+Icon=audacious
+
+Categories=Audio;Player;Qt
+
+Exec=ororok
+Terminal=false

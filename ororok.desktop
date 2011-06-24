@@ -3,10 +3,10 @@ Version=1.0
 
 Type=Application
 
-Name=Audacious
+Name=Ororok
 GenericName=Music player and collection organizer
 GenericName[ru]=Аудиоплеер и организатор коллекции музыки
-Icon=audacious
+Icon=ororok
 
 Categories=Audio;Player;Qt
 

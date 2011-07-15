@@ -5,6 +5,7 @@
  *      Author: Sergei Stolyarov
  */
 
+#include <QStringList>
 #include <QtDebug>
 #include <QtSql>
 
@@ -205,6 +206,7 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 
 			tip += "<td valign=\"top\">";
 
+			QStringList genres_list = genres.toList();
 			tip += tr("<!--ctree: album tooltip--><div><em><strong>%1</strong></em></div>"
 					"<div>&nbsp;<!--empty line--><div>"
 					"<div>Total tracks/length: <strong><em>%2 / %3</em></strong></div>"
@@ -213,7 +215,7 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 				.arg(item->data.value("name", tr("Unknown album name")).toString())
 				.arg(tracks_cnt)
 				.arg(total_len_str)
-				.arg(QStringList(genres.toList()).join(", "))
+				.arg(genres_list.join(", "))
 				.arg(modtime_str);
 
 			tip += tr("</td></tr></table><!--ctree: end of album tooltip-->");

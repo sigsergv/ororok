@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+
+Type=Application
+
+Name=Ororok
+GenericName=Music player and collection organizer
+GenericName[ru]=Аудиоплеер и организатор коллекции музыки
+Icon=ororok
+
+Categories=Audio;Player;Qt
+
+Exec=ororok
+Terminal=false

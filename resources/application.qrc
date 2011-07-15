@@ -14,8 +14,8 @@
   <file>server-database.png</file>
   <file>list-add.png</file>
   <file>list-remove.png</file>
-  <file>ororok-32.png</file>
-  <file>ororok-48.png</file>
+  <file alias="ororok-32.png">../icons/32x32/ororok.png</file>
+  <file alias="ororok-48.png">../icons/48x48/ororok.png</file>
   <file>edit-clear-list-16x16.png</file>
   <file>shuffle-16x16.png</file>
   <file>document-save-16x16.png</file>

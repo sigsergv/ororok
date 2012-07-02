@@ -9,6 +9,7 @@
 #define LASTFMCONTEXTWIDGET_H_
 
 #include <QWidget>
+#include <QtDebug>
 
 struct QStringList;
 struct QUrl;
@@ -32,5 +33,6 @@ private:
 	struct Private;
 	Private * p;
 };
+
 
 #endif /* LASTFMCONTEXTWIDGET_H_ */

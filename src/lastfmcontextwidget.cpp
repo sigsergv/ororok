@@ -8,6 +8,8 @@
 #include <QtGui>
 #include <QtDebug>
 #include <QtWebKit>
+
+#include "qdebugreleaseworkaround.h"
 #include <lastfm.h>
 
 #include "lastfmcontextwidget.h"

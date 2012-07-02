@@ -7,10 +7,10 @@
 
 #include <math.h>
 #include <QtDebug>
+#include "qdebugreleaseworkaround.h"
 #include <lastfm/ws.h>
 #include <lastfm/Audioscrobbler>
 #include <lastfm/Track>
-
 #include "scrobbleradapter.h"
 #include "lastfm.h"
 

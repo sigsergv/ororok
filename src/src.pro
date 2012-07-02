@@ -88,6 +88,12 @@ win32 {
 	release:DESTDIR = ../release/
 }
 
+CONFIG(release, release|debug) {
+    message(RELEASE)
+    DEFINES += QT_NO_DEBUG_OUTPUT
+}
+
+
 unix {
 	INCLUDEPATH += /usr/include/phonon
 	CONFIG += link_pkgconfig

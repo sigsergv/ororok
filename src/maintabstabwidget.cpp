@@ -6,6 +6,7 @@
  */
 
 #include <QtGui>
+#include <QtDebug>
 
 #include "maintabstabwidget.h"
 #include "maintabswidget.h"

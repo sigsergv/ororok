@@ -19,6 +19,7 @@ class MainWindow : public QMainWindow
 	Q_OBJECT
 public:
 	MainWindow();
+	~MainWindow();
 	static MainWindow * inst();
 	MainTabsTabWidget * tabs();
 

@@ -164,6 +164,12 @@ MainWindow::MainWindow() :
 	// pm->playlist("new-playlist");
 }
 
+MainWindow::~MainWindow()
+{
+    delete p;
+    instance = 0;
+}
+
 MainWindow * MainWindow::inst()
 {
 	return instance;

@@ -187,7 +187,7 @@ void CollectionTreeItem::restoreLetterItems() {
 
 	// walk through the artists
 	foreach (CollectionTreeItem * item, p->childItems) {
-		qDebug() << item->data["name"].toString();
+		//qDebug() << item->data["name"].toString();
 		QChar letter = item->data["name"].toString().at(0).toUpper();
 
 		if (item->data["id"].toInt() == -2) {

@@ -118,7 +118,11 @@ void CollectionTreeWidget::applyFilter()
 	qDebug() << "filter activated with text: " << filterText;
 	//p->quickSearchProxy->invalidate();
 	p->model->markItemsMatchQuickSearchString(filterText);
-	p->quickSearchProxy->setFilterFixedString(filterText);
+	if (filterText.size() == 0) {
+		p->quickSearchProxy->invalidate();
+	} else {
+		p->quickSearchProxy->setFilterFixedString(filterText);
+	}
 }
 
 void CollectionTreeWidget::resetFilter()

@@ -450,6 +450,9 @@ void MainWindow::resizeEvent(QResizeEvent * event)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+	GlobalShortcutManager * gsi = GlobalShortcutManager::instance();
+	gsi->clear(); // this one is required to eliminate segfault on app close
+
 	QSettings * settings = Ororok::settings();
 
 	// write layout settings and syns

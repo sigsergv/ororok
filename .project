@@ -64,7 +64,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.environment</key>
-					<value>PATH=/usr/bin:${env_var:PATH}:${env_var:PATH}|</value>
+					<value>PATH=/usr/bin/:${env_var:PATH}:/usr/bin:${env_var:PATH}|</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.stopOnError</key>
@@ -89,4 +89,15 @@
 		<nature>org.eclipse.cdt.make.core.ScannerConfigNature</nature>
 		<nature>com.trolltech.qtcppproject.QtNature</nature>
 	</natures>
+	<filteredResources>
+		<filter>
+			<id>1344576599457</id>
+			<name></name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-moc_*.cpp</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>

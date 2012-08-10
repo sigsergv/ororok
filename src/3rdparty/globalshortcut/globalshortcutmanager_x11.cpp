@@ -29,6 +29,7 @@
 #include <X11/X.h>
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
+#include <X11/XKBlib.h>
 
 #ifdef KeyPress
 // defined by X11 headers
@@ -132,7 +133,7 @@ private:
 		Display* appDpy = QX11Info::display();
 		XModifierKeymap* map = XGetModifierMapping(appDpy);
 		if (map) {
-			// XKeycodeToKeysym helper code adapeted from xmodmap
+			// XkbKeycodeToKeysym helper code adapeted from xmodmap
 			int min_keycode, max_keycode, keysyms_per_keycode = 1;
 			XDisplayKeycodes (appDpy, &min_keycode, &max_keycode);
 			XFree(XGetKeyboardMapping (appDpy, min_keycode, (max_keycode - min_keycode + 1), &keysyms_per_keycode));
@@ -144,7 +145,7 @@ private:
 						KeySym sym;
 						int symIndex = 0;
 						do {
-							sym = XKeycodeToKeysym(appDpy, map->modifiermap[mapIndex], symIndex);
+							sym = XkbKeycodeToKeysym(appDpy, map->modifiermap[mapIndex], symIndex, 0);
 							symIndex++;
  						} while ( !sym && symIndex < keysyms_per_keycode);
 						if (alt_mask == 0 && (sym == XK_Alt_L || sym == XK_Alt_R)) {

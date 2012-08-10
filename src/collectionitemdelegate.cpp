@@ -55,13 +55,14 @@ void CollectionItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem
 				iconPos += QPoint(Ororok::ALBUM_ITEM_PADDING, Ororok::ALBUM_ITEM_PADDING);
 				painter->drawPixmap(iconPos, icon);
 			}
+		} else {
+			// draw icon frame for albums with no cover art
+			r.adjust(Ororok::ALBUM_ITEM_PADDING, Ororok::ALBUM_ITEM_PADDING, 0, 0);
+			r.setWidth(Ororok::ALBUM_ICON_SIZE);
+			r.setHeight(Ororok::ALBUM_ICON_SIZE);
+			painter->drawRect(r);
 		}
 
-		// draw icon frame
-		r.adjust(Ororok::ALBUM_ITEM_PADDING, Ororok::ALBUM_ITEM_PADDING, 0, 0);
-		r.setWidth(Ororok::ALBUM_ICON_SIZE);
-		r.setHeight(Ororok::ALBUM_ICON_SIZE);
-		painter->drawRect(r);
 
 		// draw album title
 		QPoint textPos;

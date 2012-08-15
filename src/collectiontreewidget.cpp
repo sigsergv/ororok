@@ -5,6 +5,7 @@
  *      Author: Sergei Stolyarov
  */
 #include <QtGui>
+#include <QtDebug>
 
 #include "filterlineedit.h"
 #include "playlistmanager.h"
@@ -14,6 +15,7 @@
 #include "collectionitemmodel.h"
 #include "collectionitemdelegate.h"
 #include "collectiontreefilter.h"
+#include "collectiontreeitem.h"
 
 struct CollectionTreeWidget::Private
 {
@@ -194,17 +196,14 @@ void CollectionTreeWidget::itemContextMenu(const QPoint & pos)
 void CollectionTreeWidget::appendItemToCurrentPlaylist()
 {
 	QItemSelectionModel * sm = p->collectionTreeView->selectionModel();
-	// use CollectionItemModel::mimeData to fetch mime data for selected items
-	// and the use PlaylistModel::dropMimeData to append to current playlist
 
-	// we have to translate indexes!
 	QModelIndexList translated;
 	foreach (const QModelIndex & index, sm->selectedIndexes()) {
-		QModelIndex newIndex = p->quickSearchProxy->mapToSource(p->dateFilterProxy->mapToSource(index));
-		translated.append(newIndex);
+		translated.append(index);
 	}
 
-	QMimeData * md = p->model->mimeData(translated);
+	// we need to use filterproxy model to obtain correct data
+	QMimeData * md = p->dateFilterProxy->mimeData(translated);
 	PlaylistManager * pm = PlaylistManager::instance();
 	PlaylistWidget * apw = pm->activePlaylist();
 	if (!apw) {

@@ -25,6 +25,7 @@ bool CollectionTreeItemCmp(const CollectionTreeItem * a1, const CollectionTreeIt
 }
 
 CollectionTreeItem::CollectionTreeItem(CollectionTreeItemType t, CollectionTreeItem * parent)
+	: row(0)
 {
 	p = new Private;
 	p->type = t;

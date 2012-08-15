@@ -9,6 +9,7 @@
 #define COLLECTIONTREEWIDGET_H_
 
 #include <QDockWidget>
+#include <QModelIndex>
 
 class CollectionTreeWidget : public QWidget
 {

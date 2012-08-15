@@ -31,12 +31,8 @@ public:
 	void markItemsMatchDatePeriod(int days);
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	QStringList mimeTypes() const;
-	QMimeData * mimeData(const QModelIndexList &indexes) const;
 
 	bool reloadData();
-
-protected:
-	void findTracksInIndexesTree(const QModelIndex & index, QModelIndexList & target) const;
 
 private:
 	struct Private;

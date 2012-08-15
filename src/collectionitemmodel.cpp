@@ -358,57 +358,6 @@ QStringList CollectionItemModel::mimeTypes() const
 	return mt;
 }
 
-QMimeData * CollectionItemModel::mimeData(const QModelIndexList &indexes) const
-{
-	QByteArray encodedData;
-	QDataStream stream(&encodedData, QIODevice::WriteOnly);
-	// we should form list of tracks, but list of indexes may contain albums or artists
-	// so we have to extract tracks
-
-	QModelIndexList trackIndexes;
-
-	Q_FOREACH (const QModelIndex & index, indexes) {
-		if (!index.isValid()) {
-			continue;
-		}
-		if (index.data(CollectionItemModel::ItemTypeRole) == CollectionTreeItem::Track) {
-			trackIndexes << index;
-			continue;
-		}
-		findTracksInIndexesTree(index, trackIndexes);
-	}
-
-	QStringList ids;
-
-	Q_FOREACH (const QModelIndex & index, trackIndexes) {
-		// [trackPath, trackNo, title, album, year, album, artist, genre]
-		int id = index.data(CollectionItemModel::ItemDbIdRole).toInt();
-		stream << id;
-	}
-	QMimeData *md = new QMimeData();
-	md->setData(Ororok::TRACKS_COLLECTION_IDS_MIME, encodedData);
-
-	qDebug() << "total indexes" << trackIndexes.count();
-	return md;
-}
-
-void CollectionItemModel::findTracksInIndexesTree(const QModelIndex & index, QModelIndexList & target) const
-{
-	if (index.data(CollectionItemModel::ItemTypeRole) == CollectionTreeItem::Track) {
-		target << index;
-		return;
-	}
-
-	CollectionTreeItem * ix;
-	ix = static_cast<CollectionTreeItem*>(index.internalPointer());
-
-	int count = rowCount(index);
-
-	for (int i=0; i<count; i++) {
-		findTracksInIndexesTree(index.child(i, 0), target);
-	}
-}
-
 bool CollectionItemModel::reloadData()
 {
 	// destroy data set

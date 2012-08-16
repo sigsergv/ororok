@@ -1,0 +1,10 @@
+/* QWebkit widget styles */
+body, p, table, div {
+    font-family: "Liberation Sans", Verdana, Tahoma, Arial, sans-serif;
+    font-size: 14px;
+}
+
+body {
+    background-color: #fff;
+}
+

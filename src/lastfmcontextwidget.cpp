@@ -26,6 +26,7 @@ struct LastfmContextWidget::Private
 	QString currentArtist;
 	QString currentTrack;
 	QString currentAlbum;
+	QString pageTemplate;
 };
 
 LastfmContextWidget::LastfmContextWidget(QWidget * parent, Qt::WindowFlags f)
@@ -44,6 +45,10 @@ LastfmContextWidget::LastfmContextWidget(QWidget * parent, Qt::WindowFlags f)
 	//view->show();
 	this->setLayout(layout);
 	p->webview->setHtml("");
+
+	QFile templateFile(":/page-template.html");
+	templateFile.open(QIODevice::ReadOnly);
+	p->pageTemplate = QString(templateFile.readAll());
 }
 
 LastfmContextWidget::~LastfmContextWidget()
@@ -53,6 +58,9 @@ LastfmContextWidget::~LastfmContextWidget()
 
 void LastfmContextWidget::playerTrackStarted(const QStringList & trackInfo)
 {
+	if (!Ororok::lastfm::isLookupEnabled()) {
+		return;
+	}
 	// fetch info from lastfm about playing track: artist, tags etc
 	QMap<QString, QString> map;
 	map["method"] = "track.getInfo";
@@ -62,7 +70,7 @@ void LastfmContextWidget::playerTrackStarted(const QStringList & trackInfo)
 	if (!::lastfm::ws::Username.isEmpty()) {
 		map["username"] = ::lastfm::ws::Username;
 	}
-	p->webview->setHtml(tr("Searching…"));
+	p->webview->setHtml(p->pageTemplate.arg(tr("Searching…")));
 	p->trackGetInfoReply = lastfm::ws::get(map);
 	connect(p->trackGetInfoReply, SIGNAL(finished()), this, SLOT(trackGetInfoRequestFinished()));
 }
@@ -140,7 +148,7 @@ void LastfmContextWidget::trackGetInfoRequestFinished()
 			.arg(listeners)
 			.arg(loved_info);
 
-	p->webview->setHtml(p->webviewHtml + tr("<div>Loading artist info…</div>"));
+	p->webview->setHtml(p->pageTemplate.arg(p->webviewHtml + tr("<div>Loading artist info…</div>")));
 
 	p->trackGetInfoReply = 0;
 	disconnect(this, SLOT(trackGetInfoRequestFinished()));
@@ -182,7 +190,7 @@ void LastfmContextWidget::artistGetInfoRequestFinished()
 			"<div>%1</div>")
 			.arg(tags_html);
 
-	p->webview->setHtml(p->webviewHtml);
+	p->webview->setHtml(p->pageTemplate.arg(p->webviewHtml));
 	p->artistGetInfoReply = 0;
 	disconnect(this, SLOT(artistGetInfoRequestFinished()));
 }

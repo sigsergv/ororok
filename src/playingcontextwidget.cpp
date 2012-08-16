@@ -15,6 +15,7 @@
 struct PlayingContextWidget::Private
 {
 	QWebView * webview;
+	QString pageTemplate;
 };
 
 PlayingContextWidget::PlayingContextWidget(QWidget * parent, Qt::WindowFlags f)
@@ -29,7 +30,12 @@ PlayingContextWidget::PlayingContextWidget(QWidget * parent, Qt::WindowFlags f)
 	layout->addWidget(p->webview);
 	//view->show();
 	this->setLayout(layout);
-	p->webview->setHtml(tr("<i>Playing track info</i>"));
+
+	QFile templateFile(":/page-template.html");
+	templateFile.open(QIODevice::ReadOnly);
+	p->pageTemplate = QString(templateFile.readAll());
+
+	p->webview->setHtml(p->pageTemplate.arg(tr("<i>Playing track info</i>")));
 }
 
 PlayingContextWidget::~PlayingContextWidget()
@@ -42,7 +48,7 @@ void PlayingContextWidget::playerTrackStarted(const QStringList & trackInfo)
 	QString filename = trackInfo[Ororok::TrackFieldPath];
 	Ororok::MusicTrackMetadata * md = Ororok::getMusicFileMetadata(filename);
 	if (md == 0) {
-		p->webview->setHtml(tr("Unable to detect file metadata"));
+		p->webview->setHtml(p->pageTemplate.arg(tr("Unable to detect file metadata")));
 		return;
 	}
 
@@ -106,5 +112,6 @@ void PlayingContextWidget::playerTrackStarted(const QStringList & trackInfo)
 				.arg(md->lyricsAuthor);
 	}
 
+	html = p->pageTemplate.arg(html);
 	p->webview->setHtml(html);
 }

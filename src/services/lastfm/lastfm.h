@@ -20,6 +20,7 @@ namespace lastfm
 {
 
 bool isSubmitEnabled();
+bool isLookupEnabled();
 
 struct Response
 {

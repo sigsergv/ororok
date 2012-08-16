@@ -20,13 +20,13 @@ struct LastfmContextWidget::Private
 {
 	QWebView * webview;
 	QString webviewHtml;
-	QNetworkReply * trackGetInfoReply;
-	QNetworkReply * artistGetInfoReply;
 
 	QString currentArtist;
 	QString currentTrack;
 	QString currentAlbum;
 	QString pageTemplate;
+
+	QHash<QString, QString> artistInfoCache;
 };
 
 LastfmContextWidget::LastfmContextWidget(QWidget * parent, Qt::WindowFlags f)
@@ -37,7 +37,6 @@ LastfmContextWidget::LastfmContextWidget(QWidget * parent, Qt::WindowFlags f)
 	p->webview->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
 	connect( p->webview->page(), SIGNAL(linkClicked(const QUrl &)),
 			this, SLOT(linkClicked(const QUrl &)));
-	p->trackGetInfoReply = 0;
 
 	// create layout
 	QVBoxLayout *layout = new QVBoxLayout(this);
@@ -71,18 +70,19 @@ void LastfmContextWidget::playerTrackStarted(const QStringList & trackInfo)
 		map["username"] = ::lastfm::ws::Username;
 	}
 	p->webview->setHtml(p->pageTemplate.arg(tr("Searching…")));
-	p->trackGetInfoReply = lastfm::ws::get(map);
-	connect(p->trackGetInfoReply, SIGNAL(finished()), this, SLOT(trackGetInfoRequestFinished()));
+	QNetworkReply * networkReply = lastfm::ws::get(map);
+	connect(networkReply, SIGNAL(finished()), this, SLOT(trackGetInfoRequestFinished()));
 }
 
 void LastfmContextWidget::trackGetInfoRequestFinished()
 {
-	qDebug() << "track search in lastfm finished";
-	if (!p->trackGetInfoReply) {
+	QNetworkReply * sender = qobject_cast<QNetworkReply*>(this->sender());
+
+	if (!sender) {
 		return;
 	}
 
-	Ororok::lastfm::Response lfr = Ororok::lastfm::parseReply(p->trackGetInfoReply);
+	Ororok::lastfm::Response lfr = Ororok::lastfm::parseReply(sender);
 	if (lfr.error()) {
 		return;
 	}
@@ -150,24 +150,30 @@ void LastfmContextWidget::trackGetInfoRequestFinished()
 
 	p->webview->setHtml(p->pageTemplate.arg(p->webviewHtml + tr("<div>Loading artist info…</div>")));
 
-	p->trackGetInfoReply = 0;
 	disconnect(this, SLOT(trackGetInfoRequestFinished()));
 
-	// send artist info request
-	QMap<QString, QString> map;
-	map["method"] = "artist.getTopTags";
-	map["artist"] = p->currentArtist;
-	p->artistGetInfoReply = lastfm::ws::get(map);
-	connect(p->artistGetInfoReply, SIGNAL(finished()), this, SLOT(artistGetInfoRequestFinished()));
+	if (p->artistInfoCache.contains(p->currentArtist)) {
+		p->webview->setHtml(p->artistInfoCache[p->currentArtist]);
+	} else {
+		// send artist info request
+		QMap<QString, QString> map;
+		map["method"] = "artist.getTopTags";
+		map["artist"] = p->currentArtist;
+		QNetworkReply * networkReply = lastfm::ws::get(map);
+		networkReply->setProperty("_ororok_currentArtist", p->currentArtist);
+		connect(networkReply, SIGNAL(finished()), this, SLOT(artistGetInfoRequestFinished()));
+	}
 }
 
 void LastfmContextWidget::artistGetInfoRequestFinished()
 {
-	if (!p->artistGetInfoReply) {
+	QNetworkReply * sender = qobject_cast<QNetworkReply*>(this->sender());
+
+	if (!sender) {
 		return;
 	}
 
-	Ororok::lastfm::Response lfr = Ororok::lastfm::parseReply(p->artistGetInfoReply);
+	Ororok::lastfm::Response lfr = Ororok::lastfm::parseReply(sender);
 	if (lfr.error()) {
 		return;
 	}
@@ -190,9 +196,11 @@ void LastfmContextWidget::artistGetInfoRequestFinished()
 			"<div>%1</div>")
 			.arg(tags_html);
 
-	p->webview->setHtml(p->pageTemplate.arg(p->webviewHtml));
-	p->artistGetInfoReply = 0;
+	QString html = p->pageTemplate.arg(p->webviewHtml);
+	p->webview->setHtml(html);
 	disconnect(this, SLOT(artistGetInfoRequestFinished()));
+	QString artistName = sender->property("_ororok_currentArtist").toString();
+	p->artistInfoCache[artistName] = html;
 }
 
 void LastfmContextWidget::linkClicked(const QUrl & url)

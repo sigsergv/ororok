@@ -1,4 +1,4 @@
-DEFINES += OROROK_VERSION="\\\"1.0\\\""
+DEFINES += OROROK_VERSION="\\\"1.1\\\""
 
 HEADERS += mainwindow.h \
     ororok.h \

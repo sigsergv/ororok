@@ -30,7 +30,6 @@ void scanDir(QDir & d, QSqlQuery * query) {
 			QDir::NoSort);
 
 	Q_FOREACH (const QFileInfo & s, el) {
-		//qDebug() << s.fileName();
 		// add directory to the temporary table
 		query->bindValue(":path", s.absoluteFilePath()); // set full path
 		query->bindValue(":modtime", s.lastModified().toTime_t());
@@ -245,7 +244,6 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 			const QString & dirPath = sl[1];
 			const QString & dirModtime = sl[2];
 			// <albumMame, albumId>
-			QHash<QString, int> dirAlbums; // all albums in the current dir
 			// <albumName, {albumYear,...}>
 			QHash<QString, IntegerSet> albumYears; // tracks' years
 			QHash<QString, IntegerSet> albumArtists; // tracks' artists' ids
@@ -262,28 +260,50 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 			dir.setPath(dirPath);
 			QList<QFileInfo> files = dir.entryInfoList(name_filters, QDir::Files);
 
+			// all files in the directoy must belong to single album
+			QSet<QString> dirAlbums;
+
+			QHash<QString, Ororok::MusicTrackMetadata*> mdHash;
+			Q_FOREACH (const QFileInfo & fi, files) {
+				Ororok::MusicTrackMetadata * md = Ororok::getMusicFileMetadata(fi.filePath());
+				mdHash[fi.filePath()] = md;
+				dirAlbums.insert(md->album);
+			}
+
+			// if dirAlbums contains more than one element then take album name from the directory name
+			QString albumName;
+			int albumYear = -1;
+
+			if (dirAlbums.size() == 1 && dirAlbums.constBegin()->trimmed().length() != 0) {
+				albumName = *dirAlbums.constBegin();
+			} else {
+				albumName = dir.dirName();
+				// try to extract album year from directory name
+				QRegExp rx("^([0-9]{4})[ -_]");
+				int pos = rx.indexIn(albumName);
+				if (pos != -1) {
+					bool bOk;
+					int yearInt = rx.cap(1).toInt(&bOk);
+					if (bOk && yearInt > 1850 && yearInt < 2300) { // quite reasonable assumption
+						albumYear = yearInt;
+						albumName = albumName.mid(pos).trimmed();
+					}
+				}
+			}
+
+			subq.prepare("INSERT INTO album (name) VALUES (:name)");
+			subq.bindValue(":name", albumName);
+			int albumId;
+			if (subq.exec()) {
+				albumId = subq.lastInsertId().toInt();
+			}
+
 			// extract info from the file
 			Q_FOREACH (const QFileInfo & fi, files) {
 				// get file metadata
-				Ororok::MusicTrackMetadata * md = Ororok::getMusicFileMetadata(fi.filePath());
+				Ororok::MusicTrackMetadata * md = mdHash[fi.filePath()];
 				int artistId = 0;
-				int albumId = 0;
 				int genreId = 0;
-
-				if (!md->album.isEmpty()) {
-					// check is album is detected before
-					albumId = dirAlbums.value(md->album, -1);
-					if (-1 == albumId) {
-						// i.e. this album is new for current dir
-						// so add it to the database
-						subq.prepare("INSERT INTO album (name) VALUES (:name)");
-						subq.bindValue(":name", md->album);
-						if (subq.exec()) {
-							albumId = subq.lastInsertId().toInt();
-						}
-						dirAlbums.insert(md->album, albumId);
-					}
-				}
 
 				if (!md->artist.isEmpty()) {
 					artistId = p->artistsHash.value(md->artist, -1);
@@ -342,7 +362,7 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 			QDir dir(dirPath);
 			QStringList res = dir.entryList(coverImages, QDir::Files|QDir::Readable, QDir::NoSort);
 			if (res.count()) {
-				QString imgPath = dirPath+"/"+res[0];
+				QString imgPath = dirPath + "/" + res[0];
 
 				subq.prepare("SELECT id FROM image WHERE path = :path");
 				subq.bindValue(":path", imgPath);
@@ -360,35 +380,30 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 				}
 			}
 
-			QHash<QString,int>::const_iterator i;
-			for (i=dirAlbums.constBegin(); i!=dirAlbums.constEnd(); i++) {
-				const QString & albumName = i.key();
-				int albumId = i.value();
-				int albumArtistId = -1;
-				int albumYear = -1;
 
-				IntegerSet s = albumArtists.value(albumName);
-				if (s.size() == 1) {
-					// all tracks for this album in this directory have the same
-					// artist, so consider it as an album's artist
-					albumArtistId = *s.constBegin();
-				}
-
-				s = albumYears.value(albumName);
-				if (s.size() == 1) {
-					// all tracks for this album in this directory have the same
-					// year, so consider it as an album's year
-					albumYear = *s.constBegin();
-				}
-
-				// update album info
-				subq.prepare("UPDATE album SET artist_id=:artistId, year=:year, image_id=:imageId WHERE id=:albumId");
-				subq.bindValue(":artistId", albumArtistId);
-				subq.bindValue(":year", albumYear);
-				subq.bindValue(":imageId", albumImageId);
-				subq.bindValue(":albumId", albumId);
-				subq.exec(); // ignore query result status
+			IntegerSet s = albumArtists.value(albumName);
+			int albumArtistId = -1;
+			if (s.size() == 1) {
+				// all tracks for this album in this directory have the same
+				// artist, so consider it as an album's artist
+				albumArtistId = *s.constBegin();
 			}
+
+			s = albumYears.value(albumName);
+			if (s.size() == 1) {
+				// all tracks for this album in this directory have the same
+				// year, so consider it as an album's year
+				albumYear = *s.constBegin();
+			}
+
+			// update album info
+			subq.prepare("UPDATE album SET artist_id=:artistId, year=:year, image_id=:imageId WHERE id=:albumId");
+			subq.bindValue(":artistId", albumArtistId);
+			subq.bindValue(":year", albumYear);
+			subq.bindValue(":imageId", albumImageId);
+			subq.bindValue(":albumId", albumId);
+			subq.exec(); // ignore query result status
+			qDebug() << "Updated album info" << albumYear << albumId << albumArtistId;
 
 			// one directory updated, increase progress
 			processedDirs += 1;

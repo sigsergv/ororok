@@ -24,6 +24,9 @@ QStringList Ororok::supportedFileExtensions()
 	return res;
 }
 
+/**
+ * Read track metadata from the file.
+ */
 Ororok::MusicTrackMetadata * Ororok::getMusicFileMetadata(const QString & filename)
 {
 	// try to open file and read metadata from there

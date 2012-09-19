@@ -8,7 +8,7 @@ GenericName=Music player and collection organizer
 GenericName[ru]=Аудиоплеер и организатор коллекции музыки
 Icon=ororok
 
-Categories=Audio;Player;Qt;
+Categories=Audio;AudioVideo;Player;Qt;
 
 Exec=ororok
 Terminal=false

@@ -4,7 +4,7 @@ syntax: glob
 .settings
 ororok.pro.user
 src/Makefile*
-src/qrc_application.cpp
+qrc_application.cpp
 ./Makefile
 *.o
 moc_*.cpp

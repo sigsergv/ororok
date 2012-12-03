@@ -22,11 +22,12 @@ public:
 	~MainWindow();
 	static MainWindow * inst();
 	MainTabsTabWidget * tabs();
+    void unloadGlobalShortcuts();
+    void loadGlobalShortcuts();
 
 protected:
 	void createActions();
 	void connectSignals();
-	void loadGlobalShortcuts();
 
 protected slots:
 	void rescanCollection();

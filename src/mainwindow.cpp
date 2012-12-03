@@ -375,15 +375,25 @@ void MainWindow::connectSignals()
 	connect(player, SIGNAL(nextTrackNeeded()), this, SLOT(playerRequestedNextTrack()));
 }
 
+void MainWindow::unloadGlobalShortcuts()
+{
+    GlobalShortcutManager * gsi = GlobalShortcutManager::instance();
+    gsi->clear();
+}
+
 void MainWindow::loadGlobalShortcuts()
 {
-	GlobalShortcutManager * gsi = GlobalShortcutManager::instance();
+    // first reset all global shortcuts
+    unloadGlobalShortcuts();
 
-	// first reset all global shortcuts
-	gsi->clear();
+    QSettings * settings = Ororok::settings();
+    settings->beginGroup("GlobalShortcuts");
 
-	QSettings * settings = Ororok::settings();
-	settings->beginGroup("GlobalShortcuts");
+    if (!settings->value("enabled").toBool()) {
+        return;
+    }
+
+    GlobalShortcutManager * gsi = GlobalShortcutManager::instance();
 	QString s;
 
 	s = settings->value("prevTrack").toString();

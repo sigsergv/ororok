@@ -1,23 +1,23 @@
-DEFINES += OROROK_VERSION="\\\"1.1\\\""
+DEFINES += OROROK_VERSION="\\\"1.2\\\""
 
 HEADERS += mainwindow.h \
     ororok.h \
-	application.h \
-	db.h \
-	updatethread.h \
-	formats.h \
-	collectiontreewidget.h \
-	collectionitemmodel.h \
-	collectiontreeitem.h \
-	collectionitemdelegate.h \
-	settings.h \
-	cache.h \
-	collectiontreefilter.h \
-	playlistwidget.h \
-	playlistmodel.h \
-	mimetrackinfo.h \
-	playlistitemdelegate.h \
-	player.h \
+    application.h \
+    db.h \
+    updatethread.h \
+    formats.h \
+    collectiontreewidget.h \
+    collectionitemmodel.h \
+    collectiontreeitem.h \
+    collectionitemdelegate.h \
+    settings.h \
+    cache.h \
+    collectiontreefilter.h \
+    playlistwidget.h \
+    playlistmodel.h \
+    mimetrackinfo.h \
+    playlistitemdelegate.h \
+    player.h \
     playlistmanager.h \
     maintabstabwidget.h \
     maintabswidget.h \
@@ -25,11 +25,12 @@ HEADERS += mainwindow.h \
     filterlineedit.h \
     playingcontextwidget.h \
     lastfmcontextwidget.h \
-	settingsdialog.h \
+    settingsdialog.h \
     aboutdialog.h \
     renameplaylistdialog.h \
     desktopaccess.h \
     xmlplaylistreader.h \
+    shortcutedit.h \
     services/lastfm/lastfm.h \
     services/lastfm/auth.h \
     services/lastfm/scrobbleradapter.h
@@ -49,9 +50,9 @@ SOURCES += main.cpp \
     collectiontreefilter.cpp \
     playlistwidget.cpp \
     playlistmodel.cpp \
-	mimetrackinfo.cpp \
-	playlistitemdelegate.cpp \
-	player.cpp \
+    mimetrackinfo.cpp \
+    playlistitemdelegate.cpp \
+    player.cpp \
     playlistmanager.cpp \
     maintabstabwidget.cpp \
     maintabswidget.cpp \
@@ -59,18 +60,19 @@ SOURCES += main.cpp \
     filterlineedit.cpp \
     playingcontextwidget.cpp \
     lastfmcontextwidget.cpp \
-	settingsdialog.cpp \
+    settingsdialog.cpp \
     aboutdialog.cpp \
     renameplaylistdialog.cpp \
     desktopaccess.cpp \
     xmlplaylistreader.cpp \
+    shortcutedit.cpp \
     services/lastfm/lastfm.cpp \
     services/lastfm/auth.cpp \
     services/lastfm/scrobbleradapter.cpp
 
 FORMS += mainwindow.ui \
-	testwidget.ui \
-	settingsdialog.ui \
+    testwidget.ui \
+    settingsdialog.ui \
     aboutdialog.ui \
     renameplaylistdialog.ui
 

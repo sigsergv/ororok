@@ -15,6 +15,7 @@
 #include "services/lastfm/auth.h"
 #include "settings.h"
 #include "ui_settingsdialog.h"
+#include "mainwindow.h"
 
 struct SettingsDialog::Private
 {
@@ -78,6 +79,15 @@ SettingsDialog::SettingsDialog(QWidget * parent)
 	}
 	p->ui.lastfmTestLoginProgressBar->hide();
 
+    // now set global hotkeys
+    bool globalShortcutsEnabled = settings->value("GlobalShortcuts/enabled").toBool();
+    p->ui.globalShortcutsGroup->setChecked(globalShortcutsEnabled);
+    p->ui.stopShortcut->setKeySequence(QKeySequence(settings->value("GlobalShortcuts/stopTrack").toString()));
+    p->ui.prevTrackShortcut->setKeySequence(QKeySequence(settings->value("GlobalShortcuts/prevTrack").toString()));
+    p->ui.playPauseShortcut->setKeySequence(QKeySequence(settings->value("GlobalShortcuts/playPauseTrack").toString()));
+    p->ui.nextTrackShortcut->setKeySequence(QKeySequence(settings->value("GlobalShortcuts/nextTrack").toString()));
+    p->ui.lastfmLoveShortcut->setKeySequence(QKeySequence(settings->value("GlobalShortcuts/lastfmLoveTrack").toString()));
+
 	connectSignals();
 }
 
@@ -88,12 +98,19 @@ SettingsDialog::~SettingsDialog()
 
 int SettingsDialog::exec()
 {
+    // disable global shortcuts while editing preferences
+    MainWindow * w = MainWindow::inst();
+    w->unloadGlobalShortcuts();
+
 	// load settings
 	if (!loadSettings()) {
 		return QDialog::Rejected;
 	}
 
-	return QDialog::exec();
+    int res = QDialog::exec();
+    w->loadGlobalShortcuts();
+
+    return res;
 }
 
 void SettingsDialog::accept()
@@ -113,8 +130,6 @@ void SettingsDialog::accept()
 			existingDirs[id] = item->text();
 		}
 	}
-
-	qDebug() << newDirs;
 
 	// update database
 	QSqlDatabase db = QSqlDatabase::database();
@@ -156,20 +171,32 @@ void SettingsDialog::accept()
 
 	QSettings * settings = Ororok::settings();
 
+    // set global shortcuts
+    settings->beginGroup("GlobalShortcuts");
+    settings->setValue("enabled", p->ui.globalShortcutsGroup->isChecked());
+    settings->setValue("stopTrack", p->ui.stopShortcut->keySequence().toString());
+    settings->setValue("prevTrack", p->ui.prevTrackShortcut->keySequence().toString());
+    settings->setValue("nextTrack", p->ui.nextTrackShortcut->keySequence().toString());
+    settings->setValue("playPauseTrack", p->ui.playPauseShortcut->keySequence().toString());
+    settings->setValue("lastfmLoveTrack", p->ui.lastfmLoveShortcut->keySequence().toString());
+    settings->endGroup();
+
 	// if Last.fm is turned on then try to login (if not yet logged in)
 	if (p->ui.lastfmGroupBox->isChecked()) {
 		// login again
 		// TODO: implement more intellectual way of checking
 		p->beforeClose = true;
 		lastfmTestAuth();
-	} else {
-		// delete all lastfm related data
-		settings->beginGroup("LastFm");
-		settings->remove("username");
-		settings->remove("sessionKey");
-		settings->endGroup();
-		QDialog::accept();
-	}
+        return; // close dialog in the lastfm response handler
+    } else {
+        // delete all lastfm related data
+        settings->beginGroup("LastFm");
+        settings->remove("username");
+        settings->remove("sessionKey");
+        settings->endGroup();
+    }
+
+    QDialog::accept();
 }
 
 bool SettingsDialog::loadSettings()

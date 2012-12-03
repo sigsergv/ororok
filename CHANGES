@@ -2,3 +2,8 @@
 ===
 
 * fixed issue 31: error in desktop file
+
+1.2
+===
+
+* added global hotkeys configuration dialog

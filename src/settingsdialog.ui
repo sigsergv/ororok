@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>630</width>
-    <height>512</height>
+    <width>626</width>
+    <height>508</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -159,7 +159,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>4</number>
        </property>
        <widget class="QWidget" name="page">
         <widget class="QLabel" name="label">
@@ -379,19 +379,94 @@
         </widget>
        </widget>
        <widget class="QWidget" name="page_5">
-        <widget class="QLabel" name="label_4">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>10</y>
-           <width>251</width>
-           <height>16</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Keyboard shortcuts</string>
-         </property>
-        </widget>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Keyboard shortcuts</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="globalShortcutsGroup">
+           <property name="title">
+            <string>Enable global shortcuts</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <layout class="QFormLayout" name="formLayout">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>Previous track</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="ShortcutEdit" name="prevTrackShortcut"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>Next track:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="ShortcutEdit" name="nextTrackShortcut"/>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_9">
+                <property name="text">
+                 <string>Play/pause</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="ShortcutEdit" name="playPauseShortcut"/>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_10">
+                <property name="text">
+                 <string>Stop playing</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="ShortcutEdit" name="stopShortcut"/>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_11">
+                <property name="text">
+                 <string>“Love track” (last.fm)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="ShortcutEdit" name="lastfmLoveShortcut"/>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </widget>
       </widget>
      </item>
@@ -409,6 +484,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ShortcutEdit</class>
+   <extends>QLineEdit</extends>
+   <header>shortcutedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../resources/application.qrc"/>
  </resources>

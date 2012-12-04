@@ -33,7 +33,8 @@ HEADERS += mainwindow.h \
     shortcutedit.h \
     services/lastfm/lastfm.h \
     services/lastfm/auth.h \
-    services/lastfm/scrobbleradapter.h
+    services/lastfm/scrobbleradapter.h \
+    services/lastfm/networkaccessmanager.h
 
 SOURCES += main.cpp \
     mainwindow.cpp \
@@ -68,7 +69,8 @@ SOURCES += main.cpp \
     shortcutedit.cpp \
     services/lastfm/lastfm.cpp \
     services/lastfm/auth.cpp \
-    services/lastfm/scrobbleradapter.cpp
+    services/lastfm/scrobbleradapter.cpp \
+    services/lastfm/networkaccessmanager.cpp
 
 FORMS += mainwindow.ui \
     testwidget.ui \

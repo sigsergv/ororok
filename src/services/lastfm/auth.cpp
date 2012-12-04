@@ -32,9 +32,10 @@ void Ororok::lastfm::Auth::authenticate(const QString & username, const QString 
 	::lastfm::ws::Username = username;
 
 	QMap<QString, QString> params;
-	params["method"] = "auth.getMobileSession";
+    params["method"] = "auth.getMobileSession";
 	params["username"] = username;
-	params["authToken"] = ::lastfm::md5( (username + ::lastfm::md5(password.toUtf8()) ).toUtf8() );
+    params["password"] = password;
+    //params["authToken"] = ::lastfm::md5( (username + ::lastfm::md5(password.toUtf8()) ).toUtf8() );
 
 	p->lastfmReply = ::lastfm::ws::post(params);
 
@@ -47,11 +48,10 @@ void Ororok::lastfm::Auth::reset()
 	::lastfm::ws::Username.clear();
 }
 
-
 void Ororok::lastfm::Auth::lastfmQueryFinished()
 {
 	Ororok::lastfm::Response lfr(Ororok::lastfm::parseReply(p->lastfmReply));
-	if (lfr.error()) {
+    if (lfr.error()) {
 		// cleanup username and session data
 		reset();
 		emit failed(lfr.error(), lfr.errorText());

@@ -12,6 +12,7 @@
 #include <lastfm/ws.h>
 
 #include "lastfm.h"
+#include "networkaccessmanager.h"
 #include <QSettings>
 #include "settings.h"
 
@@ -59,7 +60,6 @@ void Ororok::lastfm::Response::setError(const QString & text, int code)
 Ororok::lastfm::Response Ororok::lastfm::parseReply(QNetworkReply * reply)
 {
 	Ororok::lastfm::Response lfr(reply->readAll());
-
 	if (!lfr.data.size()) {
 		lfr.setError("Malformed response");
 		return lfr;
@@ -115,6 +115,9 @@ void Ororok::initLastfm()
 
 	::lastfm_submit_enabled = -1 == args.indexOf(QString("--disable-lastfm-submit"));
 	::lastfm_lookup_enabled = -1 == args.indexOf(QString("--disable-lastfm-lookup"));
+
+    Ororok::lastfm::NetworkAccessManager * m = new Ororok::lastfm::NetworkAccessManager();
+    ::lastfm::setNetworkAccessManager(m);
 
 	QSettings * settings = Ororok::settings();
 	settings->beginGroup("LastFm");

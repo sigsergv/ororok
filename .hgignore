@@ -12,3 +12,4 @@ ui_*.h
 debug/*
 ororok
 collection.sqlite*
+src/services/lastfm/apikey.h

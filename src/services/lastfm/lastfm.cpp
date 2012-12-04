@@ -16,8 +16,18 @@
 #include <QSettings>
 #include "settings.h"
 
-#define LASTFM_API_KEY "64a0df9f82da53a7dca15b22d1ad3044"
-#define LASTFM_API_SECRET "153bce72f00a2bec1d124e597d69fb5b"
+/*
+File "apikey.h" contains API keys required for proper lastfm operations. It must contains the following code:
+
+== cut from here ==
+#define LASTFM_API_KEY "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+#define LASTFM_API_SECRET "sssssssssssssssssssssssss"
+== to here ==
+
+By security reasons this file is not commited to the repository.
+*/
+#include "apikey.h"
+
 
 const char * lastfm::ws::ApiKey = LASTFM_API_KEY;
 const char * lastfm::ws::SharedSecret = LASTFM_API_SECRET;

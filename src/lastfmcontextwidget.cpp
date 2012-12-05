@@ -10,7 +10,7 @@
 #include <QtWebKit>
 
 #include "qdebugreleaseworkaround.h"
-#include <lastfm.h>
+#include <lastfm/ws.h>
 
 #include "lastfmcontextwidget.h"
 #include "mimetrackinfo.h"
@@ -87,7 +87,9 @@ void LastfmContextWidget::trackGetInfoRequestFinished()
 		return;
 	}
 
-	const ::lastfm::XmlQuery lfm(lfr.data);
+    ::lastfm::XmlQuery lfm;
+
+    lfm.parse(lfr.data);
 
 	p->currentArtist = lfm["track"]["artist"]["name"].text();
 	p->currentTrack = lfm["track"]["name"].text();
@@ -178,7 +180,8 @@ void LastfmContextWidget::artistGetInfoRequestFinished()
 		return;
 	}
 
-	const ::lastfm::XmlQuery lfm(lfr.data);
+    ::lastfm::XmlQuery lfm;
+    lfm.parse(lfr.data);
 
 	QStringList tag_urls;
 	foreach (::lastfm::XmlQuery x, lfm["toptags"].children("tag")) {

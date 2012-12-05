@@ -58,7 +58,8 @@ void Ororok::lastfm::Auth::lastfmQueryFinished()
 		return;
 	}
 
-	const ::lastfm::XmlQuery lfm(lfr.data);
+    ::lastfm::XmlQuery lfm;
+    lfm.parse(lfr.data);
 	// replace username, just in case
 	::lastfm::ws::Username = lfm["session"]["name"].text();
 	// remember session key, it's important to re-use it in the

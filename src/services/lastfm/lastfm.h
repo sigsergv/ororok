@@ -12,7 +12,7 @@
 
 #include <lastfm/ws.h>
 #include <lastfm/misc.h>
-#include <lastfm/XmlQuery>
+#include <lastfm/XmlQuery.h>
 
 namespace Ororok
 {

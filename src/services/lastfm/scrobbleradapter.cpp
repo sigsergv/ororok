@@ -9,8 +9,8 @@
 #include <QtDebug>
 #include "qdebugreleaseworkaround.h"
 #include <lastfm/ws.h>
-#include <lastfm/Audioscrobbler>
-#include <lastfm/Track>
+#include <lastfm/Audioscrobbler.h>
+#include <lastfm/Track.h>
 #include "scrobbleradapter.h"
 #include "lastfm.h"
 

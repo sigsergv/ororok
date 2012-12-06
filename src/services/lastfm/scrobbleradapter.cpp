@@ -16,29 +16,43 @@
 
 struct Ororok::lastfm::ScrobblerAdapter::Private
 {
-	::lastfm::Audioscrobbler * scrobbler;
-	::lastfm::MutableTrack currentTrack;
+public:
+    Private()
+        : m_scrobbler(0)
+    {}
+
+    ~Private()
+    {
+        delete m_scrobbler;
+    }
+
+    ::lastfm::Audioscrobbler * scrobbler()
+    {
+        if (m_scrobbler && ::lastfm::ws::Username.isEmpty()) {
+            // destroy scrobbler
+            delete m_scrobbler;
+            m_scrobbler = 0;
+        } else if (!m_scrobbler && !::lastfm::ws::Username.isEmpty()) {
+            // re-init scrobbler
+            m_scrobbler = new ::lastfm::Audioscrobbler("oro");
+        }
+
+        return m_scrobbler;
+    }
+    ::lastfm::MutableTrack currentTrack;
+
+private:
+    ::lastfm::Audioscrobbler * m_scrobbler;
 };
 
 Ororok::lastfm::ScrobblerAdapter::ScrobblerAdapter(QObject * parent)
-	: QObject(parent)
+    : QObject(parent), p(new Private)
 {
-	p = new Private;
-
-	if (!Ororok::lastfm::isSubmitEnabled()) {
-		p->scrobbler = 0;
-		return;
-	}
-
-	p->scrobbler = new ::lastfm::Audioscrobbler("oro");
-	//qDebug() << "::lastfm::ws::SessionKey" << ::lastfm::ws::SessionKey;
-	//qDebug() << "::lastfm::ws::Username" << ::lastfm::ws::Username;
 }
 
 Ororok::lastfm::ScrobblerAdapter::~ScrobblerAdapter()
 {
-	delete p->scrobbler;
-	delete p;
+    delete p;
 }
 
 void Ororok::lastfm::ScrobblerAdapter::nowPlaying(const QString & title, const QString & artist, const QString & album, uint duration)
@@ -60,20 +74,20 @@ void Ororok::lastfm::ScrobblerAdapter::nowPlaying(const QString & title, const Q
 	}
 
 	p->currentTrack.setSource(::lastfm::Track::Player);
-	if (!p->currentTrack.isNull()) {
-		p->scrobbler->nowPlaying(p->currentTrack);
+    if (!p->currentTrack.isNull() && p->scrobbler()) {
+        p->scrobbler()->nowPlaying(p->currentTrack);
 	}
 }
 
 void Ororok::lastfm::ScrobblerAdapter::love(const QString & title, const QString & artist, const QString & album)
 {
-	if (!Ororok::lastfm::isSubmitEnabled()) {
+    if (!Ororok::lastfm::isSubmitEnabled()) {
 		return;
 	}
 
-	qDebug() << "Love lastfm track" << title << artist << album;
+    qDebug() << "Love lastfm track" << title << artist << album;
 
-	p->currentTrack.stamp();
+    p->currentTrack.stamp();
 	p->currentTrack.setTitle(title);
 	if (!artist.isEmpty()) {
 		p->currentTrack.setArtist(artist);
@@ -91,7 +105,7 @@ void Ororok::lastfm::ScrobblerAdapter::love(const QString & title, const QString
 void Ororok::lastfm::ScrobblerAdapter::submit(const QString & title, const QString & artist, const QString & album,
 		uint duration, uint trackNum, QDateTime timeStarted)
 {
-	if (!Ororok::lastfm::isSubmitEnabled()) {
+    if (!Ororok::lastfm::isSubmitEnabled()) {
 		return;
 	}
 
@@ -115,9 +129,9 @@ void Ororok::lastfm::ScrobblerAdapter::submit(const QString & title, const QStri
 		// submitted track must be played at least "duration/2"
 		// calc difference, in seconds
 		uint diff = abs( (timeStarted.toTime_t() - QDateTime::currentDateTime().toTime_t()) );
-		if (duration > 30 && diff > duration/2) {
-			p->scrobbler->cache(p->currentTrack);
-			p->scrobbler->submit();
+        if (p->scrobbler() && duration > 30 && diff > duration/2) {
+            p->scrobbler()->cache(p->currentTrack);
+            p->scrobbler()->submit();
 		}
 	}
 }

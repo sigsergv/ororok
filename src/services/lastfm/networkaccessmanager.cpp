@@ -21,15 +21,15 @@ QNetworkReply * Ororok::lastfm::NetworkAccessManager::createRequest(Operation op
     QNetworkRequest newRequest(req);
 
     QUrl url = req.url();
+
     // force url scheme to https, another workaround
     if (url.host() == "ws.audioscrobbler.com") {
         url.setScheme("https");
         url.setPort(-1);
     }
 
+
     newRequest.setUrl(url);
-    // add correct content-type header
-    newRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 
     return QNetworkAccessManager::createRequest(op, newRequest, outgoingData);
 }

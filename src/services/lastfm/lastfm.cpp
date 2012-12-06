@@ -126,6 +126,7 @@ void Ororok::initLastfm()
 	::lastfm_submit_enabled = -1 == args.indexOf(QString("--disable-lastfm-submit"));
 	::lastfm_lookup_enabled = -1 == args.indexOf(QString("--disable-lastfm-lookup"));
 
+    // disabled for now since we've upgraded to version of liblastfm that does ssl internally
     Ororok::lastfm::NetworkAccessManager * m = new Ororok::lastfm::NetworkAccessManager();
     ::lastfm::setNetworkAccessManager(m);
 
@@ -141,6 +142,6 @@ void Ororok::initLastfm()
 		//qDebug() << "Last.fm initialized for user" << ::lastfm::ws::Username;
 	} else {
 		::lastfm::ws::SessionKey.clear();
-		::lastfm::ws::Username.clear();
+        ::lastfm::ws::Username.clear();
 	}
 }

@@ -11,6 +11,35 @@
 
 #include "collectiontreeitem.h"
 
+static QStringList normalizeReplStrings;
+
+void initNormalizeReplStrings()
+{
+    if (normalizeReplStrings.isEmpty()) {
+        QList<QByteArray> rawPairs;
+        rawPairs << "ée" << "èe" << "êe" << "ëe";
+        rawPairs << "àa" << "áa" << "âa" << "ãa" << "äa" << "åa";
+        rawPairs << "ìi" << "íi" << "îi" << "ïi";
+        rawPairs << "ñn" << "öo";
+
+        foreach (QByteArray p, rawPairs) {
+            normalizeReplStrings << QString::fromUtf8(p);
+        }
+    }
+}
+
+QString normalizeSearchString(const QString & str)
+{
+    initNormalizeReplStrings();
+    QString res = str.toLower();
+
+    foreach (const QString & p, normalizeReplStrings) {
+        res.replace(p.at(0), p.at(1));
+    }
+
+    return res;
+}
+
 struct CollectionTreeItem::Private
 {
 	CollectionTreeItemType type;
@@ -121,7 +150,7 @@ void CollectionTreeItem::fetchData()
  */
 bool CollectionTreeItem::markItemsMatchQuickSearchString(const QString & match)
 {
-	if (searchString.contains(match, Qt::CaseInsensitive)) {
+    if (searchString.contains(normalizeSearchString(match))) {
 		// mark this and all child nodes as quickSearchMatched
 		//qDebug() << "quickSearchMatched" << searchString;
 		markChildrenMatched(true);
@@ -250,7 +279,7 @@ void CollectionTreeItem::fetchArtists(CollectionTreeItem * parent)
 		artist = new CollectionTreeItem(Artist, parent);
 		artist->data["id"] = query.value(0);
 		artist->data["name"] = query.value(1);
-		artist->searchString = query.value(1).toString();
+        artist->searchString = normalizeSearchString(query.value(1).toString());
 		artist->fetchData();
 
 		/*

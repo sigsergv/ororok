@@ -155,7 +155,7 @@ void LastfmContextWidget::trackGetInfoRequestFinished()
 	disconnect(this, SLOT(trackGetInfoRequestFinished()));
 
 	if (p->artistInfoCache.contains(p->currentArtist)) {
-		p->webview->setHtml(p->artistInfoCache[p->currentArtist]);
+        p->webview->setHtml( p->pageTemplate.arg( p->webviewHtml + p->artistInfoCache[p->currentArtist]) );
 	} else {
 		// send artist info request
 		QMap<QString, QString> map;
@@ -195,15 +195,15 @@ void LastfmContextWidget::artistGetInfoRequestFinished()
 		tags_html = QString("<!--top artist tags-->Artist top tags: %1").arg(tag_urls.join(", "));
 	}
 
-	p->webviewHtml += tr("<!--artist info--><hr width=\"80%\">"
+    QString artist_html =  tr("<!--artist info--><hr width=\"80%\">"
 			"<div>%1</div>")
 			.arg(tags_html);
 
-	QString html = p->pageTemplate.arg(p->webviewHtml);
-	p->webview->setHtml(html);
+    QString html = p->pageTemplate.arg( p->webviewHtml + artist_html );
+    p->webview->setHtml(html);
 	disconnect(this, SLOT(artistGetInfoRequestFinished()));
 	QString artistName = sender->property("_ororok_currentArtist").toString();
-	p->artistInfoCache[artistName] = html;
+    p->artistInfoCache[artistName] = artist_html;
 }
 
 void LastfmContextWidget::linkClicked(const QUrl & url)

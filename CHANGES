@@ -9,3 +9,4 @@
 * added global hotkeys configuration dialog
 * fixed lastfm authentication, all requests to lastfm are using SSL now
 * fixed issue 34: ignore diacretics in collection filter
+* fixed incorrect queuing lastf for lastfm context widget

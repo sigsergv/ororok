@@ -13,3 +13,7 @@ debug/*
 ororok
 collection.sqlite*
 src/services/lastfm/apikey.h
+debian/*.log
+debian/ororok.substvars
+build-stamp
+debian/files

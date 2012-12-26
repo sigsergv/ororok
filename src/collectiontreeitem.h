@@ -26,6 +26,8 @@ public:
 
 	void fetchData();
 
+    static QString normalizeSearchString(const QString &);
+
 	int row;
 	QMap<QString, QVariant> data;
 	QString searchString;

@@ -314,7 +314,7 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 
 void CollectionItemModel::markItemsMatchQuickSearchString(const QString & match)
 {
-	p->rootTreeItem->markItemsMatchQuickSearchString(match);
+    p->rootTreeItem->markItemsMatchQuickSearchString(CollectionTreeItem::normalizeSearchString(match));
 	p->rootTreeItem->restoreLetterItems();
 }
 

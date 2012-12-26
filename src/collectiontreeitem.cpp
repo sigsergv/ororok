@@ -28,7 +28,7 @@ void initNormalizeReplStrings()
     }
 }
 
-QString normalizeSearchString(const QString & str)
+QString CollectionTreeItem::normalizeSearchString(const QString & str)
 {
     initNormalizeReplStrings();
     QString res = str.toLower();
@@ -150,7 +150,8 @@ void CollectionTreeItem::fetchData()
  */
 bool CollectionTreeItem::markItemsMatchQuickSearchString(const QString & match)
 {
-    if (searchString.contains(normalizeSearchString(match))) {
+    qDebug() << "search string" << searchString << " <->" << match;
+    if (searchString.contains(match)) {
 		// mark this and all child nodes as quickSearchMatched
 		//qDebug() << "quickSearchMatched" << searchString;
 		markChildrenMatched(true);
@@ -309,7 +310,7 @@ void CollectionTreeItem::fetchArtists(CollectionTreeItem * parent)
 	artist = new CollectionTreeItem(Artist, parent);
 	artist->data["id"] = -1;
 	artist->data["name"] = "{Various Artists}";
-	artist->searchString = "{Various Artists}";
+    artist->searchString = normalizeSearchString("{Various Artists}");
 	artist->fetchData();
 	items.insert(0, artist);
 
@@ -364,6 +365,7 @@ void CollectionTreeItem::fetchAlbums(CollectionTreeItem * parent)
 		} else {
 			album->searchString = name;
 		}
+        album->searchString = normalizeSearchString(album->searchString);
 		p->childItems.append(album);
 		n++;
 	}
@@ -428,8 +430,7 @@ void CollectionTreeItem::fetchTracks(CollectionTreeItem * parent)
 		if (va_album) {
 			track->searchString += QString(" ") + track->data["artist"].toString();
 		}
-		//track->fetchData();
-		//qDebug() << track->searchString;
+        track->searchString = normalizeSearchString(track->searchString);
 		p->childItems.append(track);
 		n++;
 	}

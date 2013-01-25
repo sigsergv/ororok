@@ -1,8 +1,3 @@
-1.1
-===
-
-* fixed issue 31: error in desktop file
-
 1.2
 ===
 
@@ -11,3 +6,9 @@
 * fixed issue 34: ignore diacretics in collection filter
 * fixed incorrect queuing lastf for lastfm context widget
 * fixed incorrect filtering
+
+1.1
+===
+
+* fixed issue 31: error in desktop file
+

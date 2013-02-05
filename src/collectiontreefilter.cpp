@@ -73,7 +73,14 @@ void CollectionTreeFilter::findTracksInIndexesTree(const QModelIndex & index, QM
 	//CollectionTreeItem * ix;
 	//ix = static_cast<CollectionTreeItem*>(index.internalPointer());
 
-	int count = index.model()->rowCount(index);
+    int itemType = index.data(CollectionItemModel::ItemTypeRole).toInt();
+    if (itemType == CollectionTreeItem::Artist
+            && index.data(CollectionItemModel::ItemArtistLetterRole).toBool())
+    {
+        // we should not scan "letter" tree items, otherwise application will crash
+        return;
+    }
+    int count = index.model()->rowCount(index);
 
 	for (int i=0; i<count; i++) {
 		findTracksInIndexesTree(index.child(i, 0), target);

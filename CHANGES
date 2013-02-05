@@ -6,6 +6,7 @@
 * fixed issue 34: ignore diacretics in collection filter
 * fixed incorrect queuing lastf for lastfm context widget
 * fixed incorrect filtering
+* fixed crash when appending albums starting with different versions and selected using shift key
 
 1.1
 ===

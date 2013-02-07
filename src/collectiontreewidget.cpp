@@ -61,6 +61,7 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 
 	p->dateFilterCombo = new QComboBox(this);
 	p->dateFilterCombo->addItem(tr("Show all"), -1);
+	p->dateFilterCombo->addItem(tr("Show added only today"), 1);
 	p->dateFilterCombo->addItem(tr("Show added in the last week only"), 7);
 	p->dateFilterCombo->addItem(tr("Show added in the last month only"), 30);
 	p->dateFilterCombo->addItem(tr("Show added in the last 3 months only"), 90);

@@ -24,7 +24,7 @@ File "apikey.h" contains API keys required for proper lastfm operations. It must
 #define LASTFM_API_SECRET "sssssssssssssssssssssssss"
 == to here ==
 
-By security reasons this file is not commited to the repository.
+By security reasons this file is not included to the repository.
 */
 #include "apikey.h"
 
@@ -39,6 +39,10 @@ static bool lastfm_lookup_enabled;
 
 bool Ororok::lastfm::isSubmitEnabled()
 {
+	// first check key, it shouldn't be empty
+	if (QString(LASTFM_API_KEY).isEmpty()) {
+		return false;
+	}
 	return ::lastfm_submit_enabled;
 }
 

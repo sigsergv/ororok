@@ -1,5 +1,6 @@
 /*
  * This file should be copied to apikey.h to successfully finish build.
+ * You also need valid API key and secret.
  */
-#define LASTFM_API_KEY "API KEY HERE"
-#define LASTFM_API_SECRET "SECRET HERE"
+#define LASTFM_API_KEY ""
+#define LASTFM_API_SECRET ""

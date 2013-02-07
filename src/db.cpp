@@ -2,6 +2,7 @@
 #include <QtDebug>
 
 #include "db.h"
+#include "settings.h"
 
 //static const QString TABLE_SQL_DFN_("CREATE TABLE  ("
 //    "id INTEGER PRIMARY KEY, "
@@ -69,10 +70,19 @@ static const QString TABLE_SQL_DFN_DIR("CREATE TABLE dir ("
 		")");
 
 QSqlError initDb() {
+	QSettings * settings = Ororok::settings();
+
 	// open database
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+	#ifdef QT_NO_DEBUG
+	// in release version use file from ororok directory
+	db.setDatabaseName(Ororok::profilePath() + "/collection.sqlite");
+	#else
+	// for debug version use db from cwd
+	db.setDatabaseName(Ororok::profilePath() + "/collection.sqlite");
+	//db.setDatabaseName("collection.sqlite");
+	#endif
 	// TODO: replace with actual path to the database file
-	db.setDatabaseName("collection.sqlite");
 
 	if (!db.open()) {
 		return db.lastError();

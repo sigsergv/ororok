@@ -21,11 +21,47 @@ namespace Ororok
 void initSettings()
 {
 	QCoreApplication::setApplicationName("Ororok");
-	//QCoreApplication::setApplicationVersion(OROROK_VERSION);
-	QCoreApplication::setApplicationVersion("1.0"); // required for lastfm
+	QCoreApplication::setApplicationVersion(OROROK_VERSION);
+	//QCoreApplication::setApplicationVersion("1.0"); // required for lastfm
 	QCoreApplication::setOrganizationName("regolit.com");
 	QCoreApplication::setOrganizationDomain("ororok.regolit.com");
 
+	// perform settings migration, from "~/.ororok" to "~/.config/ororok"
+	// move all contents except "images-cache"
+	QString newProfilePath = QDir::homePath() + "/.config/ororok";
+	QString oldProfilePath = QDir::homePath() + "/.ororok";
+
+	QDir dir;
+
+	if (!dir.exists(newProfilePath) && dir.exists(oldProfilePath)) {
+		// migrate settings
+		dir.mkpath(newProfilePath);
+		QFile ini(oldProfilePath + "/ororok.ini");
+		if (ini.exists()) {
+			ini.copy(newProfilePath + "/ororok.ini"); // move instead of copy
+		}
+	}
+
+	// also copy (recursively) directory "tmp-playlists-store"
+	if (!dir.exists(newProfilePath + "/tmp-playlists-store") 
+		&& dir.exists(oldProfilePath + "/tmp-playlists-store") )
+	{
+		QDir d(oldProfilePath + "/tmp-playlists-store");
+		dir.mkpath(newProfilePath + "/tmp-playlists-store");
+		QStringList files = d.entryList(QDir::Files);
+		foreach (const QString & fn, files) {
+			QFile::copy(oldProfilePath + "/tmp-playlists-store/" + fn, 
+				newProfilePath + "/tmp-playlists-store/" + fn);
+		}
+	}
+
+	// and also try to migrate collection database
+	QFile newCollectionDb(newProfilePath + "/collection.db");
+	QFile oldCollectionDb("collection.db");
+
+	if (!newCollectionDb.exists() && oldCollectionDb.exists()) {
+		oldCollectionDb.copy(newProfilePath + "/collection.db");
+	}
 }
 
 QSettings * settings()
@@ -45,7 +81,7 @@ QString profilePath()
 {
 	QDir dir;
 
-	QString path = QDir::homePath() + "/.ororok";
+	QString path = QDir::homePath() + "/.config/ororok";
 	if (!dir.exists(path) && !dir.mkpath(path)) {
 		// TODO: do something
 		return QString();

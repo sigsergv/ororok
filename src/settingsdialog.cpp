@@ -326,6 +326,7 @@ void SettingsDialog::lastfmSuccessAuth(const QString & name, const QString & ses
 
 void SettingsDialog::lastfmFailedAuth(int error, const QString & errorText)
 {
+	Q_UNUSED(error)
 	p->ui.lastfmTestLoginProgressBar->hide();
 	p->ui.lastfmTestAuthButton->show();
 

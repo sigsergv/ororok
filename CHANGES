@@ -7,6 +7,7 @@
 * fixed incorrect queuing lastf for lastfm context widget
 * fixed incorrect filtering
 * fixed crash when appending albums starting with different versions and selected using shift key
+* config moved from ~/.ororok to ~/.config/ororok
 
 1.1
 ===

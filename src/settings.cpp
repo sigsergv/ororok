@@ -38,7 +38,7 @@ void initSettings()
 		dir.mkpath(newProfilePath);
 		QFile ini(oldProfilePath + "/ororok.ini");
 		if (ini.exists()) {
-			ini.copy(newProfilePath + "/ororok.ini"); // move instead of copy
+			ini.copy(newProfilePath + "/ororok.ini");
 		}
 	}
 
@@ -55,13 +55,15 @@ void initSettings()
 		}
 	}
 
-	// and also try to migrate collection database
+	#ifdef QT_NO_DEBUG
+	// and also try to migrate collection database, only for non-debug version
 	QFile newCollectionDb(newProfilePath + "/collection.db");
-	QFile oldCollectionDb("collection.db");
+	QFile oldCollectionDb("collection.sqlite");
 
 	if (!newCollectionDb.exists() && oldCollectionDb.exists()) {
-		oldCollectionDb.copy(newProfilePath + "/collection.db");
+		oldCollectionDb.rename(newProfilePath + "/collection.db");
 	}
+	#endif
 }
 
 QSettings * settings()

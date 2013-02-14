@@ -2,6 +2,7 @@ syntax: glob
 
 .hgignore
 .settings
+.debug-config-dir
 ororok.pro.user
 src/Makefile*
 qrc_application.cpp

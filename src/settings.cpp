@@ -83,7 +83,11 @@ QString profilePath()
 {
 	QDir dir;
 
+	#ifdef QT_NO_DEBUG
 	QString path = QDir::homePath() + "/.config/ororok";
+	#else
+	QString path = QDir::currentPath() + "/.debug-config-dir";
+	#endif
 	if (!dir.exists(path) && !dir.mkpath(path)) {
 		// TODO: do something
 		return QString();

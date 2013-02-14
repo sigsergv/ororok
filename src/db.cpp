@@ -74,14 +74,7 @@ QSqlError initDb() {
 
 	// open database
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-	#ifdef QT_NO_DEBUG
-	// in release version use file from ororok config directory
 	db.setDatabaseName(Ororok::profilePath() + "/collection.db");
-	#else
-	// for debug version use db from cwd
-	db.setDatabaseName("collection.db");
-	#endif
-	// TODO: replace with actual path to the database file
 
 	if (!db.open()) {
 		return db.lastError();

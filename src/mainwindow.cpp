@@ -388,8 +388,8 @@ void MainWindow::loadGlobalShortcuts()
 
     QSettings * settings = Ororok::settings();
     settings->beginGroup("GlobalShortcuts");
-
     if (!settings->value("enabled").toBool()) {
+		settings->endGroup();
         return;
     }
 
@@ -421,7 +421,6 @@ void MainWindow::loadGlobalShortcuts()
 	if (s.length()) {
 		gsi->connect(QKeySequence(s), pm, SLOT(lastfmLoveCurrentTrack()));
 	}
-
 	settings->endGroup();
 }
 

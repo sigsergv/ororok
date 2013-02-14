@@ -264,13 +264,35 @@ void PlaylistManager::requestTrackPlay(const QStringList & trackInfo)
 }
 
 /**
- * play current playlist
+ * start playing something
  */
 void PlaylistManager::requestTrackPlay()
 {
 	// first stop all
 	Player * player = Player::instance();
 	player->stop();
+
+	PlaylistWidget * targetPlaylist = 0;
+	PlaylistWidget * firstPlaylist = 0; // first non-empty playlist
+	PlaylistModel * model;
+
+	Q_FOREACH (PlaylistWidget * pw, p->playlists) {
+		model = pw->model();
+		if (firstPlaylist == 0 && model->rowCount()) {
+			firstPlaylist = pw;
+		}
+		QStringList activeTrack = model->activeTrack();
+		if (!activeTrack.isEmpty()) {
+			player->start(activeTrack);
+			firstPlaylist = 0;
+			break;
+		}
+	}
+
+	if (firstPlaylist != 0) {
+		firstPlaylist->model()->selectActiveTrack(0);
+		player->start(firstPlaylist->model()->activeTrack());
+	}
 
 	/*
 	// take currently opened playlist
@@ -308,6 +330,12 @@ void PlaylistManager::trackPlayingStarted(const QStringList & trackInfo)
 		//pw->model()->markActiveTrackStopped();
 		if (pw->model()->selectActiveTrack(trackInfo)) {
 			model = pw->model();
+			int n = trackInfo[Ororok::TrackNumInPlaylist].toInt();
+			QSettings * settings = Ororok::settings();
+			QStringList lastTrackInfo;
+			lastTrackInfo << pw->uid();
+			lastTrackInfo << QString::number(n);
+			settings->setValue("Playlists/lastTrack", lastTrackInfo);
 		}
 	}
 

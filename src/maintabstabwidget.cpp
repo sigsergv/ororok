@@ -11,7 +11,10 @@
 #include "maintabstabwidget.h"
 #include "maintabswidget.h"
 #include "playlistwidget.h"
+#include "playlistmodel.h"
 #include "playlistmanager.h"
+#include "settings.h"
+
 
 MainTabsTabWidget::MainTabsTabWidget(QWidget * parent)
 	: QTabWidget(parent)
@@ -22,10 +25,24 @@ MainTabsTabWidget::MainTabsTabWidget(QWidget * parent)
 	PlaylistManager * pm = PlaylistManager::instance();
 	QList<Ororok::PlaylistInfo> items = pm->loadPlaylistItems();
 
+	QSettings * settings = Ororok::settings();
+	QStringList lastTrackInfo = settings->value("Playlists/lastTrack").toStringList();
+	QString lastTrackPlaylistUid;
+	int lastTrackNum = -1;
+	if (lastTrackInfo.size() == 2) {
+		lastTrackPlaylistUid = lastTrackInfo[0];
+		lastTrackNum = lastTrackInfo[1].toUInt();
+	}
+
 	foreach (const Ororok::PlaylistInfo & pi, items) {
 		PlaylistWidget * pw = pm->loadPlaylist(pi);
 		pw->setParent(this);
 		addTab(pw, pw->name());
+
+		if (pi.uid == lastTrackPlaylistUid && lastTrackNum > -1) {
+			pw->model()->selectActiveTrack(lastTrackNum);
+			pw->model()->markActiveTrackPaused();
+		}
 	}
 
 	if (items.length() == 0) {

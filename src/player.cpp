@@ -113,18 +113,16 @@ void Player::enqueue(const QStringList & trackInfo)
 	p->nextTrack = trackInfo;
 }
 
-void Player::tick(qint64 time)
+void Player::tick(qint64 posTime)
 {
-	Q_UNUSED(time);
 	qint64 totalTime = p->mediaObject->totalTime();
 	p->currentTrackPlayingTime += p->tickInterval;
 
 	// emit signal with track time
-	emit trackTimeChanged(p->currentTrackPlayingTime, totalTime);
+	emit trackTimeChanged(posTime, totalTime);
 	if (!p->midTrackReached && p->currentTrackPlayingTime >= 4000+totalTime/2) { // 4000 - 4 seconds
 		emit midTrackReached(p->currentTrack, p->currentTrackStartTime);
 		p->midTrackReached = true;
-		qDebug() << "(time, total) => " << p->currentTrackPlayingTime << totalTime;
 	}
 }
 

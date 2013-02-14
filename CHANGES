@@ -5,6 +5,7 @@
 * fixed lastfm authentication, all requests to lastfm are using SSL now
 * fixed issue 34: ignore diacretics in collection filter
 * fixed issue 36: incorrect playing position after moving seek slider
+* fixed issue 39: now player remember last track on quit
 * fixed incorrect queuing artist for lastfm context widget
 * fixed incorrect filtering
 * fixed crash when appending albums starting with different letter sections and selected using shift key

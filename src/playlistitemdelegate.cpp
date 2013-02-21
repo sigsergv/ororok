@@ -62,19 +62,22 @@ void PlaylistItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &
 		}
 
 		if (index.column() == 0) {
-			QImage stateImage;;
+			QImage stateImage;
 
 			// draw track playing state icon in the first column
 			switch (state) {
 			case PlaylistModel::TrackStatePaused:
 				stateImage.load(":track-state-paused.png");
 				break;
+
 			case PlaylistModel::TrackStatePlaying:
 				stateImage.load(":track-state-playing.png");
 				break;
+
 			case PlaylistModel::TrackStateStopped:
 				stateImage.load(":track-state-stopped.png");
 				break;
+				
 			case PlaylistModel::TrackStateNotActive:
 				break;
 			}

@@ -606,11 +606,6 @@ bool PlaylistModel::insertRows(int row, int count, const QModelIndex & parent)
 	return true;
 }
 
-int PlaylistModel::activeTrackNum()
-{
-	return 0;
-}
-
 // save playlist contents to playlist file
 void PlaylistModel::flushPlaylistFile()
 {

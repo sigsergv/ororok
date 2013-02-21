@@ -60,6 +60,7 @@ PlaylistWidget::PlaylistWidget(QString uid, Ororok::PlaylistType t, QWidget * pa
 	QPushButton * b;
 
 	layout = new QHBoxLayout(this);
+	layout->setAlignment(Qt::AlignLeft);
 	b = p->createToolbarButton(this, ":edit-clear-list-16x16.png", tr("Remove all tracks from playlist, SHIFT+CLICK — delete all except selected"));
 	connect(b, SIGNAL(clicked()), this, SLOT(clearPlaylist()));
 	layout->addWidget(b);
@@ -68,11 +69,14 @@ PlaylistWidget::PlaylistWidget(QString uid, Ororok::PlaylistType t, QWidget * pa
 	connect(b, SIGNAL(clicked()), this, SLOT(renamePlaylist()));
 	layout->addWidget(b);
 
+	/* // disable shuffle button for now
 	b = p->createToolbarButton(this, ":shuffle-16x16.png", tr("Shuffle playlist items"));
 	connect(b, SIGNAL(clicked()), this, SLOT(shufflePlaylist()));
 	layout->addWidget(b);
+	*/
 
 	p->filter = new QLineEdit(this);
+	p->filter->setDisabled(true);
 	layout->addWidget(p->filter);
 	QWidget * tb = new QWidget(this);
 	tb->setLayout(layout);

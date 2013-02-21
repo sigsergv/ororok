@@ -50,7 +50,6 @@ public:
 
 protected:
 //	bool insertTrack(int pos, const QStringList & trackInfo);
-	int activeTrackNum();
 	void flushPlaylistFile();
 
 private:

@@ -1,6 +1,7 @@
 1.2
 ===
 
+* added Vorbis Ogg files support
 * added global hotkeys configuration dialog
 * fixed lastfm authentication, all requests to lastfm are using SSL now
 * fixed issue 34: ignore diacretics in collection filter

@@ -84,7 +84,7 @@ CODECFORTR = UTF-8
 
 QT += xml sql phonon network webkit 
 
-INCLUDEPATH = 3rdparty/globalshortcut
+INCLUDEPATH += 3rdparty/globalshortcut
 include(3rdparty/globalshortcut/globalshortcut.pri)
 
 win32 { 

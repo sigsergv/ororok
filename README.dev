@@ -1,7 +1,0 @@
-To build development & debug version use the following command
-
-    qmake "CONFIG+=debug"
-
-To build release version:
-
-    qmake "CONFIG+=release"

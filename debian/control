@@ -2,11 +2,11 @@ Source: ororok
 Section: sound
 Priority: extra
 Maintainer: Sergei Stolyarov <sergei@regolit.com>
-Build-Depends: debhelper (>= 7.0.50~), libqt4-dev (>= 4:4.6), liblastfm-dev (>= 1.0.3), libqtwebkit-dev(>= 2.0~), libphonon-dev, libtag1-dev, pkg-config
+Build-Depends: debhelper (>= 7.0.50~), libqt4-dev (>= 4:4.6), liblastfm-dev (>= 1.0.3), libqtwebkit-dev(>= 2.0~), libphonon-dev, libtag1-dev, pkg-config, gdb
 Standards-Version: 3.9.1
-Homepage: http://code.google.com/p/ororok/
-Vcs-Hg: https://ororok.googlecode.com/hg
-Vcs-Browser: http://code.google.com/p/ororok/source/browse/
+Homepage: https://github.com/sigsergv/ororok
+Vcs-Git: git://github.com/sigsergv/ororok.git
+Vcs-Browser: https://github.com/sigsergv/ororok
 
 Package: ororok
 Architecture: any

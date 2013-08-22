@@ -1,9 +1,7 @@
-syntax: glob
-
-.hgignore
 .settings
 .debug-config-dir
 ororok.pro.user
+Makefile
 src/Makefile*
 qrc_application.cpp
 ./Makefile
@@ -19,3 +17,4 @@ debian/*.log
 debian/ororok.substvars
 build-stamp
 debian/files
+

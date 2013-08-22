@@ -2,7 +2,7 @@
  * updatethread.cpp
  *
  *  Created on: Oct 20, 2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #include <QtCore>

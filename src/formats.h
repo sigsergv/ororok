@@ -2,7 +2,7 @@
  * formats.h
  *
  *  Created on: Oct 20, 2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef FORMATS_H_

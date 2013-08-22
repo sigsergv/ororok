@@ -2,7 +2,7 @@
  * renameplaylistdialog.cpp
  *
  *  Created on: Apr 13, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #include "renameplaylistdialog.h"

@@ -2,7 +2,7 @@
  * application.cpp
  *
  *  Created on: Nov 12, 2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #include <QtGui>

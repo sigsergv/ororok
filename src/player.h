@@ -2,7 +2,7 @@
  * player.h
  *
  *  Created on: Nov 1, 2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef PLAYER_H_

@@ -2,7 +2,7 @@
  * edittreeview.cpp
  *
  *  Created on: Mar 13, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #include <QKeyEvent>

@@ -2,7 +2,7 @@
  * edittreeview.h
  *
  *  Created on: Mar 13, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef EDITTREEVIEW_H_

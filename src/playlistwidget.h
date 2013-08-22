@@ -2,7 +2,7 @@
  * playlistwidget.h
  *
  *  Created on: Oct 28, 2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef PLAYLISTWIDGET_H_

@@ -2,7 +2,7 @@
  * player.cpp
  *
  *  Created on: Nov 1, 2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 #include <QtCore>
 #include <Phonon/MediaObject>

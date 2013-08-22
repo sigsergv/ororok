@@ -2,7 +2,7 @@
  * xmlplaylistreader.h
  *
  *  Created on: Apr 16, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef XMLPLAYLISTREADER_H_

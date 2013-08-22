@@ -2,7 +2,7 @@
  * renameplaylistdialog.h
  *
  *  Created on: Apr 13, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef RENAMEPLAYLISTDIALOG_H_

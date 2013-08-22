@@ -2,7 +2,7 @@
  * xmlplaylistreader.cpp
  *
  *  Created on: Apr 16, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #include <QtXml>

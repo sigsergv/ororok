@@ -2,7 +2,7 @@
  * playlistmodel.cpp
  *
  *  Created on: Oct 28, 2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #include <QtXml>

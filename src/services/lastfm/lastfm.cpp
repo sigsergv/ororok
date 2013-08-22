@@ -2,7 +2,7 @@
  * lastfm.cpp
  *
  *  Created on: Mar 29, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #include <QtDebug>

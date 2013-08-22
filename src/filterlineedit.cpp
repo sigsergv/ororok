@@ -2,7 +2,7 @@
  * filterlineedit.cpp
  *
  *  Created on: Apr 18, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #include <QKeyEvent>

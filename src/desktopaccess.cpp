@@ -2,7 +2,7 @@
  * desktopaccess.cpp
  *
  *  Created on: Apr 9, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #include "desktopaccess.h"

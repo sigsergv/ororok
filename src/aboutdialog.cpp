@@ -2,7 +2,7 @@
  * aboutdialog.cpp
  *
  *  Created on: Apr 5, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #include "aboutdialog.h"

@@ -2,7 +2,7 @@
  * collectiontreewidget.h
  *
  *  Created on: 22.10.2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef COLLECTIONTREEWIDGET_H_

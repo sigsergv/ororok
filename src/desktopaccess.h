@@ -2,7 +2,7 @@
  * desktopaccess.h
  *
  *  Created on: Apr 9, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef DESKTOPACCESS_H_

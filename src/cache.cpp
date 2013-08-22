@@ -2,7 +2,7 @@
  * cache.cpp
  *
  *  Created on: Oct 24, 2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 #include <QtCore>
 #include <QCryptographicHash>

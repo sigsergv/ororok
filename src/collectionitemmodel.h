@@ -2,7 +2,7 @@
  * collectionitemmodel.h
  *
  *  Created on: Oct 22, 2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef COLLECTIONITEMMODEL_H_

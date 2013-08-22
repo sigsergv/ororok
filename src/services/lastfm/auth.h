@@ -2,7 +2,7 @@
  * auth.h
  *
  *  Created on: Mar 31, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef AUTH_H_

@@ -2,7 +2,7 @@
  * settingsdialog.h
  *
  *  Created on: Nov 11, 2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef SETTINGSDIALOG_H_

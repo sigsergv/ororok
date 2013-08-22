@@ -2,7 +2,7 @@
  * settingsdialog.cpp
  *
  *  Created on: Nov 11, 2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 #include <QtDebug>
 #include <QtGui>

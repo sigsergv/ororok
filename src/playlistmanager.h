@@ -2,7 +2,7 @@
  * playlistmanager.h
  *
  *  Created on: Jul 4, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef PLAYLISTMANAGER_H_

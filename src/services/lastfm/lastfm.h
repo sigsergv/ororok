@@ -2,7 +2,7 @@
  * lastfm.h
  *
  *  Created on: Mar 29, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef LASTFM_H_

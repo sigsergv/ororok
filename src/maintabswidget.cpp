@@ -2,7 +2,7 @@
  * maintabswidget.cpp
  *
  *  Created on: Jul 4, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #include <QtDebug>

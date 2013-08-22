@@ -2,7 +2,7 @@
  * aboutdialog.h
  *
  *  Created on: Apr 5, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef ABOUTDIALOG_H_

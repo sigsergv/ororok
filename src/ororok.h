@@ -2,7 +2,7 @@
  * ororok.h
  *
  *  Created on: Jul 4, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef OROROK_H_

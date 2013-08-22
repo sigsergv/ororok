@@ -2,7 +2,7 @@
  * collectiontreefilter.cpp
  *
  *  Created on: Oct 26, 2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #include <QtCore>

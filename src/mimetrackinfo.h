@@ -2,7 +2,7 @@
  * mimetrackinfo.h
  *
  *  Created on: Oct 28, 2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef MIMETRACKINFO_H_

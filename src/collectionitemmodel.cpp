@@ -2,7 +2,7 @@
  * collectionitemmodel.cpp
  *
  *  Created on: Oct 22, 2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #include <QStringList>

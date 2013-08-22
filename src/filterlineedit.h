@@ -2,7 +2,7 @@
  * filterlineedit.h
  *
  *  Created on: Apr 18, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #ifndef FILTERLINEEDIT_H_

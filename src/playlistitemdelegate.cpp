@@ -2,7 +2,7 @@
  * playlistitemdelegate.cpp
  *
  *  Created on: Oct 30, 2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #include <QtGui>

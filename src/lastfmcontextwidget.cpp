@@ -2,7 +2,7 @@
  * lastfmcontextwidget.cpp
  *
  *  Created on: May 8, 2010
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 
 #include <QtGui>

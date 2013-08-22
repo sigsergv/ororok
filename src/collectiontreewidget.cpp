@@ -2,7 +2,7 @@
  * collectiontreewidget.cpp
  *
  *  Created on: 22.10.2009
- *      Author: Sergei Stolyarov
+ *      Author: Sergey Stolyarov
  */
 #include <QtGui>
 #include <QtDebug>

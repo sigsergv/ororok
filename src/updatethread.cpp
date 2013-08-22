@@ -293,7 +293,7 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 
 			subq.prepare("INSERT INTO album (name) VALUES (:name)");
 			subq.bindValue(":name", albumName);
-			int albumId;
+			int albumId = 0;
 			if (subq.exec()) {
 				albumId = subq.lastInsertId().toInt();
 			}
@@ -481,7 +481,7 @@ void UpdateThread::run() {
 
 	bool commit = true;
 
-	ReturnAction a;
+	ReturnAction a = Break;
 	Q_FOREACH (const QString & c, collections) {
 		a = scanCollection(c);
 		if (Break == a) {

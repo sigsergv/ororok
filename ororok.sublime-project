@@ -1,0 +1,21 @@
+{
+	"folders":
+	[
+		{
+			"follow_symlinks": true,
+			"path": "/home/cancel/projects/ororok",
+            "file_exclude_patterns": [".cproject", ".project", "moc_*", "qrc_*", 
+                "ui_*.h", "ui_*.cpp", "*.o", "ororok", "Makefile", "*.qm", "ororok.sublime-workspace"],
+            "folder_exclude_patterns": [".debug-config-dir"]
+		}
+	],
+    "build_systems":
+    [
+        {
+            "name": "Ororok make",
+            "shell": true,
+            "working_dir": "$project_path",
+            "cmd": "rm -f ./ororok && make && ./ororok"
+        }
+    ]
+}

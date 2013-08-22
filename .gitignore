@@ -17,4 +17,4 @@ debian/*.log
 debian/ororok.substvars
 build-stamp
 debian/files
-
+*.sublime-workspace

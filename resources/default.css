@@ -12,3 +12,6 @@ body {
     margin: 5pt 0 5pt 0;
 }
 
+a:hover {
+    color: green;
+}

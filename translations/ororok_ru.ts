@@ -112,8 +112,8 @@
     <name>CollectionTreeWidget</name>
     <message>
         <location filename="../src/collectiontreewidget.cpp" line="46"/>
-        <source>Click to reset collection filter</source>
-        <translation>Кликните для отмены фильтра</translation>
+        <source>Click to reset filter</source>
+        <translation>Кликните для очистки фильтра</translation>
     </message>
     <message>
         <location filename="../src/collectiontreewidget.cpp" line="63"/>
@@ -145,6 +145,12 @@
         <source>Append to current playlist</source>
         <translation>Добавить в текущий плейлист</translation>
     </message>
+    <message>
+        <location filename="../src/collectiontreeitem.cpp" line="313"/>
+        <location filename="../src/collectiontreeitem.cpp" line="314"/>
+        <source>Various Artists</source>
+        <translation>Разные исполнители</translation>
+    </message>
 </context>
 <context>
     <name>LastfmContextWidget</name>
@@ -153,8 +159,13 @@
         <source>Searching…</source>
         <translation>Ищем…</translation>
     </message>
+    <message>
+        <location filename="../src/lastfmcontextwidget.cpp" line="118"/>
+        <source>&lt;strong&gt;%1&lt;strong&gt; — &lt;strong&gt;%2&lt;/strong&gt; (&lt;!--duration--&gt;%3)</source>
+        <translation></translation>
+    </message>
     <message numerus="yes">
-        <location filename="../src/lastfmcontextwidget.cpp" line="119"/>
+        <location filename="../src/lastfmcontextwidget.cpp" line="134"/>
         <source>Played &lt;strong&gt;%n&lt;/strong&gt; times</source>
         <translation>
             <numerusform>Проиграно &lt;strong&gt;%n&lt;/strong&gt; раз</numerusform>
@@ -162,23 +173,27 @@
             <numerusform>Проиграно &lt;strong&gt;%n&lt;/strong&gt; раз</numerusform>
         </translation>
     </message>
+    <message numerus="yes">
+        <location filename="../src/lastfmcontextwidget.cpp" line="143"/>
+        <source>&lt;strong&gt;%n&lt;/strong&gt; listeners</source>
+        <translation>
+            <numerusform>&lt;strong&gt;%n&lt;/strong&gt; слушатель</numerusform>
+            <numerusform>&lt;strong&gt;%n&lt;/strong&gt; слушателя</numerusform>
+            <numerusform>&lt;strong&gt;%n&lt;/strong&gt; слушателей</numerusform>
+        </translation>
+    </message>
     <message>
-        <location filename="../src/lastfmcontextwidget.cpp" line="130"/>
+        <location filename="../src/lastfmcontextwidget.cpp" line="147"/>
         <source>You love this track.</source>
         <translation>Этот трек вам нравится в Last.fm.</translation>
     </message>
     <message>
-        <location filename="../src/lastfmcontextwidget.cpp" line="133"/>
-        <source>&lt;div&gt;&lt;!--artist--&gt;&lt;strong&gt;%1&lt;/strong&gt; — &lt;!--track--&gt;&lt;strong&gt;%2&lt;/strong&gt; (&lt;!--duration--&gt;%3)&lt;/div&gt;&lt;div&gt;&lt;!--tags list--&gt;%4&lt;/div&gt;&lt;div&gt;&lt;!--played count--&gt;%5&lt;!--listeners count--&gt;, &lt;strong&gt;%6&lt;/strong&gt; listeners&lt;/div&gt;&lt;div&gt;&lt;!--loved info--&gt;%7&lt;/div&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/lastfmcontextwidget.cpp" line="152"/>
+        <location filename="../src/lastfmcontextwidget.cpp" line="154"/>
         <source>&lt;div&gt;Loading artist info…&lt;/div&gt;</source>
         <translation>&lt;div&gt;Загружаем информацию об исполнителе…&lt;/div&gt;</translation>
     </message>
     <message>
-        <location filename="../src/lastfmcontextwidget.cpp" line="197"/>
+        <location filename="../src/lastfmcontextwidget.cpp" line="199"/>
         <source>&lt;!--artist info--&gt;&lt;hr width=&quot;80%&quot;&gt;&lt;div&gt;%1&lt;/div&gt;</source>
         <translation></translation>
     </message>
@@ -475,8 +490,8 @@ If unchecked then playlist will be deleted after closing and this cannot be undo
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="133"/>
-        <source>Collection</source>
-        <translation>Коллекция</translation>
+        <source>Collections</source>
+        <translation>Коллекции</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="138"/>
@@ -552,7 +567,7 @@ If unchecked then playlist will be deleted after closing and this cannot be undo
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="414"/>
-        <source>Next track:</source>
+        <source>Next track</source>
         <translation>Следующий трек</translation>
     </message>
     <message>
@@ -601,9 +616,9 @@ If unchecked then playlist will be deleted after closing and this cannot be undo
     </message>
     <message>
         <location filename="../src/settingsdialog.cpp" line="283"/>
-        <source>The following directories already included in collection:
+        <source>The following directories already presented in collections list:
 %1</source>
-        <translation>Следующие каталогы были добавлены в коллекцию:
+        <translation>Следующие каталоги уже добавлены в список коллекций:
 %1</translation>
     </message>
     <message>

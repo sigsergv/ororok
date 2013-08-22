@@ -10,6 +10,7 @@
 #include <QtDebug>
 
 #include "collectiontreeitem.h"
+#include "collectiontreewidget.h"
 
 static QStringList normalizeReplStrings;
 
@@ -309,8 +310,8 @@ void CollectionTreeItem::fetchArtists(CollectionTreeItem * parent)
 	// add "Various Artists"
 	artist = new CollectionTreeItem(Artist, parent);
 	artist->data["id"] = -1;
-	artist->data["name"] = "{Various Artists}";
-    artist->searchString = normalizeSearchString("{Various Artists}");
+	artist->data["name"] = CollectionTreeWidget::tr("Various Artists");
+    artist->searchString = normalizeSearchString(CollectionTreeWidget::tr("Various Artists"));
 	artist->fetchData();
 	items.insert(0, artist);
 

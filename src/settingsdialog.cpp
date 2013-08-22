@@ -280,7 +280,7 @@ void SettingsDialog::addCollectionDir()
 		}
 
 		if (alreadyAddedDirs.count()) {
-			QMessageBox::warning(this, tr("Warning"), tr("The following directories already included in collection:\n%1")
+			QMessageBox::warning(this, tr("Warning"), tr("The following directories already presented in collections list:\n%1")
 					.arg(alreadyAddedDirs.join("\n")));
 		}
 	}

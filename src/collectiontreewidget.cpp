@@ -43,7 +43,7 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 	p->filterResetButton->setMaximumWidth(22);
 	p->filterResetButton->setFocusPolicy(Qt::NoFocus);
 	p->filterResetButton->hide();
-	p->filterResetButton->setToolTip(tr("Click to reset collection filter"));
+	p->filterResetButton->setToolTip(tr("Click to reset filter"));
 
 	p->quickSearchFilter = new FilterLineEdit(this);
 	filterLayout->addWidget(p->quickSearchFilter);

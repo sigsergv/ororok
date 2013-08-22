@@ -104,51 +104,53 @@ void LastfmContextWidget::trackGetInfoRequestFinished()
 				.arg(x["name"].text());
 	}
 
-	QString tags_html;
-	if (tag_urls.length() > 0) {
-		tags_html = QString("<!--top tags-->Top tags: %1").arg(tag_urls.join(", "));
-	}
-
 	QStringList duration_parts;
 	int duration = lfm["track"]["duration"].text().toInt() / 1000;
 	duration_parts << QString("%1").arg(duration%60, 2, 10, QLatin1Char('0'));
 	duration /= 60;
 	duration_parts.insert(0, QString("%1").arg(duration, 2, 10, QLatin1Char('0')));
 
-	// obtain playing count data
+	int listeners = lfm["track"]["listeners"].text().toInt();
+
+	QStringList htmlRows;
+
+	// {artist} - {track} — {duration}
+	htmlRows << tr("<strong>%1<strong> — <strong>%2</strong> (<!--duration-->%3)")
+		.arg(QString("<a href=\"%1\">%2</a>")
+				.arg(artistUrl)
+				.arg(p->currentArtist))
+		.arg(QString("<a href=\"%1\">%2</a>")
+				.arg(trackUrl)
+				.arg(p->currentTrack))
+		.arg(duration_parts.join(":"));
+
+	// {tags}
+	if (tag_urls.length() > 0) {
+		htmlRows << QString("<!--top tags-->Top tags: %1")
+			.arg(tag_urls.join(", "));
+	}
+
+	// play count info
 	QString playcount_info = tr("Played <strong>%n</strong> times", "", lfm["track"]["playcount"].text().toInt());
 	int user_playcount = lfm["track"]["userplaycount"].text().toInt();
 	if (user_playcount > 0) {
 		playcount_info += QString(" (<strong>%1</strong> times by you)")
 				.arg(user_playcount);
 	}
+	htmlRows << playcount_info;
 
-	int listeners = lfm["track"]["listeners"].text().toInt();
+	// listeners
+	htmlRows << tr("<strong>%n</strong> listeners", "", listeners);
 
-	QString loved_info;
+	// loved
 	if (lfm["track"]["userloved"].text() == "1") {
-		loved_info = tr("You love this track.");
+		htmlRows << tr("You love this track.");
 	}
 
-	p->webviewHtml = tr("<div><!--artist--><strong>%1</strong> — <!--track--><strong>%2</strong> (<!--duration-->%3)</div>"
-			"<div><!--tags list-->%4</div>"
-			"<div>"
-			"<!--played count-->%5"
-			"<!--listeners count-->, <strong>%6</strong> listeners"
-			"</div>"
-			"<div><!--loved info-->%7</div>")
-			.arg(QString("<a href=\"%1\">%2</a>")
-					.arg(artistUrl)
-					.arg(p->currentArtist))
-			.arg(QString("<a href=\"%1\">%2</a>")
-					.arg(trackUrl)
-					.arg(p->currentTrack))
-			.arg(duration_parts.join(":"))
-			.arg(tags_html)
-			.arg(playcount_info)
-			.arg(listeners)
-			.arg(loved_info);
-
+	p->webviewHtml.clear();
+	foreach (const QString & hr, htmlRows) {
+		p->webviewHtml += QString("<div>%1</div>").arg(hr);
+	}
 	p->webview->setHtml(p->pageTemplate.arg(p->webviewHtml + tr("<div>Loading artist info…</div>")));
 
 	disconnect(this, SLOT(trackGetInfoRequestFinished()));

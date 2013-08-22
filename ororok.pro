@@ -12,7 +12,7 @@ compile-translations.commands = lrelease src/src.pro
 QMAKE_EXTRA_TARGETS = update-translations compile-translations update-translations-clean
 
 translations.depends = compile-translations
-translations.path = $$DATADIR/eclibrus/translations
+translations.path = $$DATADIR/ororok/translations
 translations.files = translations/*.qm
 
 INSTALLS += translations

@@ -8,6 +8,7 @@ src/Makefile*
 qrc_application.cpp
 ./Makefile
 *.o
+*.qm
 moc_*.cpp
 ui_*.h
 debug/*

@@ -95,32 +95,32 @@
        </attribute>
        <row>
         <property name="text">
-         <string>New Row</string>
+         <string></string>
         </property>
        </row>
        <row>
         <property name="text">
-         <string>New Row</string>
+         <string></string>
         </property>
        </row>
        <row>
         <property name="text">
-         <string>New Row</string>
+         <string></string>
         </property>
        </row>
        <row>
         <property name="text">
-         <string>New Row</string>
+         <string></string>
         </property>
        </row>
        <row>
         <property name="text">
-         <string>New Row</string>
+         <string></string>
         </property>
        </row>
        <column>
         <property name="text">
-         <string>New Column</string>
+         <string></string>
         </property>
        </column>
        <item row="0" column="0">

@@ -251,7 +251,7 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 			track_len_str = QString::number(track_len) + QString(":") + track_len_str;
 
 			tip = tr("<!--ctree: artist tooltip--><div><strong><em>%1</em></strong></div>"
-					"<div>by <strong><em>%2</em></strong></div>"
+					"<div> by <strong><em>%2</em></strong></div>"
 					"<div>Length: <strong><em>%3</em></strong></div>"
 					"<div>Genre: <strong><em>%4</em></strong></div>"
 					"<div>Added: <strong><em>%5</em></strong></div></div>")

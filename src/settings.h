@@ -24,6 +24,8 @@ QString imagesCachePath();
 QString playlistsStorePath();
 QString tmpPlaylistsStorePath();
 QString profilePath();
+QString uiLang();
+QString uiLangsPath();
 void initSettings();
 QSettings * settings();
 QString version();

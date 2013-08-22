@@ -116,8 +116,7 @@ void LastfmContextWidget::trackGetInfoRequestFinished()
 	duration_parts.insert(0, QString("%1").arg(duration, 2, 10, QLatin1Char('0')));
 
 	// obtain playing count data
-	QString playcount_info = QString(tr("Played <strong>%1</strong> times"))
-			.arg(lfm["track"]["playcount"].text().toInt());
+	QString playcount_info = tr("Played <strong>%n</strong> times", "", lfm["track"]["playcount"].text().toInt());
 	int user_playcount = lfm["track"]["userplaycount"].text().toInt();
 	if (user_playcount > 0) {
 		playcount_info += QString(" (<strong>%1</strong> times by you)")

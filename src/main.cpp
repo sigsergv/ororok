@@ -19,9 +19,15 @@ int main(int argv, char *_args[])
 	// init rand
 	srand(QDateTime::currentDateTime().toUTC().toTime_t());
 
+    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
     QApplication app(argv, _args);
 	app.setQuitOnLastWindowClosed(true);
+
+    // load localization
+    QTranslator translator;
+    translator.load("ororok_" + Ororok::uiLang(), Ororok::uiLangsPath());
+    app.installTranslator(&translator);
 
 	QStringList args = QCoreApplication::arguments();
 	if (args.size() > 1 && ( args[1] == "--help" || args[1] == "-h" )) {

@@ -70,8 +70,6 @@ static const QString TABLE_SQL_DFN_DIR("CREATE TABLE dir ("
 		")");
 
 QSqlError initDb() {
-	QSettings * settings = Ororok::settings();
-
 	// open database
 	QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
 	db.setDatabaseName(Ororok::profilePath() + "/collection.db");

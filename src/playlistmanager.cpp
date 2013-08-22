@@ -272,7 +272,6 @@ void PlaylistManager::requestTrackPlay()
 	Player * player = Player::instance();
 	player->stop();
 
-	PlaylistWidget * targetPlaylist = 0;
 	PlaylistWidget * firstPlaylist = 0; // first non-empty playlist
 	PlaylistModel * model;
 

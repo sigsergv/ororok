@@ -1,4 +1,4 @@
-DEFINES += OROROK_VERSION="\\\"1.2\\\""
+DEFINES += OROROK_VERSION="\\\"1.3\\\""
 
 HEADERS += mainwindow.h \
     ororok.h \
@@ -73,10 +73,12 @@ SOURCES += main.cpp \
     services/lastfm/networkaccessmanager.cpp
 
 FORMS += mainwindow.ui \
-    testwidget.ui \
     settingsdialog.ui \
     aboutdialog.ui \
     renameplaylistdialog.ui
+
+CODECFORTR = UTF-8
+TRANSLATIONS = ../translations/ororok_ru.ts
 
 RESOURCES = ../resources/application.qrc
 TARGET = ororok

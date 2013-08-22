@@ -14,6 +14,7 @@ static QString _playlistsPath;
 static QString _tmpPlaylistsPath;
 static int lastUid = 0;
 static QSettings * _settings = 0;
+static QString uiLangsPath;
 
 namespace Ororok
 {
@@ -94,6 +95,62 @@ QString profilePath()
 	}
 
 	return path;
+}
+
+QString uiLang()
+{
+    QString lang = "en";
+    QString langEnv = qgetenv("LANG");
+
+    if (langEnv.contains("ru_RU")) {
+        lang = "ru";
+    }
+
+    return lang;
+	
+}
+
+QString uiLangsPath()
+{
+    // first check for local paths
+    QString localPath = QCoreApplication::applicationDirPath() + QDir::separator() + "translations";
+    QDir d(localPath);
+    QStringList files = d.entryList(QDir::Files);
+    foreach (QString f, files) {
+        if (f.endsWith(".qm")) {
+            ::uiLangsPath = localPath;
+            break;
+        }
+    }
+
+    // find directory with translations
+    if (::uiLangsPath.isEmpty()) {
+#ifdef Q_OS_UNIX
+        // check standard dirs
+        QStringList checkPaths;
+        checkPaths << "/usr/share/ororok/translations/";
+
+        foreach (QString path, checkPaths) {
+            QDir d(path);
+            bool found = false;
+            if (d.exists()) {
+                // check for *.qm files there
+                QStringList files = d.entryList(QDir::Files);
+                foreach (QString f, files) {
+                    if (f.endsWith(".qm")) {
+                        ::uiLangsPath = path;
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    break;
+                }
+            }
+        }
+#endif
+    }
+    return ::uiLangsPath;
 }
 
 int generateUid()

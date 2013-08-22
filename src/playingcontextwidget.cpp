@@ -52,66 +52,75 @@ void PlayingContextWidget::playerTrackStarted(const QStringList & trackInfo)
 		return;
 	}
 
-	QString songInfoHtml;
+	QStringList htmlRows;
 
-	//html += tr("<h1>Now Playing</h1>");
-	songInfoHtml += tr("<div><!--song title--><strong>%1</strong></div>"
-			"<div>by <!--artist name--><strong>%2</strong></div>")
-			.arg(md->title).
-			arg(md->artist);
+	// order of data fields as follows
+	// {title} by {author}
+	// on {album-name} / #{track-num}
+	// Album date: {year}
+	// Genre: {genre}
+	// Bitrate: {bitrate}
+	// Lyrics by: {lyrics}
+	// Composed by: {composer}
+
+	// title
+	htmlRows << tr("<div><!--song title--><strong>%1</strong> "
+			"by <!--artist name--><strong>%2</strong></div>")
+			.arg(md->title)
+			.arg(md->artist);
+
+	// album
+	QString albumName = tr("<em>Unknown album</em>");
 	if (!md->album.isEmpty()) {
-		bool bOk;
-		int trackNum = trackInfo[Ororok::TrackFieldNo].toInt(&bOk);
-		QString t;
-		if (bOk && trackNum > 0) {
-			t = tr("<!--track #--> / #<strong>%1</strong>")
-					.arg(trackNum);
-		}
-
-		songInfoHtml += tr("<!--album--><div>on <strong>%1</strong>%2</div>")
-				.arg(trackInfo[Ororok::TrackFieldAlbum])
-				.arg(t);
+		albumName = md->album;
 	}
 
-	// try to find cover image
-	QString coverHtml;
+	QString trackNum;
+	if (md->track > 0) {
+		trackNum = tr(" / #<strong>%1</strong>")
+			.arg(md->track);
+	}
+
+	htmlRows << tr("<div>on <strong>%1</strong>%2</div>")
+			.arg(albumName)
+			.arg(trackNum);
+
+	// cover
 	QDir albumDir = QFileInfo(filename).absoluteDir();
 	QStringList coverFilter;
 	coverFilter << QString("cover.jpg") << QString("cover.png") << QString("cover.gif") << QString("cover.bmp");
 	QStringList covers = albumDir.entryList(coverFilter);
 	if (covers.length() > 0) {
 		QString cover = covers.at(0);
-		coverHtml = QString("<img border=\"1\" width=\"150\" src=\"file://%1\">")
+		htmlRows << QString("<div class=\"cover\"><img border=\"1\" width=\"100%\" src=\"file://%1\"></div>")
 				.arg(albumDir.absoluteFilePath(cover));
 	}
 
-	QString genreHtml;
-	if (!md->genre.isEmpty()) {
-		genreHtml = tr("Genre: <strong>%1</strong>")
-				.arg(md->genre);
+	// album date
+	if (md->year > 0) {
+		htmlRows << tr("<div>Album year: <strong>%1</strong></div>")
+			.arg(md->year);
 	}
-	QString html = tr("<table border=\"0\"><tr>"
-			"<td><!--cover-->%1</div></td>"
-			"<td>"
-			"<div><!--song info-->%2</div>"
-			"<div><!--bitrate-->Bitrate: <strong>%3</strong> kbps</div>"
-			"<div><!--genre-->%4</div>"
-			"</td>"
-			"</tr></table>")
-			.arg(coverHtml)
-			.arg(songInfoHtml)
-			.arg(md->bitrate)
-			.arg(genreHtml);
+
+	// genre
+	if (!md->genre.isEmpty()) {
+		htmlRows << tr("<div>Genre: <strong>%1</strong></div>")
+			.arg(md->genre);
+	}
+
+	// bitrate
+	htmlRows << tr("<div>Bitrate: <strong>%1</strong> kbps</div>")
+			.arg(md->bitrate);
 
 	if (!md->composer.isEmpty()) {
-		html += tr("<div>Composed by <strong>%1</strong></div>")
+		htmlRows << tr("<div>Composed by <strong>%1</strong></div>")
 				.arg(md->composer);
 	}
 	if (!md->lyricsAuthor.isEmpty()) {
-		html += tr("<div>Lyrics by <strong>%1</strong></div>")
+		htmlRows << tr("<div>Lyrics by <strong>%1</strong></div>")
 				.arg(md->lyricsAuthor);
 	}
 
-	html = p->pageTemplate.arg(html);
+	QString html = p->pageTemplate.arg(htmlRows.join("\n"));
 	p->webview->setHtml(html);
 }

@@ -1,4 +1,4 @@
-To build development & debug version use the follwing command
+To build development & debug version use the following command
 
     qmake "CONFIG+=debug"
 

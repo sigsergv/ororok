@@ -152,7 +152,23 @@ MainWindow::MainWindow() :
 	QSettings * settings = Ororok::settings();
 	settings->beginGroup("MainWindow");
 	restoreGeometry(settings->value("geometry").toByteArray());
-	restoreState(settings->value("state").toByteArray());
+	QByteArray windowState = settings->value("state").toByteArray();
+
+	if (windowState.isEmpty()) {
+		// set default position of docked panels
+		tabifyDockWidget(p->ui.contextDock, p->ui.lastfmContextDock);
+		QList<QTabBar*> tabs = findChildren<QTabBar*>();
+		foreach (QTabBar * tb, tabs) {
+			// there is no another way to set index of tabbar which is formed from docks
+			// so this is a dirty hack: guess that tabbar and set index
+			if (tb->parent() == this) {
+				tb->setCurrentIndex(0);
+				break;
+			}
+		}
+	} else {
+		restoreState(windowState);
+	}
 	settings->endGroup();
 
 	setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);

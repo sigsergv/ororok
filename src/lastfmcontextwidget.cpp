@@ -43,6 +43,9 @@ LastfmContextWidget::LastfmContextWidget(QWidget * parent, Qt::WindowFlags f)
 	layout->addWidget(p->webview);
 	//view->show();
 	this->setLayout(layout);
+
+	setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+	
 	p->webview->setHtml("");
 
 	QFile templateFile(":/page-template.html");

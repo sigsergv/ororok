@@ -31,6 +31,8 @@ PlayingContextWidget::PlayingContextWidget(QWidget * parent, Qt::WindowFlags f)
 	//view->show();
 	this->setLayout(layout);
 
+	setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+
 	QFile templateFile(":/page-template.html");
 	templateFile.open(QIODevice::ReadOnly);
 	p->pageTemplate = QString(templateFile.readAll());

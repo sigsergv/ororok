@@ -36,6 +36,8 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 {
 	p = new Private;
 
+	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
+
 	QLayout * filterLayout = new QHBoxLayout();
 	p->filterResetButton = new QPushButton(this);
 	p->filterResetButton->setIcon(QIcon(":edit-clear-locationbar-rtl-16x16.png"));

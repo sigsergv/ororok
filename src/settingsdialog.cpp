@@ -58,6 +58,11 @@ SettingsDialog::SettingsDialog(QWidget * parent)
 	item->setIcon(QIcon(":preferences-desktop-keyboard.png"));
 	item->setTextAlignment(Qt::AlignCenter);
 
+	// load languages
+	p->ui.uiLangCombo->addItem(tr("Use system language"), "system");
+	p->ui.uiLangCombo->addItem(tr("English"), "en");
+	p->ui.uiLangCombo->addItem(tr("Russian (Русский)"), "ru");
+
 	int w = p->ui.settingsGroupsTable->width();
 	p->ui.settingsGroupsTable->setColumnWidth(0, w);
 
@@ -200,6 +205,11 @@ void SettingsDialog::accept()
 		settings->endGroup();
 	}
 
+	// set language
+	int index = p->ui.uiLangCombo->currentIndex();
+	QString lang = p->ui.uiLangCombo->itemData(index).toString();
+	settings->setValue("MainWindow/language", lang);
+
 	QDialog::accept();
 }
 
@@ -221,6 +231,17 @@ bool SettingsDialog::loadSettings()
 		item->setData(ItemRoleId, q.value(0));
 		p->ui.collectionsListWidget->addItem(item);
 	}
+
+	QSettings * settings = Ororok::settings();
+	QString lang = settings->value("MainWindow/language").toString();
+    QStringList uiLangs = Ororok::supportedUiLangs();
+
+    if (!lang.isEmpty() && uiLangs.contains(lang)) {
+    	int index = p->ui.uiLangCombo->findData(lang);
+    	if (index != -1) {
+    		p->ui.uiLangCombo->setCurrentIndex(index);
+    	}
+    }
 
 	return true;
 }

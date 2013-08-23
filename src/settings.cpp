@@ -99,15 +99,23 @@ QString profilePath()
 
 QString uiLang()
 {
-    QString lang = "en";
-    QString langEnv = qgetenv("LANG");
+    QSettings * settings = ::Ororok::settings();
+    QString langFromSettings = settings->value("MainWindow/language").toString();
+    QStringList uiLangs = supportedUiLangs();
 
-    if (langEnv.contains("ru_RU")) {
-        lang = "ru";
+    if (!langFromSettings.isEmpty() && uiLangs.contains(langFromSettings)) {
+        return langFromSettings;
+    } else {
+        // guess from system
+        QString lang = "en";
+        QString langEnv = qgetenv("LANG");
+
+        if (langEnv.contains("ru_RU")) {
+            lang = "ru";
+        }
+
+        return lang;
     }
-
-    return lang;
-	
 }
 
 QString uiLangsPath()
@@ -151,6 +159,15 @@ QString uiLangsPath()
 #endif
     }
     return ::uiLangsPath;
+}
+
+QStringList supportedUiLangs()
+{
+    QStringList langs;
+
+    langs << "ru" << "en";
+
+    return langs;
 }
 
 int generateUid()

@@ -8,7 +8,7 @@
 #ifndef SETTINGS_H_
 #define SETTINGS_H_
 
-#include <QString>
+#include <QStringList>
 #include <QChar>
 #include <QList>
 
@@ -26,6 +26,7 @@ QString tmpPlaylistsStorePath();
 QString profilePath();
 QString uiLang();
 QString uiLangsPath();
+QStringList supportedUiLangs();
 void initSettings();
 QSettings * settings();
 QString version();

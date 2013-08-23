@@ -24,11 +24,6 @@ int main(int argv, char *_args[])
     QApplication app(argv, _args);
 	app.setQuitOnLastWindowClosed(true);
 
-    // load localization
-    QTranslator translator;
-    translator.load("ororok_" + Ororok::uiLang(), Ororok::uiLangsPath());
-    app.installTranslator(&translator);
-
 	QStringList args = QCoreApplication::arguments();
 	if (args.size() > 1 && ( args[1] == "--help" || args[1] == "-h" )) {
 		QTextStream qout(stdout);
@@ -39,7 +34,10 @@ int main(int argv, char *_args[])
 
 	Ororok::initSettings();
 
-    // load application settings
+    // load localization
+    QTranslator translator;
+    translator.load("ororok_" + Ororok::uiLang(), Ororok::uiLangsPath());
+    app.installTranslator(&translator);
 
     if (!QSqlDatabase::drivers().contains("QSQLITE")) {
         QMessageBox::critical(0, "Unable to load database", "This application needs the SQLITE driver");

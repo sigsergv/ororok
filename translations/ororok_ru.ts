@@ -111,42 +111,42 @@
 <context>
     <name>CollectionTreeWidget</name>
     <message>
-        <location filename="../src/collectiontreewidget.cpp" line="49"/>
+        <location filename="../src/collectiontreewidget.cpp" line="44"/>
         <source>Click to reset filter</source>
         <translation>Кликните для очистки фильтра</translation>
     </message>
     <message>
-        <location filename="../src/collectiontreewidget.cpp" line="52"/>
+        <location filename="../src/collectiontreewidget.cpp" line="43"/>
         <source>Quick search</source>
         <translation>Быстрый поиск</translation>
     </message>
     <message>
-        <location filename="../src/collectiontreewidget.cpp" line="68"/>
+        <location filename="../src/collectiontreewidget.cpp" line="58"/>
         <source>Show all</source>
         <translation>Показать всё</translation>
     </message>
     <message>
-        <location filename="../src/collectiontreewidget.cpp" line="69"/>
+        <location filename="../src/collectiontreewidget.cpp" line="59"/>
         <source>Show added only today</source>
         <translation>Показать добавленное сегодня</translation>
     </message>
     <message>
-        <location filename="../src/collectiontreewidget.cpp" line="70"/>
+        <location filename="../src/collectiontreewidget.cpp" line="60"/>
         <source>Show added in the last week only</source>
         <translation>Показать добавленное за последнюю неделю</translation>
     </message>
     <message>
-        <location filename="../src/collectiontreewidget.cpp" line="71"/>
+        <location filename="../src/collectiontreewidget.cpp" line="61"/>
         <source>Show added in the last month only</source>
         <translation>Показать добавленное за последний месяц</translation>
     </message>
     <message>
-        <location filename="../src/collectiontreewidget.cpp" line="72"/>
+        <location filename="../src/collectiontreewidget.cpp" line="62"/>
         <source>Show added in the last 3 months only</source>
         <translation>Показать добавленное за последние три месяца</translation>
     </message>
     <message>
-        <location filename="../src/collectiontreewidget.cpp" line="97"/>
+        <location filename="../src/collectiontreewidget.cpp" line="87"/>
         <source>Append to current playlist</source>
         <translation>Добавить в текущий плейлист</translation>
     </message>
@@ -510,7 +510,7 @@ If unchecked then playlist will be deleted after closing and this cannot be undo
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="138"/>
-        <location filename="../src/settingsdialog.ui" line="284"/>
+        <location filename="../src/settingsdialog.ui" line="307"/>
         <source>Internet services</source>
         <translation>Интернет-сервисы</translation>
     </message>
@@ -521,128 +521,148 @@ If unchecked then playlist will be deleted after closing and this cannot be undo
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="148"/>
-        <location filename="../src/settingsdialog.ui" line="386"/>
+        <location filename="../src/settingsdialog.ui" line="409"/>
         <source>Keyboard shortcuts</source>
         <translation>Хоткеи</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="175"/>
+        <location filename="../src/settingsdialog.ui" line="169"/>
         <source>General settings</source>
         <translation>Главные настройки</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="187"/>
+        <location filename="../src/settingsdialog.ui" line="178"/>
+        <source>Interface language:</source>
+        <translation>Язык интерфейса:</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.ui" line="210"/>
         <source>Collection directories</source>
         <translation>Каталоги коллекции</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="198"/>
+        <location filename="../src/settingsdialog.ui" line="221"/>
         <source>Add new collection directory</source>
         <translation>Добавить новый каталог в коллекцию</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="227"/>
+        <location filename="../src/settingsdialog.ui" line="250"/>
         <source>Remove directory from collection</source>
         <translation>Удалить каталог из коллекции</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="297"/>
+        <location filename="../src/settingsdialog.ui" line="320"/>
         <source>Last.Fm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="309"/>
+        <location filename="../src/settingsdialog.ui" line="332"/>
         <source>Username</source>
         <translation>Имя пользователя</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="322"/>
+        <location filename="../src/settingsdialog.ui" line="345"/>
         <source>Password</source>
         <translation>Пароль</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="357"/>
+        <location filename="../src/settingsdialog.ui" line="380"/>
         <source>Test login</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="377"/>
+        <location filename="../src/settingsdialog.ui" line="400"/>
         <source>Database settings</source>
         <translation>Настройки базы данных</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="393"/>
+        <location filename="../src/settingsdialog.ui" line="416"/>
         <source>Enable global shortcuts</source>
         <translation>Включить глобальные хоткеи</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="410"/>
+        <location filename="../src/settingsdialog.ui" line="433"/>
         <source>Previous track</source>
         <translation>Предыдущий трек</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="420"/>
+        <location filename="../src/settingsdialog.ui" line="443"/>
         <source>Next track</source>
         <translation>Следующий трек</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="430"/>
+        <location filename="../src/settingsdialog.ui" line="453"/>
         <source>Play/pause</source>
         <translation>Игра/Пауза</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="440"/>
+        <location filename="../src/settingsdialog.ui" line="463"/>
         <source>Stop playing</source>
         <translation>Стоп</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="450"/>
+        <location filename="../src/settingsdialog.ui" line="473"/>
         <source>“Love track” (last.fm)</source>
         <translation>«Любимые трек» (last.fm)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="140"/>
+        <location filename="../src/settingsdialog.cpp" line="62"/>
+        <source>Use system language</source>
+        <translation>Использовать системный</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="63"/>
+        <source>English</source>
+        <translation>Английский (english)</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="64"/>
+        <source>Russian (Русский)</source>
+        <translation>Русский</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="145"/>
         <source>Unable to clear collections list</source>
         <translation>Не удалось очистить список коллекций</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="152"/>
-        <location filename="../src/settingsdialog.cpp" line="163"/>
+        <location filename="../src/settingsdialog.cpp" line="157"/>
+        <location filename="../src/settingsdialog.cpp" line="168"/>
         <source>Unable to insert collection dir record</source>
         <translation>Не удалось добавить каталог в коллекцию</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="212"/>
-        <location filename="../src/settingsdialog.cpp" line="342"/>
+        <location filename="../src/settingsdialog.cpp" line="222"/>
+        <location filename="../src/settingsdialog.cpp" line="363"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="212"/>
+        <location filename="../src/settingsdialog.cpp" line="222"/>
         <source>Unable to load collections list: database error. 
 %1</source>
         <translation>Не удалось загрузить коллекции: ошибка базы:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="283"/>
+        <location filename="../src/settingsdialog.cpp" line="304"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="283"/>
+        <location filename="../src/settingsdialog.cpp" line="304"/>
         <source>The following directories already presented in collections list:
 %1</source>
         <translation>Следующие каталоги уже добавлены в список коллекций:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="337"/>
+        <location filename="../src/settingsdialog.cpp" line="358"/>
         <source>Last.fm authentication error</source>
         <translation>Ошибка авторизации в Last.fm</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="342"/>
+        <location filename="../src/settingsdialog.cpp" line="363"/>
         <source>%1: database error
 
 %2</source>

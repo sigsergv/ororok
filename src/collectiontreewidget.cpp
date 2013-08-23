@@ -19,9 +19,8 @@
 
 struct CollectionTreeWidget::Private
 {
-	QLineEdit * quickSearchFilter;
+	FilterLineEdit * quickSearchFilter;
 	QComboBox * dateFilterCombo;
-	QPushButton * filterResetButton;
 	QTreeView * collectionTreeView;
 	CollectionItemModel * model;
 	CollectionTreeFilter * quickSearchProxy;
@@ -39,20 +38,11 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
 
 	QLayout * filterLayout = new QHBoxLayout();
-	p->filterResetButton = new QPushButton(this);
-	p->filterResetButton->setIcon(QIcon(":edit-clear-locationbar-rtl-16x16.png"));
-	p->filterResetButton->setFlat(true);
-	p->filterResetButton->setMaximumWidth(22);
-	p->filterResetButton->setMaximumHeight(22);
-	p->filterResetButton->setFocusPolicy(Qt::NoFocus);
-	p->filterResetButton->hide();
-	p->filterResetButton->setToolTip(tr("Click to reset filter"));
 
 	p->quickSearchFilter = new FilterLineEdit(this);
 	p->quickSearchFilter->setPlaceholderText(tr("Quick search"));
+	p->quickSearchFilter->setClearButtonTooltip(tr("Click to reset filter"));
 	filterLayout->addWidget(p->quickSearchFilter);
-	filterLayout->addWidget(p->filterResetButton);
-	filterLayout->setSpacing(2);
 
 	p->collectionTreeView = new QTreeView(this);
 	p->collectionTreeView->setHeaderHidden(true);
@@ -102,8 +92,6 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 			this, SLOT(filterTextChanged(const QString &)));
 	connect(p->filterTimer, SIGNAL(timeout()),
 			this, SLOT(filterEditFinished()));
-	connect(p->filterResetButton, SIGNAL(clicked()),
-			this, SLOT(resetFilter()));
 	connect(p->quickSearchFilter, SIGNAL(escapeKeyPressed()),
 			this, SLOT(resetFilter()));
 	connect(p->dateFilterCombo, SIGNAL(currentIndexChanged(int)),
@@ -165,7 +153,6 @@ void CollectionTreeWidget::createModel()
 void CollectionTreeWidget::filterTextChanged(const QString & text)
 {
 	bool filterEmpty = text.isEmpty();
-	p->filterResetButton->setVisible(!filterEmpty);
 	p->filterTimer->stop();
 	p->filterTimer->start(500);
 }

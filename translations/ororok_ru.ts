@@ -231,6 +231,16 @@
         <translation>Кнопки управления плеером</translation>
     </message>
     <message>
+        <location filename="../src/mainwindow.ui" line="95"/>
+        <source>Volume control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/mainwindow.ui" line="106"/>
+        <source>Track progress control</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/mainwindow.ui" line="117"/>
         <source>Last.fm Context</source>
         <translation>Контекст Last.fm</translation>
@@ -561,27 +571,27 @@ If unchecked then playlist will be deleted after closing and this cannot be undo
         <translation>Включить глобальные хоткеи</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="404"/>
+        <location filename="../src/settingsdialog.ui" line="410"/>
         <source>Previous track</source>
         <translation>Предыдущий трек</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="414"/>
+        <location filename="../src/settingsdialog.ui" line="420"/>
         <source>Next track</source>
         <translation>Следующий трек</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="424"/>
+        <location filename="../src/settingsdialog.ui" line="430"/>
         <source>Play/pause</source>
         <translation>Игра/Пауза</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="434"/>
+        <location filename="../src/settingsdialog.ui" line="440"/>
         <source>Stop playing</source>
         <translation>Стоп</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="444"/>
+        <location filename="../src/settingsdialog.ui" line="450"/>
         <source>“Love track” (last.fm)</source>
         <translation>«Любимые трек» (last.fm)</translation>
     </message>

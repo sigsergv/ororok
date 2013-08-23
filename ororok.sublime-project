@@ -6,7 +6,7 @@
 			"path": "/home/cancel/projects/ororok",
             "file_exclude_patterns": [".cproject", ".project", "moc_*", "qrc_*", 
                 "ui_*.h", "ui_*.cpp", "*.o", "ororok", "Makefile", "*.qm", "ororok.sublime-workspace"],
-            "folder_exclude_patterns": [".debug-config-dir"]
+            "folder_exclude_patterns": [".debug-config-dir", "debian/ororok"]
 		}
 	],
     "build_systems":

@@ -1,7 +1,9 @@
 About Ororok
 ============
 
-Idea of player is inspired by amarok 1.4 and partially by foobar2000. 
+Idea of player is inspired by amarok 1.4 and partially by foobar2000. It could play (and organize) mp3 and 
+flac files. It also handles VA-albums in a “smart” way, so such albums are not spread over collection items
+but instead correctly placed in one collection “folder”.
 
 Main goals
 ==========

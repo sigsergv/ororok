@@ -43,13 +43,16 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 	p->filterResetButton->setIcon(QIcon(":edit-clear-locationbar-rtl-16x16.png"));
 	p->filterResetButton->setFlat(true);
 	p->filterResetButton->setMaximumWidth(22);
+	p->filterResetButton->setMaximumHeight(22);
 	p->filterResetButton->setFocusPolicy(Qt::NoFocus);
 	p->filterResetButton->hide();
 	p->filterResetButton->setToolTip(tr("Click to reset filter"));
 
 	p->quickSearchFilter = new FilterLineEdit(this);
+	p->quickSearchFilter->setPlaceholderText(tr("Quick search"));
 	filterLayout->addWidget(p->quickSearchFilter);
 	filterLayout->addWidget(p->filterResetButton);
+	filterLayout->setSpacing(2);
 
 	p->collectionTreeView = new QTreeView(this);
 	p->collectionTreeView->setHeaderHidden(true);

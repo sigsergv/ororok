@@ -111,37 +111,42 @@
 <context>
     <name>CollectionTreeWidget</name>
     <message>
-        <location filename="../src/collectiontreewidget.cpp" line="46"/>
+        <location filename="../src/collectiontreewidget.cpp" line="49"/>
         <source>Click to reset filter</source>
         <translation>Кликните для очистки фильтра</translation>
     </message>
     <message>
-        <location filename="../src/collectiontreewidget.cpp" line="63"/>
+        <location filename="../src/collectiontreewidget.cpp" line="52"/>
+        <source>Quick search</source>
+        <translation>Быстрый поиск</translation>
+    </message>
+    <message>
+        <location filename="../src/collectiontreewidget.cpp" line="68"/>
         <source>Show all</source>
         <translation>Показать всё</translation>
     </message>
     <message>
-        <location filename="../src/collectiontreewidget.cpp" line="64"/>
+        <location filename="../src/collectiontreewidget.cpp" line="69"/>
         <source>Show added only today</source>
         <translation>Показать добавленное сегодня</translation>
     </message>
     <message>
-        <location filename="../src/collectiontreewidget.cpp" line="65"/>
+        <location filename="../src/collectiontreewidget.cpp" line="70"/>
         <source>Show added in the last week only</source>
         <translation>Показать добавленное за последнюю неделю</translation>
     </message>
     <message>
-        <location filename="../src/collectiontreewidget.cpp" line="66"/>
+        <location filename="../src/collectiontreewidget.cpp" line="71"/>
         <source>Show added in the last month only</source>
         <translation>Показать добавленное за последний месяц</translation>
     </message>
     <message>
-        <location filename="../src/collectiontreewidget.cpp" line="67"/>
+        <location filename="../src/collectiontreewidget.cpp" line="72"/>
         <source>Show added in the last 3 months only</source>
         <translation>Показать добавленное за последние три месяца</translation>
     </message>
     <message>
-        <location filename="../src/collectiontreewidget.cpp" line="92"/>
+        <location filename="../src/collectiontreewidget.cpp" line="97"/>
         <source>Append to current playlist</source>
         <translation>Добавить в текущий плейлист</translation>
     </message>
@@ -155,17 +160,17 @@
 <context>
     <name>LastfmContextWidget</name>
     <message>
-        <location filename="../src/lastfmcontextwidget.cpp" line="72"/>
+        <location filename="../src/lastfmcontextwidget.cpp" line="75"/>
         <source>Searching…</source>
         <translation>Ищем…</translation>
     </message>
     <message>
-        <location filename="../src/lastfmcontextwidget.cpp" line="118"/>
+        <location filename="../src/lastfmcontextwidget.cpp" line="121"/>
         <source>&lt;strong&gt;%1&lt;strong&gt; — &lt;strong&gt;%2&lt;/strong&gt; (&lt;!--duration--&gt;%3)</source>
         <translation></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/lastfmcontextwidget.cpp" line="134"/>
+        <location filename="../src/lastfmcontextwidget.cpp" line="137"/>
         <source>Played &lt;strong&gt;%n&lt;/strong&gt; times</source>
         <translation>
             <numerusform>Проиграно &lt;strong&gt;%n&lt;/strong&gt; раз</numerusform>
@@ -174,7 +179,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/lastfmcontextwidget.cpp" line="143"/>
+        <location filename="../src/lastfmcontextwidget.cpp" line="146"/>
         <source>&lt;strong&gt;%n&lt;/strong&gt; listeners</source>
         <translation>
             <numerusform>&lt;strong&gt;%n&lt;/strong&gt; слушатель</numerusform>
@@ -183,17 +188,17 @@
         </translation>
     </message>
     <message>
-        <location filename="../src/lastfmcontextwidget.cpp" line="147"/>
+        <location filename="../src/lastfmcontextwidget.cpp" line="150"/>
         <source>You love this track.</source>
         <translation>Этот трек вам нравится в Last.fm.</translation>
     </message>
     <message>
-        <location filename="../src/lastfmcontextwidget.cpp" line="154"/>
+        <location filename="../src/lastfmcontextwidget.cpp" line="157"/>
         <source>&lt;div&gt;Loading artist info…&lt;/div&gt;</source>
         <translation>&lt;div&gt;Загружаем информацию об исполнителе…&lt;/div&gt;</translation>
     </message>
     <message>
-        <location filename="../src/lastfmcontextwidget.cpp" line="199"/>
+        <location filename="../src/lastfmcontextwidget.cpp" line="202"/>
         <source>&lt;!--artist info--&gt;&lt;hr width=&quot;80%&quot;&gt;&lt;div&gt;%1&lt;/div&gt;</source>
         <translation></translation>
     </message>
@@ -216,72 +221,72 @@
         <translation>Операции</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="63"/>
+        <location filename="../src/mainwindow.ui" line="69"/>
         <source>Collection</source>
         <translation>Коллекция</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="75"/>
+        <location filename="../src/mainwindow.ui" line="81"/>
         <source>Context</source>
         <translation>Контекст</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="84"/>
+        <location filename="../src/mainwindow.ui" line="90"/>
         <source>Playback controls</source>
         <translation>Кнопки управления плеером</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="95"/>
+        <location filename="../src/mainwindow.ui" line="101"/>
         <source>Volume control</source>
-        <translation type="unfinished"></translation>
+        <translation>Регулятор громкости</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="106"/>
+        <location filename="../src/mainwindow.ui" line="112"/>
         <source>Track progress control</source>
-        <translation type="unfinished"></translation>
+        <translation>Прогресс воспроизведения</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="117"/>
+        <location filename="../src/mainwindow.ui" line="123"/>
         <source>Last.fm Context</source>
         <translation>Контекст Last.fm</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="129"/>
+        <location filename="../src/mainwindow.ui" line="135"/>
         <source>Ctrl+Q</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="126"/>
+        <location filename="../src/mainwindow.ui" line="132"/>
         <source>&amp;Quit</source>
         <translation>В&amp;ыход</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="134"/>
+        <location filename="../src/mainwindow.ui" line="140"/>
         <source>&amp;Update collections</source>
         <translation>&amp;Обновить коллекции</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="137"/>
+        <location filename="../src/mainwindow.ui" line="143"/>
         <source>Update collections database: find new files and remove deleted from filesystem</source>
         <translation>Обновить базу данных коллекций: найти новые файлы и очистить отсутствующие</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="142"/>
+        <location filename="../src/mainwindow.ui" line="148"/>
         <source>Reload collection tree</source>
         <translation>Обновить дерево коллекции</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="147"/>
+        <location filename="../src/mainwindow.ui" line="153"/>
         <source>About Ororok</source>
         <translation>О программе Ororok</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="152"/>
+        <location filename="../src/mainwindow.ui" line="158"/>
         <source>&amp;Configure Ororok</source>
         <translation>Настро&amp;йка</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="157"/>
+        <location filename="../src/mainwindow.ui" line="163"/>
         <source>New playlist</source>
         <translation>Новый плейлист</translation>
     </message>
@@ -291,22 +296,22 @@
         <translation>Ororok — музыкальный плеер и органайзер</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="337"/>
+        <location filename="../src/mainwindow.cpp" line="353"/>
         <source>Play previous track</source>
         <translation>Играть предыдущий трек</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="340"/>
+        <location filename="../src/mainwindow.cpp" line="356"/>
         <source>Play/Pause</source>
         <translation>Игра/Пауза</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="343"/>
+        <location filename="../src/mainwindow.cpp" line="359"/>
         <source>Stop</source>
         <translation>Стоп</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="346"/>
+        <location filename="../src/mainwindow.cpp" line="362"/>
         <source>Play next track</source>
         <translation>Играть следующий трек</translation>
     </message>
@@ -314,57 +319,57 @@
 <context>
     <name>PlayingContextWidget</name>
     <message>
-        <location filename="../src/playingcontextwidget.cpp" line="38"/>
+        <location filename="../src/playingcontextwidget.cpp" line="40"/>
         <source>&lt;i&gt;Playing track info&lt;/i&gt;</source>
         <translation>&lt;i&gt;Информация о текущем треке&lt;/i&gt;</translation>
     </message>
     <message>
-        <location filename="../src/playingcontextwidget.cpp" line="51"/>
+        <location filename="../src/playingcontextwidget.cpp" line="53"/>
         <source>Unable to detect file metadata</source>
         <translation>Ошибка определения метаданных</translation>
     </message>
     <message>
-        <location filename="../src/playingcontextwidget.cpp" line="67"/>
+        <location filename="../src/playingcontextwidget.cpp" line="69"/>
         <source>&lt;div&gt;&lt;!--song title--&gt;&lt;strong&gt;%1&lt;/strong&gt; by &lt;!--artist name--&gt;&lt;strong&gt;%2&lt;/strong&gt;&lt;/div&gt;</source>
         <translation>&lt;div&gt;&lt;!--song title--&gt;&lt;strong&gt;%1&lt;/strong&gt; в исполнении &lt;!--artist name--&gt;&lt;strong&gt;%2&lt;/strong&gt;&lt;/div&gt;</translation>
     </message>
     <message>
-        <location filename="../src/playingcontextwidget.cpp" line="73"/>
+        <location filename="../src/playingcontextwidget.cpp" line="75"/>
         <source>&lt;em&gt;Unknown album&lt;/em&gt;</source>
         <translation>&lt;em&gt;Неизвестный альбом&lt;/em&gt;</translation>
     </message>
     <message>
-        <location filename="../src/playingcontextwidget.cpp" line="80"/>
+        <location filename="../src/playingcontextwidget.cpp" line="82"/>
         <source> / #&lt;strong&gt;%1&lt;/strong&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/playingcontextwidget.cpp" line="84"/>
+        <location filename="../src/playingcontextwidget.cpp" line="86"/>
         <source>&lt;div&gt;on &lt;strong&gt;%1&lt;/strong&gt;%2&lt;/div&gt;</source>
         <translation>&lt;div&gt;из альбома &lt;strong&gt;%1&lt;/strong&gt;%2&lt;/div&gt;</translation>
     </message>
     <message>
-        <location filename="../src/playingcontextwidget.cpp" line="101"/>
+        <location filename="../src/playingcontextwidget.cpp" line="103"/>
         <source>&lt;div&gt;Album year: &lt;strong&gt;%1&lt;/strong&gt;&lt;/div&gt;</source>
         <translation>&lt;div&gt;Дата релиза: &lt;strong&gt;%1&lt;/strong&gt;&lt;/div&gt;</translation>
     </message>
     <message>
-        <location filename="../src/playingcontextwidget.cpp" line="107"/>
+        <location filename="../src/playingcontextwidget.cpp" line="109"/>
         <source>&lt;div&gt;Genre: &lt;strong&gt;%1&lt;/strong&gt;&lt;/div&gt;</source>
         <translation>&lt;div&gt;Жанр: &lt;strong&gt;%1&lt;/strong&gt;&lt;/div&gt;</translation>
     </message>
     <message>
-        <location filename="../src/playingcontextwidget.cpp" line="112"/>
+        <location filename="../src/playingcontextwidget.cpp" line="114"/>
         <source>&lt;div&gt;Bitrate: &lt;strong&gt;%1&lt;/strong&gt; kbps&lt;/div&gt;</source>
         <translation>&lt;div&gt;Битрейт: &lt;strong&gt;%1&lt;/strong&gt; kbps&lt;/div&gt;</translation>
     </message>
     <message>
-        <location filename="../src/playingcontextwidget.cpp" line="116"/>
+        <location filename="../src/playingcontextwidget.cpp" line="118"/>
         <source>&lt;div&gt;Composed by &lt;strong&gt;%1&lt;/strong&gt;&lt;/div&gt;</source>
         <translation>&lt;div&gt;Композитор: &lt;strong&gt;%1&lt;/strong&gt;&lt;/div&gt;</translation>
     </message>
     <message>
-        <location filename="../src/playingcontextwidget.cpp" line="120"/>
+        <location filename="../src/playingcontextwidget.cpp" line="122"/>
         <source>&lt;div&gt;Lyrics by &lt;strong&gt;%1&lt;/strong&gt;&lt;/div&gt;</source>
         <translation>&lt;div&gt;Стихи: &lt;strong&gt;%1&lt;/strong&gt;&lt;/div&gt;</translation>
     </message>

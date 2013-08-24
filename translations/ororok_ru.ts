@@ -115,7 +115,7 @@
     <message>
         <location filename="../src/collectionitemmodel.cpp" line="234"/>
         <source>&lt;div style=&quot;white-space: nowrap;&quot;&gt;Added: &lt;strong&gt;%1&lt;/strong&gt;&lt;/div&gt;</source>
-        <translation type="unfinished">&lt;div style=&quot;white-space: nowrap;&quot;&gt;Добавлено: &lt;strong&gt;%1&lt;/strong&gt;&lt;/div&gt;</translation>
+        <translation>&lt;div style=&quot;white-space: nowrap;&quot;&gt;Добавлено: &lt;strong&gt;%1&lt;/strong&gt;&lt;/div&gt;</translation>
     </message>
     <message>
         <location filename="../src/collectionitemmodel.cpp" line="270"/>
@@ -661,67 +661,77 @@ If unchecked then playlist will be deleted after closing and this cannot be undo
         <translation>Русский</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="175"/>
+        <location filename="../src/settingsdialog.cpp" line="97"/>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="98"/>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="179"/>
         <source>Unable to fetch collections list</source>
         <translation>Не удалось получить список каталогов коллекции</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="191"/>
+        <location filename="../src/settingsdialog.cpp" line="195"/>
         <source>Unable to clear collections list</source>
         <translation>Не удалось очистить список коллекций</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="201"/>
+        <location filename="../src/settingsdialog.cpp" line="205"/>
         <source>Unable to insert collection dir record</source>
         <translation>Не удалось добавить каталог в коллекцию</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="221"/>
-        <location filename="../src/settingsdialog.cpp" line="377"/>
+        <location filename="../src/settingsdialog.cpp" line="225"/>
+        <location filename="../src/settingsdialog.cpp" line="381"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="221"/>
+        <location filename="../src/settingsdialog.cpp" line="225"/>
         <source>Unable to load collections list: database error. 
 %1</source>
         <translation>Не удалось загрузить коллекции: ошибка базы:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="281"/>
+        <location filename="../src/settingsdialog.cpp" line="285"/>
         <source>Add directory to collection</source>
         <translation>Добавить каталог в коллекцию</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="288"/>
-        <location filename="../src/settingsdialog.cpp" line="294"/>
-        <location filename="../src/settingsdialog.cpp" line="309"/>
+        <location filename="../src/settingsdialog.cpp" line="292"/>
+        <location filename="../src/settingsdialog.cpp" line="298"/>
+        <location filename="../src/settingsdialog.cpp" line="313"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="288"/>
+        <location filename="../src/settingsdialog.cpp" line="292"/>
         <source>Selected directory `%1` is already added.</source>
         <translation>Выбранный каталог `%1` уже добавлен в коллекцию.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="294"/>
+        <location filename="../src/settingsdialog.cpp" line="298"/>
         <source>Selected directory `%1` is a symbolic link to already added directory `%2`.</source>
         <translation>Выбранный каталог `%1` являтся ссылкой на уже добавленный каталог `%2`.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="309"/>
+        <location filename="../src/settingsdialog.cpp" line="313"/>
         <source>Selected directory `%1` is a subdirectory of already added directory `%2`.</source>
         <translation>Выбранный каталог `%1` является подкаталогом уже добавленного каталога  `%2`.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="372"/>
+        <location filename="../src/settingsdialog.cpp" line="376"/>
         <source>Last.fm authentication error</source>
         <translation>Ошибка авторизации в Last.fm</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="377"/>
+        <location filename="../src/settingsdialog.cpp" line="381"/>
         <source>%1: database error
 
 %2</source>

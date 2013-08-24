@@ -93,6 +93,10 @@ SettingsDialog::SettingsDialog(QWidget * parent)
 	p->ui.nextTrackShortcut->setKeySequence(QKeySequence(settings->value("GlobalShortcuts/nextTrack").toString()));
 	p->ui.lastfmLoveShortcut->setKeySequence(QKeySequence(settings->value("GlobalShortcuts/lastfmLoveTrack").toString()));
 
+	// button box buttons are not localized properly, so use this hack
+	p->ui.buttonBox->button(QDialogButtonBox::Ok)->setText(tr("OK"));
+	p->ui.buttonBox->button(QDialogButtonBox::Cancel)->setText(tr("Cancel"));
+
 	connectSignals();
 }
 

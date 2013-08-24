@@ -1,11 +1,11 @@
 1.3
 ===
 
-* minor visual improvements (playing context widget)
-* added translations support
-* project now hosted on github
+* project is now hosted on github
+* minor visual improvements (playing context widget, collection tree)
+* added translations support and language selector is settings dialog
 * new logo
-* fixed default layout
+* fixed default first-launch layout
 
 1.2
 ===

@@ -46,9 +46,9 @@ QPixmap _loadIconImage(const QString & path, const CacheHashKeyType & hashKey)
 
 		// ... and resize it to icon size (maximum dimension must be ALBUM_ICON_SIZE pixels)
 		if (img.width() > img.height()) {
-			iconImg = img.scaledToWidth(ALBUM_ICON_SIZE, Qt::FastTransformation);
+			iconImg = img.scaledToWidth(ALBUM_ICON_SIZE, Qt::SmoothTransformation);
 		} else {
-			iconImg = img.scaledToHeight(ALBUM_ICON_SIZE, Qt::FastTransformation);
+			iconImg = img.scaledToHeight(ALBUM_ICON_SIZE, Qt::SmoothTransformation);
 		}
 		// finally save data to the file
 		if (cachedIconFile.open(QIODevice::WriteOnly)) {

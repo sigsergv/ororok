@@ -13,11 +13,18 @@
 #include "settings.h"
 #include "cache.h"
 
+struct CollectionItemDelegate::Private
+{
+	QPixmap defaultAlbumIcon;
+	QPen iconPen;
+};
+
 CollectionItemDelegate::CollectionItemDelegate(QObject *parent)
 //		: QAbstractItemDelegate(parent)
-		: QItemDelegate(parent)
+		: QItemDelegate(parent), p(new Private)
 {
-
+	p->defaultAlbumIcon.load(":/default-album-32x32.png");
+	p->iconPen = QPen(QColor(200, 200, 200));
 }
 
 void CollectionItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -35,11 +42,11 @@ void CollectionItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem
 
 		if (option.state & QStyle::State_Selected) {
 			// draw selected frame
-			painter->setPen(QPen(palette.color(QPalette::HighlightedText)));
+			painter->setPen(palette.color(QPalette::HighlightedText));
 			b = palette.highlight();
 		} else {
 			// draw not-selected frame
-			painter->setPen(QPen(palette.color(QPalette::Text)));
+			painter->setPen(palette.color(QPalette::Text));
 			b = palette.brush(QPalette::Active, QPalette::Base);
 		}
 		painter->fillRect(option.rect, b);
@@ -55,15 +62,21 @@ void CollectionItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem
 				iconPos += QPoint(Ororok::ALBUM_ITEM_PADDING, Ororok::ALBUM_ITEM_PADDING);
 				painter->drawPixmap(iconPos, icon);
 			}
-		} else {
-			// draw icon frame for albums with no cover art
+
+			// draw icon gray frame
+			painter->setPen(p->iconPen);
 			r.adjust(Ororok::ALBUM_ITEM_PADDING, Ororok::ALBUM_ITEM_PADDING, 0, 0);
 			r.setWidth(Ororok::ALBUM_ICON_SIZE);
 			r.setHeight(Ororok::ALBUM_ICON_SIZE);
 			painter->drawRect(r);
+		} else {
+			// draw default album icon
+			QPoint iconPos(r.topLeft());
+			iconPos += QPoint(Ororok::ALBUM_ITEM_PADDING, Ororok::ALBUM_ITEM_PADDING);
+			painter->drawPixmap(iconPos, p->defaultAlbumIcon);
 		}
 
-
+		painter->setPen(palette.color(QPalette::Text));
 		// draw album title
 		QPoint textPos;
 

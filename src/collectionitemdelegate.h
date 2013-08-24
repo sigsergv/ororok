@@ -23,6 +23,9 @@ public:
 	void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 	QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
+private:
+    struct Private;
+    Private * p;
 };
 
 #endif /* COLLECTIONITEMDELEGATE_H_ */

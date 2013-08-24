@@ -221,72 +221,72 @@
         <translation>Операции</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="69"/>
+        <location filename="../src/mainwindow.ui" line="70"/>
         <source>Collection</source>
         <translation>Коллекция</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="81"/>
+        <location filename="../src/mainwindow.ui" line="82"/>
         <source>Context</source>
         <translation>Контекст</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="90"/>
+        <location filename="../src/mainwindow.ui" line="91"/>
         <source>Playback controls</source>
         <translation>Кнопки управления плеером</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="101"/>
+        <location filename="../src/mainwindow.ui" line="102"/>
         <source>Volume control</source>
         <translation>Регулятор громкости</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="112"/>
+        <location filename="../src/mainwindow.ui" line="113"/>
         <source>Track progress control</source>
         <translation>Прогресс воспроизведения</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="123"/>
+        <location filename="../src/mainwindow.ui" line="124"/>
         <source>Last.fm Context</source>
         <translation>Контекст Last.fm</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="135"/>
+        <location filename="../src/mainwindow.ui" line="136"/>
         <source>Ctrl+Q</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="132"/>
+        <location filename="../src/mainwindow.ui" line="133"/>
         <source>&amp;Quit</source>
         <translation>В&amp;ыход</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="140"/>
+        <location filename="../src/mainwindow.ui" line="141"/>
         <source>&amp;Update collections</source>
         <translation>&amp;Обновить коллекции</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="143"/>
+        <location filename="../src/mainwindow.ui" line="144"/>
         <source>Update collections database: find new files and remove deleted from filesystem</source>
         <translation>Обновить базу данных коллекций: найти новые файлы и очистить отсутствующие</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="148"/>
+        <location filename="../src/mainwindow.ui" line="149"/>
         <source>Reload collection tree</source>
         <translation>Обновить дерево коллекции</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="153"/>
+        <location filename="../src/mainwindow.ui" line="154"/>
         <source>About Ororok</source>
         <translation>О программе Ororok</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="158"/>
+        <location filename="../src/mainwindow.ui" line="159"/>
         <source>&amp;Configure Ororok</source>
         <translation>Настро&amp;йка</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.ui" line="163"/>
+        <location filename="../src/mainwindow.ui" line="164"/>
         <source>New playlist</source>
         <translation>Новый плейлист</translation>
     </message>
@@ -510,7 +510,7 @@ If unchecked then playlist will be deleted after closing and this cannot be undo
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="138"/>
-        <location filename="../src/settingsdialog.ui" line="319"/>
+        <location filename="../src/settingsdialog.ui" line="313"/>
         <source>Internet services</source>
         <translation>Интернет-сервисы</translation>
     </message>
@@ -521,7 +521,7 @@ If unchecked then playlist will be deleted after closing and this cannot be undo
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="148"/>
-        <location filename="../src/settingsdialog.ui" line="456"/>
+        <location filename="../src/settingsdialog.ui" line="446"/>
         <source>Keyboard shortcuts</source>
         <translation>Хоткеи</translation>
     </message>
@@ -551,62 +551,62 @@ If unchecked then playlist will be deleted after closing and this cannot be undo
         <translation>Удалить каталог из коллекции</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="332"/>
+        <location filename="../src/settingsdialog.ui" line="320"/>
         <source>Last.Fm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="344"/>
+        <location filename="../src/settingsdialog.ui" line="332"/>
         <source>Username</source>
         <translation>Имя пользователя</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="357"/>
+        <location filename="../src/settingsdialog.ui" line="345"/>
         <source>Password</source>
         <translation>Пароль</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="392"/>
+        <location filename="../src/settingsdialog.ui" line="380"/>
         <source>Test login</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="414"/>
+        <location filename="../src/settingsdialog.ui" line="404"/>
         <source>Database settings</source>
         <translation>Настройки базы данных</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="421"/>
+        <location filename="../src/settingsdialog.ui" line="411"/>
         <source>Ororok currenlty uses sqlite and it doesn&apos;t have any tunable options.</source>
         <translation>Ororok использует базу sqlite, а она не имеет никаких настраиваемых опций.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="463"/>
+        <location filename="../src/settingsdialog.ui" line="453"/>
         <source>Enable global shortcuts</source>
         <translation>Включить глобальные хоткеи</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="480"/>
+        <location filename="../src/settingsdialog.ui" line="470"/>
         <source>Previous track</source>
         <translation>Предыдущий трек</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="490"/>
+        <location filename="../src/settingsdialog.ui" line="480"/>
         <source>Next track</source>
         <translation>Следующий трек</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="500"/>
+        <location filename="../src/settingsdialog.ui" line="490"/>
         <source>Play/pause</source>
         <translation>Игра/Пауза</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="510"/>
+        <location filename="../src/settingsdialog.ui" line="500"/>
         <source>Stop playing</source>
         <translation>Стоп</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="520"/>
+        <location filename="../src/settingsdialog.ui" line="510"/>
         <source>“Love track” (last.fm)</source>
         <translation>«Любимые трек» (last.fm)</translation>
     </message>
@@ -626,48 +626,68 @@ If unchecked then playlist will be deleted after closing and this cannot be undo
         <translation>Русский</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="145"/>
+        <location filename="../src/settingsdialog.cpp" line="150"/>
+        <source>Unable to fetch collections list</source>
+        <translation>Не удалось получить список каталогов коллекции</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="157"/>
         <source>Unable to clear collections list</source>
         <translation>Не удалось очистить список коллекций</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="157"/>
         <location filename="../src/settingsdialog.cpp" line="168"/>
+        <location filename="../src/settingsdialog.cpp" line="179"/>
         <source>Unable to insert collection dir record</source>
         <translation>Не удалось добавить каталог в коллекцию</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="222"/>
-        <location filename="../src/settingsdialog.cpp" line="363"/>
+        <location filename="../src/settingsdialog.cpp" line="233"/>
+        <location filename="../src/settingsdialog.cpp" line="388"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="222"/>
+        <location filename="../src/settingsdialog.cpp" line="233"/>
         <source>Unable to load collections list: database error. 
 %1</source>
         <translation>Не удалось загрузить коллекции: ошибка базы:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="304"/>
+        <location filename="../src/settingsdialog.cpp" line="293"/>
+        <source>Add directory to collection</source>
+        <translation>Добавить каталог в коллекцию</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="300"/>
+        <location filename="../src/settingsdialog.cpp" line="306"/>
+        <location filename="../src/settingsdialog.cpp" line="320"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="304"/>
-        <source>The following directories already presented in collections list:
-%1</source>
-        <translation>Следующие каталоги уже добавлены в список коллекций:
-%1</translation>
+        <location filename="../src/settingsdialog.cpp" line="300"/>
+        <source>Selected directory `%1` is already added.</source>
+        <translation>Выбранный каталог `%1` уже добавлен в коллекцию.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="358"/>
+        <location filename="../src/settingsdialog.cpp" line="306"/>
+        <source>Selected directory `%1` is a symbolic link to already added directory `%2`.</source>
+        <translation>Выбранный каталог `%1` являтся ссылкой на уже добавленный каталог `%2`.</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="320"/>
+        <source>Selected directory `%1` is a subdirectory of already added directory `%2`.</source>
+        <translation>Выбранный каталог `%1` является подкаталогом уже добавленного каталога  `%2`.</translation>
+    </message>
+    <message>
+        <location filename="../src/settingsdialog.cpp" line="383"/>
         <source>Last.fm authentication error</source>
         <translation>Ошибка авторизации в Last.fm</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="363"/>
+        <location filename="../src/settingsdialog.cpp" line="388"/>
         <source>%1: database error
 
 %2</source>

@@ -48,6 +48,7 @@
     <addaction name="actionNewPlaylist"/>
     <addaction name="actionRescanCollection"/>
     <addaction name="actionReloadCollectionTree"/>
+    <addaction name="separator"/>
     <addaction name="actionEditSettings"/>
    </widget>
    <addaction name="menuOrorok"/>

@@ -120,60 +120,6 @@ int SettingsDialog::exec()
 
 void SettingsDialog::accept()
 {
-	// check directories
-	int cnt = p->ui.collectionsListWidget->count();
-
-	QStringList newDirs;
-	QHash<int, QString> existingDirs;
-
-	for (int i=0; i<cnt; i++) {
-		QListWidgetItem * item = p->ui.collectionsListWidget->item(i);
-		if (!item->data(ItemRoleId).isValid()) {
-			newDirs << item->text();
-		} else {
-			int id = item->data(ItemRoleId).toInt();
-			existingDirs[id] = item->text();
-		}
-	}
-
-	// update database
-	QSqlDatabase db = QSqlDatabase::database();
-	QSqlQuery q(db);
-
-	db.transaction();
-	if (!q.exec("DELETE FROM collection")) {
-		sqlErrorMsg(tr("Unable to clear collections list"), q.lastError());
-		db.rollback();
-		QDialog::reject();
-		return;
-	}
-
-
-	q.prepare("INSERT INTO collection (id, path) VALUES (:id, :path)");
-	for (QHash<int, QString>::iterator i=existingDirs.begin(); i!=existingDirs.end(); i++) {
-		q.bindValue(":id", i.key());
-		q.bindValue(":path", i.value());
-		if (!q.exec()) {
-			sqlErrorMsg(tr("Unable to insert collection dir record"), q.lastError());
-			db.rollback();
-			QDialog::reject();
-			return;
-		}
-	};
-
-	q.prepare("INSERT INTO collection (path) VALUES (:path)");
-	foreach (const QString v, newDirs) {
-		q.bindValue(":path", v);
-		if (!q.exec()) {
-			sqlErrorMsg(tr("Unable to insert collection dir record"), q.lastError());
-			db.rollback();
-			QDialog::reject();
-			return;
-		}
-	}
-
-	db.commit();
-
 	QSettings * settings = Ororok::settings();
 
 	// set global shortcuts
@@ -209,6 +155,59 @@ void SettingsDialog::accept()
 	int index = p->ui.uiLangCombo->currentIndex();
 	QString lang = p->ui.uiLangCombo->itemData(index).toString();
 	settings->setValue("MainWindow/language", lang);
+
+	// check directories
+	int cnt = p->ui.collectionsListWidget->count();
+
+	QStringList newDirs;
+	QHash<int, QString> existingDirs;
+
+	for (int i=0; i<cnt; i++) {
+		QListWidgetItem * item = p->ui.collectionsListWidget->item(i);
+		newDirs << item->text();
+	}
+
+	// update database, add/remove collection directories
+	QSqlDatabase db = QSqlDatabase::database();
+	QSqlQuery q(db);
+
+	if (!q.exec("SELECT path FROM collection")) {
+		sqlErrorMsg(tr("Unable to fetch collections list"), q.lastError());
+		QDialog::reject();
+		return;
+	}
+
+	QStringList oldDirs;
+	while (q.next()) {
+		oldDirs << q.value(0).toString();
+	}
+
+	oldDirs.sort();
+	newDirs.sort();
+	if (oldDirs.join("\n") != newDirs.join("\n")) {
+		// update database because directories list has changed
+		db.transaction();
+		if (!q.exec("DELETE FROM collection")) {
+			sqlErrorMsg(tr("Unable to clear collections list"), q.lastError());
+			db.rollback();
+			QDialog::reject();
+			return;
+		}
+
+		q.prepare("INSERT INTO collection (path) VALUES (:path)");
+		foreach (const QString v, newDirs) {
+			q.bindValue(":path", v);
+			if (!q.exec()) {
+				sqlErrorMsg(tr("Unable to insert collection dir record"), q.lastError());
+				db.rollback();
+				QDialog::reject();
+				return;
+			}
+		}
+
+		db.commit();
+		emit(collectionsChanged());
+	}
 
 	QDialog::accept();
 }
@@ -279,30 +278,45 @@ void SettingsDialog::addCollectionDir()
 	}
 
 	// open Select folder dialog
-	QFileDialog fd(this);
+	QString dir = QFileDialog::getExistingDirectory(this, tr("Add directory to collection"));
+	if (!dir.isEmpty()) {
+		// check is dir in the list already
+		QDir d(dir);
+		bool ok = true;
 
-	fd.setFileMode(QFileDialog::Directory);
-	fd.setFilter(QDir::AllDirs);
-
-	if (fd.exec()) {
-		QStringList alreadyAddedDirs;
-
-		foreach (QString dir, fd.selectedFiles()) {
-			// check is dir in the list already
-			QDir d(dir);
-			dir = d.canonicalPath();
-
-			if (currentCollectionDirs.contains(dir, Qt::CaseInsensitive)) {
-				alreadyAddedDirs << dir;
-				continue;
-			}
-
-			p->ui.collectionsListWidget->addItem(dir);
+		if (currentCollectionDirs.contains(d.absolutePath(), Qt::CaseInsensitive)) {
+			QMessageBox::warning(this, tr("Warning"), tr("Selected directory `%1` is already added.")
+				.arg(d.absolutePath()));
+			ok = false;
 		}
 
-		if (alreadyAddedDirs.count()) {
-			QMessageBox::warning(this, tr("Warning"), tr("The following directories already presented in collections list:\n%1")
-					.arg(alreadyAddedDirs.join("\n")));
+		if (ok && currentCollectionDirs.contains(d.canonicalPath(), Qt::CaseInsensitive)) {
+			QMessageBox::warning(this, tr("Warning"), tr("Selected directory `%1` is a symbolic link to already added directory `%2`.")
+				.arg(d.absolutePath())
+				.arg(d.canonicalPath()));
+			ok = false;
+		}
+
+		QString canonicalPath = d.canonicalPath();
+		// check is canonicalPath is a subfolder of already added directory
+		if (ok) {
+			foreach (const QString & collectionPath, currentCollectionDirs) {
+				QDir collectionDir(collectionPath);
+				collectionDir.setPath(collectionDir.canonicalPath());
+				QString relPath = collectionDir.relativeFilePath(canonicalPath);
+				if (!relPath.startsWith("..")) {
+
+				QMessageBox::warning(this, tr("Warning"), tr("Selected directory `%1` is a subdirectory of already added directory `%2`.")
+					.arg(dir)
+					.arg(collectionPath));
+
+					ok = false;
+				}
+			}
+		}
+
+		if (ok) {
+			p->ui.collectionsListWidget->addItem(dir);
 		}
 	}
 }

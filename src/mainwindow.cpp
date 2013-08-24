@@ -345,6 +345,8 @@ void MainWindow::editSettings()
 {
 	// open settings edit dialog
 	SettingsDialog d(this);
+	connect(&d, SIGNAL(collectionsChanged()),
+		this, SLOT(rescanCollection()));
 	d.exec();
 }
 

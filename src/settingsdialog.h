@@ -23,6 +23,9 @@ public:
 public slots:
 	void accept();
 
+signals:
+	void collectionsChanged();
+
 protected:
 	bool loadSettings();
 	void connectSignals();

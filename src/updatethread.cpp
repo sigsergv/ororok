@@ -433,7 +433,7 @@ void UpdateThread::run() {
 	p->errorCode = NoError;
 	p->errorMessage.clear();
 
-	emit progressPercentChanged(0);
+	emit progressPercentChanged(1);
 
 	QSqlDatabase _db = QSqlDatabase::database();
 	// required for commits in other class' functions

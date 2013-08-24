@@ -73,37 +73,72 @@
 <context>
     <name>CollectionItemModel</name>
     <message>
-        <location filename="../src/collectionitemmodel.cpp" line="210"/>
-        <source>&lt;!--ctree: album tooltip--&gt;&lt;div&gt;&lt;em&gt;&lt;strong&gt;%1&lt;/strong&gt;&lt;/em&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp;&lt;!--empty line--&gt;&lt;div&gt;&lt;div&gt;Total tracks/length: &lt;strong&gt;&lt;em&gt;%2 / %3&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;Genres: &lt;strong&gt;&lt;em&gt;%4&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;Modified: &lt;strong&gt;&lt;em&gt;%5&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;</source>
-        <translation>&lt;!--ctree: album tooltip--&gt;&lt;div&gt;&lt;em&gt;&lt;strong&gt;%1&lt;/strong&gt;&lt;/em&gt;&lt;/div&gt;&lt;div&gt;&amp;nbsp;&lt;!--empty line--&gt;&lt;div&gt;&lt;div&gt;Количество треков/длина: &lt;strong&gt;&lt;em&gt;%2 / %3&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;Жанры: &lt;strong&gt;&lt;em&gt;%4&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;Изменено: &lt;strong&gt;&lt;em&gt;%5&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;</translation>
-    </message>
-    <message>
-        <location filename="../src/collectionitemmodel.cpp" line="215"/>
+        <location filename="../src/collectionitemmodel.cpp" line="219"/>
         <source>Unknown album name</source>
         <translation>Неизвестный альбом</translation>
     </message>
     <message>
-        <location filename="../src/collectionitemmodel.cpp" line="221"/>
-        <source>&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;!--ctree: end of album tooltip--&gt;</source>
+        <location filename="../src/collectionitemmodel.cpp" line="218"/>
+        <source>&lt;div&gt;&lt;em&gt;&lt;strong&gt;%1&lt;/strong&gt;&lt;/em&gt;&lt;/div&gt;</source>
+        <translation></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/collectionitemmodel.cpp" line="223"/>
+        <source>&lt;div&gt;%n tracks, length: %1&lt;/div&gt;</source>
+        <translation>
+            <numerusform>&lt;div&gt;%n трек, длина: %1&lt;/div&gt;</numerusform>
+            <numerusform>&lt;div&gt;%n трека, длина: %1&lt;/div&gt;</numerusform>
+            <numerusform>&lt;div&gt;%n треков, длина: %1&lt;/div&gt;</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/collectionitemmodel.cpp" line="227"/>
+        <location filename="../src/collectionitemmodel.cpp" line="277"/>
+        <source>&lt;div&gt;Genre: &lt;strong&gt;&lt;em&gt;%1&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;</source>
+        <translation>&lt;div&gt;Жанр: &lt;strong&gt;&lt;em&gt;%1&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/collectionitemmodel.cpp" line="230"/>
+        <source>&lt;div&gt;Genres: &lt;strong&gt;&lt;em&gt;%1&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;</source>
+        <translation>&lt;div&gt;Жанры: &lt;strong&gt;&lt;em&gt;%1&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/collectionitemmodel.cpp" line="281"/>
+        <source>&lt;div&gt;Added: &lt;strong&gt;%1&lt;/strong&gt;&lt;/div&gt;</source>
+        <translation>&lt;div&gt;Добавлено: &lt;strong&gt;%1&lt;/strong&gt;&lt;/div&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/collectionitemmodel.cpp" line="269"/>
+        <source>&lt;div&gt;&lt;strong&gt;&lt;em&gt;%1&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/collectionitemmodel.cpp" line="253"/>
-        <source>&lt;!--ctree: artist tooltip--&gt;&lt;div&gt;&lt;strong&gt;&lt;em&gt;%1&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt; by &lt;strong&gt;&lt;em&gt;%2&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;Length: &lt;strong&gt;&lt;em&gt;%3&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;Genre: &lt;strong&gt;&lt;em&gt;%4&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;Added: &lt;strong&gt;&lt;em&gt;%5&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;</source>
-        <translation>&lt;!--ctree: artist tooltip--&gt;&lt;div&gt;&lt;strong&gt;&lt;em&gt;%1&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt; в исполнении &lt;strong&gt;&lt;em&gt;%2&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;Длина: &lt;strong&gt;&lt;em&gt;%3&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;Genre: &lt;strong&gt;&lt;em&gt;%4&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;div&gt;Добавлено: &lt;strong&gt;&lt;em&gt;%5&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;</translation>
+        <location filename="../src/collectionitemmodel.cpp" line="234"/>
+        <source>&lt;div style=&quot;white-space: nowrap;&quot;&gt;Added: &lt;strong&gt;%1&lt;/strong&gt;&lt;/div&gt;</source>
+        <translation type="unfinished">&lt;div style=&quot;white-space: nowrap;&quot;&gt;Добавлено: &lt;strong&gt;%1&lt;/strong&gt;&lt;/div&gt;</translation>
     </message>
     <message>
-        <location filename="../src/collectionitemmodel.cpp" line="258"/>
+        <location filename="../src/collectionitemmodel.cpp" line="270"/>
         <source>Empty title</source>
         <translation>Нет названия</translation>
     </message>
     <message>
-        <location filename="../src/collectionitemmodel.cpp" line="259"/>
+        <location filename="../src/collectionitemmodel.cpp" line="271"/>
+        <source>&lt;div&gt; by &lt;strong&gt;&lt;em&gt;%1&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;</source>
+        <translation>&lt;div&gt; в исполнении &lt;strong&gt;&lt;em&gt;%1&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/collectionitemmodel.cpp" line="272"/>
         <source>Unknown artist</source>
         <translation>Неизвестный исполнитель</translation>
     </message>
     <message>
-        <location filename="../src/collectionitemmodel.cpp" line="261"/>
+        <location filename="../src/collectionitemmodel.cpp" line="273"/>
+        <source>&lt;div&gt;Length: &lt;strong&gt;&lt;em&gt;%1&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;</source>
+        <translation>&lt;div&gt;Длина: &lt;strong&gt;&lt;em&gt;%1&lt;/em&gt;&lt;/strong&gt;&lt;/div&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/collectionitemmodel.cpp" line="275"/>
         <source>Unknown genre</source>
         <translation>Неизвестный жанр</translation>
     </message>
@@ -296,22 +331,22 @@
         <translation>Ororok — музыкальный плеер и органайзер</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="353"/>
+        <location filename="../src/mainwindow.cpp" line="355"/>
         <source>Play previous track</source>
         <translation>Играть предыдущий трек</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="356"/>
+        <location filename="../src/mainwindow.cpp" line="358"/>
         <source>Play/Pause</source>
         <translation>Игра/Пауза</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="359"/>
+        <location filename="../src/mainwindow.cpp" line="361"/>
         <source>Stop</source>
         <translation>Стоп</translation>
     </message>
     <message>
-        <location filename="../src/mainwindow.cpp" line="362"/>
+        <location filename="../src/mainwindow.cpp" line="364"/>
         <source>Play next track</source>
         <translation>Играть следующий трек</translation>
     </message>
@@ -626,68 +661,67 @@ If unchecked then playlist will be deleted after closing and this cannot be undo
         <translation>Русский</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="150"/>
+        <location filename="../src/settingsdialog.cpp" line="175"/>
         <source>Unable to fetch collections list</source>
         <translation>Не удалось получить список каталогов коллекции</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="157"/>
+        <location filename="../src/settingsdialog.cpp" line="191"/>
         <source>Unable to clear collections list</source>
         <translation>Не удалось очистить список коллекций</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="168"/>
-        <location filename="../src/settingsdialog.cpp" line="179"/>
+        <location filename="../src/settingsdialog.cpp" line="201"/>
         <source>Unable to insert collection dir record</source>
         <translation>Не удалось добавить каталог в коллекцию</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="233"/>
-        <location filename="../src/settingsdialog.cpp" line="388"/>
+        <location filename="../src/settingsdialog.cpp" line="221"/>
+        <location filename="../src/settingsdialog.cpp" line="377"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="233"/>
+        <location filename="../src/settingsdialog.cpp" line="221"/>
         <source>Unable to load collections list: database error. 
 %1</source>
         <translation>Не удалось загрузить коллекции: ошибка базы:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="293"/>
+        <location filename="../src/settingsdialog.cpp" line="281"/>
         <source>Add directory to collection</source>
         <translation>Добавить каталог в коллекцию</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="300"/>
-        <location filename="../src/settingsdialog.cpp" line="306"/>
-        <location filename="../src/settingsdialog.cpp" line="320"/>
+        <location filename="../src/settingsdialog.cpp" line="288"/>
+        <location filename="../src/settingsdialog.cpp" line="294"/>
+        <location filename="../src/settingsdialog.cpp" line="309"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="300"/>
+        <location filename="../src/settingsdialog.cpp" line="288"/>
         <source>Selected directory `%1` is already added.</source>
         <translation>Выбранный каталог `%1` уже добавлен в коллекцию.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="306"/>
+        <location filename="../src/settingsdialog.cpp" line="294"/>
         <source>Selected directory `%1` is a symbolic link to already added directory `%2`.</source>
         <translation>Выбранный каталог `%1` являтся ссылкой на уже добавленный каталог `%2`.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="320"/>
+        <location filename="../src/settingsdialog.cpp" line="309"/>
         <source>Selected directory `%1` is a subdirectory of already added directory `%2`.</source>
         <translation>Выбранный каталог `%1` является подкаталогом уже добавленного каталога  `%2`.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="383"/>
+        <location filename="../src/settingsdialog.cpp" line="372"/>
         <source>Last.fm authentication error</source>
         <translation>Ошибка авторизации в Last.fm</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="388"/>
+        <location filename="../src/settingsdialog.cpp" line="377"/>
         <source>%1: database error
 
 %2</source>

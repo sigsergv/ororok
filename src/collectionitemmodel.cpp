@@ -206,19 +206,35 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 
 			tip += "<td valign=\"top\">";
 
-			QStringList genres_list = genres.toList();
-			tip += tr("<!--ctree: album tooltip--><div><em><strong>%1</strong></em></div>"
-					"<div>&nbsp;<!--empty line--><div>"
-					"<div>Total tracks/length: <strong><em>%2 / %3</em></strong></div>"
-					"<div>Genres: <strong><em>%4</em></strong></div>"
-					"<div>Modified: <strong><em>%5</em></strong></div></div>")
-				.arg(item->data.value("name", tr("Unknown album name")).toString())
-				.arg(tracks_cnt)
-				.arg(total_len_str)
-				.arg(genres_list.join(", "))
+			QStringList genres_list;
+			foreach (QString g, genres.toList()) {
+				g = g.trimmed();
+				if (!g.isEmpty()) {
+					genres_list << g;
+				}
+			}
+
+			// album title
+			tip += tr("<div><em><strong>%1</strong></em></div>")
+				.arg(item->data.value("name", tr("Unknown album name")).toString());
+			tip += "<div>&nbsp;<!--empty line--><div>";
+
+			// tracks info
+			tip += tr("<div>%n tracks, length: %1</div>", "", tracks_cnt)
+				.arg(total_len_str);
+
+			if (genres_list.size() == 1) {
+				tip += tr("<div>Genre: <strong><em>%1</em></strong></div>").
+					arg(genres_list.at(0));
+			} else if (genres_list.size() > 1) {
+				tip += tr("<div>Genres: <strong><em>%1</em></strong></div>").
+					arg(genres_list.join(", "));
+			}
+
+			tip += tr("<div style=\"white-space: nowrap;\">Added: <strong>%1</strong></div>")
 				.arg(modtime_str);
 
-			tip += tr("</td></tr></table><!--ctree: end of album tooltip-->");
+			tip += "</td></tr></table>";
 
 			}
 			break;
@@ -250,16 +266,20 @@ QVariant CollectionItemModel::data(const QModelIndex & index, int role) const
 			track_len /= 60;
 			track_len_str = QString::number(track_len) + QString(":") + track_len_str;
 
-			tip = tr("<!--ctree: artist tooltip--><div><strong><em>%1</em></strong></div>"
-					"<div> by <strong><em>%2</em></strong></div>"
-					"<div>Length: <strong><em>%3</em></strong></div>"
-					"<div>Genre: <strong><em>%4</em></strong></div>"
-					"<div>Added: <strong><em>%5</em></strong></div></div>")
-					.arg(item->data.value("title", tr("Empty title")).toString())
-					.arg(item->data.value("artist", tr("Unknown artist")).toString())
-					.arg(track_len_str)
-					.arg(item->data.value("genre", tr("Unknown genre")).toString())
-					.arg(modtime_str);
+			tip += tr("<div><strong><em>%1</em></strong></div>")
+				.arg(item->data.value("title", tr("Empty title")).toString());
+			tip += tr("<div> by <strong><em>%1</em></strong></div>")
+				.arg(item->data.value("artist", tr("Unknown artist")).toString());
+			tip += tr("<div>Length: <strong><em>%1</em></strong></div>")
+				.arg(track_len_str);
+			QString g = item->data.value("genre", tr("Unknown genre")).toString();
+			if (!g.isEmpty()) {
+				tip += tr("<div>Genre: <strong><em>%1</em></strong></div>")
+					.arg(g);
+			}
+
+			tip += tr("<div>Added: <strong>%1</strong></div>")
+				.arg(modtime_str);
 			}
 			break;
 

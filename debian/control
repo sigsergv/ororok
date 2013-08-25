@@ -10,7 +10,7 @@ Vcs-Browser: https://github.com/sigsergv/ororok
 
 Package: ororok
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: libqt4-sql-sqlite, ${shlibs:Depends}, ${misc:Depends}
 Description: Simple audio player and music collection organizer
  Simple music library collection organizer inspired by Amarok-1.4
  media player. Plays music and sends playing tracks info to last.fm.

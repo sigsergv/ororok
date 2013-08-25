@@ -43,7 +43,7 @@ public slots:
 protected slots:
 	void tick(qint64 time);
 	void almostFinished();
-	void sourceShanged(const Phonon::MediaSource &);
+	void sourceChanged(const Phonon::MediaSource &);
 
 private:
 	struct Private;

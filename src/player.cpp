@@ -53,7 +53,7 @@ Player::Player()
 	connect(p->mediaObject, SIGNAL(tick(qint64)), this, SLOT(tick(qint64)));
 	connect(p->mediaObject, SIGNAL(aboutToFinish()), this, SLOT(almostFinished()));
 	connect(p->mediaObject, SIGNAL(currentSourceChanged(const Phonon::MediaSource &)),
-			this, SLOT(sourceShanged(const Phonon::MediaSource &)));
+			this, SLOT(sourceChanged(const Phonon::MediaSource &)));
 
 	Phonon::createPath(p->mediaObject, p->audioOutput);
 	p->tickInterval = p->mediaObject->tickInterval();
@@ -135,7 +135,7 @@ void Player::almostFinished()
 	}
 }
 
-void Player::sourceShanged(const Phonon::MediaSource &)
+void Player::sourceChanged(const Phonon::MediaSource &)
 {
 	if (!p->nextTrack.isEmpty()) {
 		qDebug() << "playing next track, emit signal";

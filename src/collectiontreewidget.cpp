@@ -35,7 +35,7 @@ CollectionTreeWidget::CollectionTreeWidget(QWidget * parent)
 {
 	p = new Private;
 
-	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
+	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
 	QLayout * filterLayout = new QHBoxLayout();
 

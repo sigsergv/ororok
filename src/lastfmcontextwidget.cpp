@@ -137,8 +137,7 @@ void LastfmContextWidget::trackGetInfoRequestFinished()
 	QString playcount_info = tr("Played <strong>%n</strong> times", "", lfm["track"]["playcount"].text().toInt());
 	int user_playcount = lfm["track"]["userplaycount"].text().toInt();
 	if (user_playcount > 0) {
-		playcount_info += QString(" (<strong>%1</strong> times by you)")
-				.arg(user_playcount);
+		playcount_info += " " + tr("(<strong>%n</strong> times by you)", "", user_playcount);
 	}
 	htmlRows << playcount_info;
 

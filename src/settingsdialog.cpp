@@ -50,11 +50,13 @@ SettingsDialog::SettingsDialog(QWidget * parent)
 	item->setIcon(QIcon(":preferences-system-network.png"));
 	item->setTextAlignment(Qt::AlignCenter);
 
+	/*
 	item = p->ui.settingsGroupsTable->item(3, 0);
 	item->setIcon(QIcon(":server-database.png"));
 	item->setTextAlignment(Qt::AlignCenter);
+	*/
 
-	item = p->ui.settingsGroupsTable->item(4, 0);
+	item = p->ui.settingsGroupsTable->item(3, 0);
 	item->setIcon(QIcon(":preferences-desktop-keyboard.png"));
 	item->setTextAlignment(Qt::AlignCenter);
 

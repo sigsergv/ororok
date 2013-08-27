@@ -140,11 +140,6 @@
        </item>
        <item row="3" column="0">
         <property name="text">
-         <string>Database</string>
-        </property>
-       </item>
-       <item row="4" column="0">
-        <property name="text">
          <string>Keyboard shortcuts</string>
         </property>
        </item>
@@ -159,7 +154,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex">
-        <number>3</number>
+        <number>2</number>
        </property>
        <widget class="QWidget" name="page">
         <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -352,19 +347,6 @@
             <item row="1" column="1">
              <widget class="QLineEdit" name="lastfmPasswordLineEdit"/>
             </item>
-            <item row="3" column="1">
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
             <item row="2" column="1">
              <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
@@ -386,49 +368,18 @@
            </layout>
           </widget>
          </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="page_2">
-        <layout class="QVBoxLayout" name="verticalLayout_7">
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_6">
-           <item>
-            <widget class="QLabel" name="label_3">
-             <property name="font">
-              <font>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Database settings</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_13">
-             <property name="text">
-              <string>Ororok currenlty uses sqlite and it doesn't have any tunable options.</string>
-             </property>
-             <property name="wordWrap">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_4">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>
@@ -458,6 +409,9 @@
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
              <layout class="QFormLayout" name="formLayout">
+              <property name="fieldGrowthPolicy">
+               <enum>QFormLayout::ExpandingFieldsGrow</enum>
+              </property>
               <property name="labelAlignment">
                <set>Qt::AlignBottom|Qt::AlignRight|Qt::AlignTrailing</set>
               </property>

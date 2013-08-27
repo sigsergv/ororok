@@ -554,193 +554,178 @@ If unchecked then playlist will be deleted after closing and this cannot be undo
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="138"/>
-        <location filename="../src/settingsdialog.ui" line="313"/>
+        <location filename="../src/settingsdialog.ui" line="308"/>
         <source>Internet services</source>
         <translation>Интернет-сервисы</translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="143"/>
-        <source>Database</source>
-        <translation>База данных</translation>
-    </message>
-    <message>
-        <location filename="../src/settingsdialog.ui" line="148"/>
-        <location filename="../src/settingsdialog.ui" line="446"/>
+        <location filename="../src/settingsdialog.ui" line="397"/>
         <source>Keyboard shortcuts</source>
         <translation>Хоткеи</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="175"/>
+        <location filename="../src/settingsdialog.ui" line="170"/>
         <source>General settings</source>
         <translation>Главные настройки</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="184"/>
+        <location filename="../src/settingsdialog.ui" line="179"/>
         <source>Interface language:</source>
         <translation>Язык интерфейса:</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="216"/>
+        <location filename="../src/settingsdialog.ui" line="211"/>
         <source>Collection directories</source>
         <translation>Каталоги коллекции</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="227"/>
+        <location filename="../src/settingsdialog.ui" line="222"/>
         <source>Add new collection directory</source>
         <translation>Добавить новый каталог в коллекцию</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="256"/>
+        <location filename="../src/settingsdialog.ui" line="251"/>
         <source>Remove directory from collection</source>
         <translation>Удалить каталог из коллекции</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="320"/>
+        <location filename="../src/settingsdialog.ui" line="315"/>
         <source>Last.Fm</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="332"/>
+        <location filename="../src/settingsdialog.ui" line="327"/>
         <source>Username</source>
         <translation>Имя пользователя</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="345"/>
+        <location filename="../src/settingsdialog.ui" line="340"/>
         <source>Password</source>
         <translation>Пароль</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="380"/>
+        <location filename="../src/settingsdialog.ui" line="362"/>
         <source>Test login</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/settingsdialog.ui" line="404"/>
-        <source>Database settings</source>
-        <translation>Настройки базы данных</translation>
-    </message>
-    <message>
-        <location filename="../src/settingsdialog.ui" line="411"/>
-        <source>Ororok currenlty uses sqlite and it doesn&apos;t have any tunable options.</source>
-        <translation>Ororok использует базу sqlite, а она не имеет никаких настраиваемых опций.</translation>
-    </message>
-    <message>
-        <location filename="../src/settingsdialog.ui" line="453"/>
         <source>Enable global shortcuts</source>
         <translation>Включить глобальные хоткеи</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="470"/>
+        <location filename="../src/settingsdialog.ui" line="424"/>
         <source>Previous track</source>
         <translation>Предыдущий трек</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="480"/>
+        <location filename="../src/settingsdialog.ui" line="434"/>
         <source>Next track</source>
         <translation>Следующий трек</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="490"/>
+        <location filename="../src/settingsdialog.ui" line="444"/>
         <source>Play/pause</source>
         <translation>Игра/Пауза</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="500"/>
+        <location filename="../src/settingsdialog.ui" line="454"/>
         <source>Stop playing</source>
         <translation>Стоп</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.ui" line="510"/>
+        <location filename="../src/settingsdialog.ui" line="464"/>
         <source>“Love track” (last.fm)</source>
         <translation>«Любимые трек» (last.fm)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="62"/>
+        <location filename="../src/settingsdialog.cpp" line="64"/>
         <source>Use system language</source>
         <translation>Использовать системный</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="63"/>
+        <location filename="../src/settingsdialog.cpp" line="65"/>
         <source>English</source>
         <translation>Английский (english)</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="64"/>
+        <location filename="../src/settingsdialog.cpp" line="66"/>
         <source>Russian (Русский)</source>
         <translation>Русский</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="97"/>
+        <location filename="../src/settingsdialog.cpp" line="99"/>
         <source>OK</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="98"/>
+        <location filename="../src/settingsdialog.cpp" line="100"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="179"/>
+        <location filename="../src/settingsdialog.cpp" line="181"/>
         <source>Unable to fetch collections list</source>
         <translation>Не удалось получить список каталогов коллекции</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="195"/>
+        <location filename="../src/settingsdialog.cpp" line="197"/>
         <source>Unable to clear collections list</source>
         <translation>Не удалось очистить список коллекций</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="205"/>
+        <location filename="../src/settingsdialog.cpp" line="207"/>
         <source>Unable to insert collection dir record</source>
         <translation>Не удалось добавить каталог в коллекцию</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="225"/>
-        <location filename="../src/settingsdialog.cpp" line="381"/>
+        <location filename="../src/settingsdialog.cpp" line="227"/>
+        <location filename="../src/settingsdialog.cpp" line="383"/>
         <source>Error</source>
         <translation>Ошибка</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="225"/>
+        <location filename="../src/settingsdialog.cpp" line="227"/>
         <source>Unable to load collections list: database error. 
 %1</source>
         <translation>Не удалось загрузить коллекции: ошибка базы:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="285"/>
+        <location filename="../src/settingsdialog.cpp" line="287"/>
         <source>Add directory to collection</source>
         <translation>Добавить каталог в коллекцию</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="292"/>
-        <location filename="../src/settingsdialog.cpp" line="298"/>
-        <location filename="../src/settingsdialog.cpp" line="313"/>
+        <location filename="../src/settingsdialog.cpp" line="294"/>
+        <location filename="../src/settingsdialog.cpp" line="300"/>
+        <location filename="../src/settingsdialog.cpp" line="315"/>
         <source>Warning</source>
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="292"/>
+        <location filename="../src/settingsdialog.cpp" line="294"/>
         <source>Selected directory `%1` is already added.</source>
         <translation>Выбранный каталог `%1` уже добавлен в коллекцию.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="298"/>
+        <location filename="../src/settingsdialog.cpp" line="300"/>
         <source>Selected directory `%1` is a symbolic link to already added directory `%2`.</source>
         <translation>Выбранный каталог `%1` являтся ссылкой на уже добавленный каталог `%2`.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="313"/>
+        <location filename="../src/settingsdialog.cpp" line="315"/>
         <source>Selected directory `%1` is a subdirectory of already added directory `%2`.</source>
         <translation>Выбранный каталог `%1` является подкаталогом уже добавленного каталога  `%2`.</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="376"/>
+        <location filename="../src/settingsdialog.cpp" line="378"/>
         <source>Last.fm authentication error</source>
         <translation>Ошибка авторизации в Last.fm</translation>
     </message>
     <message>
-        <location filename="../src/settingsdialog.cpp" line="381"/>
+        <location filename="../src/settingsdialog.cpp" line="383"/>
         <source>%1: database error
 
 %2</source>

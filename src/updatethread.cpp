@@ -303,6 +303,7 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 				// get file metadata
 				Ororok::MusicTrackMetadata * md = mdHash[fi.filePath()];
 				int artistId = 0;
+				int albumArtistId = 0;
 				int genreId = 0;
 
 				if (!md->artist.isEmpty()) {
@@ -318,8 +319,21 @@ UpdateThread::ReturnAction UpdateThread::updateCollections()
 						p->artistsHash[md->artist] = artistId;
 					}
 				}
-				if (artistId) {
-					// add artistId to album artists list
+				if (!md->albumArtist.isEmpty()) {
+					// found non-empty "Album Artist" frame so use it instead of track artist
+					albumArtistId = p->artistsHash.value(md->albumArtist, -1);
+					if (-1 == albumArtistId) {
+						// append artist to the database...
+						subq.prepare("INSERT INTO artist (name) VALUES (:name)");
+						subq.bindValue(":name", md->albumArtist);
+						if (subq.exec()) {
+							albumArtistId = subq.lastInsertId().toInt();
+						}
+						// ...and add to the artistsHash
+						p->artistsHash[md->albumArtist] = albumArtistId;
+					}
+					albumArtists[md->album].insert(albumArtistId);
+				} else if (artistId) {
 					albumArtists[md->album].insert(artistId);
 				}
 

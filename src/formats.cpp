@@ -29,7 +29,7 @@ QStringList Ororok::supportedFileExtensions()
 /**
  * Read track metadata from the file.
  */
-Ororok::MusicTrackMetadata * Ororok::getMusicFileMetadata(const QString & filename)
+    Ororok::MusicTrackMetadata * Ororok::getMusicFileMetadata(const QString & filename)
 {
 	// try to open file and read metadata from there
 	TagLib::FileRef f(filename.toLocal8Bit().constData());
@@ -61,6 +61,11 @@ Ororok::MusicTrackMetadata * Ororok::getMusicFileMetadata(const QString & filena
             TagLib::ID3v2::FrameList l = mf->ID3v2Tag(false)->frameListMap()["TCOM"];
             if (!l.isEmpty()) {
                 metadata->composer = S2Q(l.front()->toString());
+            }
+
+            l = mf->ID3v2Tag(false)->frameListMap()["TPE2"];
+            if (!l.isEmpty()) {
+                metadata->albumArtist = S2Q(l.front()->toString());
             }
 
             l = mf->ID3v2Tag(false)->frameListMap()["TEXT"];

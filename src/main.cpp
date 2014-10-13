@@ -5,7 +5,9 @@
  *      Author: Sergey Stolyarov
  */
 
+#include <QtCore>
 #include <QtGui>
+#include <QtWidgets>
 #include <QtSql>
 #include <QtDebug>
 #include <stdlib.h>
@@ -14,25 +16,25 @@
 #include "settings.h"
 #include "db.h"
 
-int main(int argv, char *_args[])
+int main(int argc, char *argv[])
 {
-	// init rand
-	srand(QDateTime::currentDateTime().toUTC().toTime_t());
+    qDebug() << "111";
+    return 1;
+    // init rand
+    srand(QDateTime::currentDateTime().toUTC().toTime_t());
 
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
-	QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
-    QApplication app(argv, _args);
-	app.setQuitOnLastWindowClosed(true);
+    QApplication app(argc, argv);
+    app.setQuitOnLastWindowClosed(true);
 
-	QStringList args = QCoreApplication::arguments();
-	if (args.size() > 1 && ( args[1] == "--help" || args[1] == "-h" )) {
-		QTextStream qout(stdout);
-		qout << "Arguments:\n    --disable-lastfm-submit    Disable submit to last.fm\n"
-				<< "    --disable-lastfm-lookup    Disable playing tracks and artists last.fm lookup\n";
-		return 0;
-	}
+    QStringList args = QCoreApplication::arguments();
+    if (args.size() > 1 && ( args[1] == "--help" || args[1] == "-h" )) {
+        QTextStream qout(stdout);
+        qout << "Arguments:\n    --disable-lastfm-submit    Disable submit to last.fm\n"
+                << "    --disable-lastfm-lookup    Disable playing tracks and artists last.fm lookup\n";
+        return 0;
+    }
 
-	Ororok::initSettings();
+    Ororok::initSettings();
 
     // load localization
     QTranslator translator;
@@ -46,8 +48,8 @@ int main(int argv, char *_args[])
 
     QSqlError err = initDb();
     if (err.type() != QSqlError::NoError) {
-    	QMessageBox::critical(0, "fatal database error", err.text());
-    	return 1;
+        QMessageBox::critical(0, "fatal database error", err.text());
+        return 1;
     }
 
     MainWindow win;

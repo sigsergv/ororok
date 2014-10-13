@@ -40,11 +40,9 @@ See also list of planned enhancements in the issue tracker.
 Minimal system requirements
 ===========================
 
-* Qt >= 4.8 
+* Qt >= 5.3
 * linux 
-* liblastfm1 (for ororok version >= 1.2) 
-* liblastfm0 (for ororok version < 1.2) 
-* Installation instructions
+* liblastfm1
 
 There are no binary builds so far. Just clone the repository and build it by yourself. 
 
@@ -60,9 +58,9 @@ Development
 
 To build development & debug version use the following command
 
-    qmake "CONFIG+=debug"
+    qmake -qt=5 "CONFIG+=debug"
 
 To build release version:
 
-    qmake "CONFIG+=release"
+    qmake -qt=5 "CONFIG+=release"
 

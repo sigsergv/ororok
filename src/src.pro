@@ -1,4 +1,4 @@
-DEFINES += OROROK_VERSION="\\\"1.4\\\""
+DEFINES += OROROK_VERSION="\\\"1.5\\\""
 
 HEADERS += mainwindow.h \
     ororok.h \
@@ -84,7 +84,7 @@ RESOURCES = ../resources/application.qrc
 TARGET = ororok
 CODECFORTR = UTF-8
 
-QT += xml sql phonon network webkit 
+QT += gui widgets webkit webkitwidgets xml sql multimedia network x11extras
 
 INCLUDEPATH += 3rdparty/globalshortcut
 include(3rdparty/globalshortcut/globalshortcut.pri)

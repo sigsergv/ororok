@@ -5,6 +5,7 @@
  *      Author: Sergey Stolyarov
  */
 #include <QtGui>
+#include <QtWidgets>
 #include <QtDebug>
 
 #include "collectionitemdelegate.h"

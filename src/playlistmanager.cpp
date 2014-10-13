@@ -484,7 +484,7 @@ QList<Ororok::PlaylistInfo> PlaylistManager::loadPlaylistItems()
 		}
 		Ororok::PlaylistInfo pi;
 
-		switch (playlistDef[0].toAscii()) {
+		switch (playlistDef[0].toLatin1()) {
 		case Ororok::PlaylistPermanent:
 			pi.type = Ororok::PlaylistPermanent;
 			break;

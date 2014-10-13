@@ -5,8 +5,10 @@
  *      Author: Sergey Stolyarov
  */
 #include <QtGui>
-#include <QtDebug>
+#include <QtWidgets>
 #include <QtWebKit>
+#include <QtWebKitWidgets>
+#include <QtDebug>
 
 #include "playingcontextwidget.h"
 #include "mimetrackinfo.h"

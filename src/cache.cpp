@@ -80,7 +80,7 @@ QPixmap cachedImage(const QString & path, CachedImageSize size)
 
 	if (hashKey.isEmpty()) {
 		qDebug() << "generate hash" << hashKey;
-		hashKey = QCryptographicHash::hash(path.toAscii(), QCryptographicHash::Md5).toHex();
+		hashKey = QCryptographicHash::hash(path.toLatin1(), QCryptographicHash::Md5).toHex();
 		hashesHash[path] = hashKey;
 	}
 

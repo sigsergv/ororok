@@ -6,6 +6,7 @@
  */
 #include <QtDebug>
 #include <QtGui>
+#include <QtWidgets>
 #include <QtSql>
 #include <QNetworkReply>
 

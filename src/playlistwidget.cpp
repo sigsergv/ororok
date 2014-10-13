@@ -6,6 +6,7 @@
  */
 
 #include <QtGui>
+#include <QtWidgets>
 
 #include "playlistwidget.h"
 #include "playlistmodel.h"

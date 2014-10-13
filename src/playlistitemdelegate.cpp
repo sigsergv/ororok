@@ -6,6 +6,7 @@
  */
 
 #include <QtGui>
+#include <QtWidgets>
 #include <QtDebug>
 
 #include "playlistitemdelegate.h"

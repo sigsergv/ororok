@@ -1,4 +1,5 @@
 #include <QtGui>
+#include <QtWidgets>
 
 #include <QEvent>
 #include <QKeyEvent>

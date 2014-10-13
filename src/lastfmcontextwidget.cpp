@@ -6,8 +6,10 @@
  */
 
 #include <QtGui>
-#include <QtDebug>
+#include <QtWidgets>
 #include <QtWebKit>
+#include <QtWebKitWidgets>
+#include <QtDebug>
 
 #include "qdebugreleaseworkaround.h"
 #include <lastfm/ws.h>

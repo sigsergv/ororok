@@ -2,7 +2,7 @@ Source: ororok
 Section: sound
 Priority: extra
 Maintainer: Sergey Stolyarov <sergei@regolit.com>
-Build-Depends: debhelper (>= 7.0.50~), libqt4-dev (>= 4:4.8), liblastfm-dev (>= 1.0.3), libqtwebkit-dev(>= 2.0~), libphonon-dev, libtag1-dev, pkg-config, gdb
+Build-Depends: debhelper (>= 7.0.50~), qtbase5-dev (>= 5.3.0), qttools5-dev-tools, liblastfm-dev (>= 1.0.3), libqt5webkit5-dev (>= 5.3.0), libqt5x11extras5-dev, qtmultimedia5-dev, libphonon4qt5-dev, libtag1-dev, pkg-config, gdb
 Standards-Version: 3.9.1
 Homepage: https://github.com/sigsergv/ororok
 Vcs-Git: git://github.com/sigsergv/ororok.git

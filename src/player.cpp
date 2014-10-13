@@ -5,12 +5,15 @@
  *      Author: Sergey Stolyarov
  */
 #include <QtCore>
-#include <Phonon/MediaObject>
-#include <Phonon/MediaSource>
-#include <Phonon/AudioOutput>
-#include <Phonon/SeekSlider>
-#include <Phonon/VolumeSlider>
+#include <QtWidgets>
+#include <QtMultimedia>
 #include <QtDebug>
+ 
+// #include <Phonon/MediaObject>
+// #include <Phonon/MediaSource>
+// #include <Phonon/AudioOutput>
+// #include <Phonon/SeekSlider>
+// #include <Phonon/VolumeSlider>
 
 #include "player.h"
 #include "mimetrackinfo.h"
@@ -19,11 +22,11 @@ Player * Player::inst = 0;
 
 struct Player::Private
 {
-	Phonon::AudioOutput * audioOutput;
-	Phonon::MediaObject * mediaObject;
-	QList<Phonon::MediaSource> mediaSources;
-	Phonon::SeekSlider * seekSlider;
-	Phonon::VolumeSlider * volumeSlider;
+	QAudioOutput * audioOutput;
+	QMediaPlayer * mediaPlayer;
+	// QList<Phonon::MediaSource> mediaSources;
+	QAbstractSlider * seekSlider;
+	QAbstractSlider * volumeSlider;
 
 	qint32 tickInterval;
 	QStringList nextTrack;
@@ -36,67 +39,80 @@ struct Player::Private
 Player::Player()
 {
 	p = new Private;
-	p->audioOutput = new Phonon::AudioOutput(Phonon::MusicCategory, this);
-	p->mediaObject = new Phonon::MediaObject(this);
-	p->seekSlider = new Phonon::SeekSlider;
-	p->seekSlider->setMediaObject(p->mediaObject);
-	p->seekSlider->setIconVisible(false);
+	p->audioOutput = new QAudioOutput(QAudioFormat(), this);
+	p->mediaPlayer = new QMediaPlayer(this);
+
+	// QMediaPlaylist * playlist = new QMediaPlaylist();
+	p->mediaPlayer->setPlaylist(new QMediaPlaylist());
+
+
+	p->seekSlider = new QSlider(Qt::Horizontal);
+	p->seekSlider->setRange(0, 300);
+	// p->seekSlider->setMediaObject(p->mediaPlayer);
+	// p->seekSlider->setIconVisible(false);
 	p->seekSlider->setFocusPolicy(Qt::NoFocus);
-	p->volumeSlider = new Phonon::VolumeSlider;
-	p->volumeSlider->setAudioOutput(p->audioOutput);
+
+	p->volumeSlider = new QSlider(Qt::Horizontal);
+	p->volumeSlider->setRange(0, 100);
+	// p->volumeSlider->setAudioOutput(p->audioOutput);
 	p->volumeSlider->setMaximumWidth(200);
 	p->volumeSlider->setFocusPolicy(Qt::NoFocus);
+
 	p->midTrackReached = false;
 
 	// connect signals: tick, stateChanged etc
-	p->mediaObject->setTickInterval(1000);
-	connect(p->mediaObject, SIGNAL(tick(qint64)), this, SLOT(tick(qint64)));
-	connect(p->mediaObject, SIGNAL(aboutToFinish()), this, SLOT(almostFinished()));
-	connect(p->mediaObject, SIGNAL(currentSourceChanged(const Phonon::MediaSource &)),
+	// p->mediaPlayer->setTickInterval(1000);
+	// connect(p->mediaPlayer, SIGNAL(tick(qint64)), this, SLOT(tick(qint64)));
+	connect(p->mediaPlayer, SIGNAL(aboutToFinish()), this, SLOT(almostFinished()));
+	connect(p->mediaPlayer, SIGNAL(currentSourceChanged(const Phonon::MediaSource &)),
 			this, SLOT(sourceChanged(const Phonon::MediaSource &)));
+	connect(p->volumeSlider, SIGNAL(sliderMoved(int)), p->mediaPlayer, SLOT(setVolume(int)));
+	connect(p->seekSlider, SIGNAL(sliderMoved(int)), this, SLOT(setPosition(int)));
 
-	Phonon::createPath(p->mediaObject, p->audioOutput);
-	p->tickInterval = p->mediaObject->tickInterval();
+	// Phonon::createPath(p->mediaPlayer, p->audioOutput);
+	// p->tickInterval = p->mediaPlayer->tickInterval();
+	p->tickInterval = 0;
 }
 
-Phonon::SeekSlider * Player::seekSlider()
+QAbstractSlider * Player::seekSlider()
 {
 	return p->seekSlider;
 }
 
-Phonon::VolumeSlider * Player::volumeSlider()
+QAbstractSlider * Player::volumeSlider()
 {
 	return p->volumeSlider;
 }
 
-Phonon::State Player::state()
+QMediaPlayer::State Player::state()
 {
-	return p->mediaObject->state();
+	return p->mediaPlayer->state();
 }
 
 void Player::stop()
 {
-	p->mediaObject->stop();
+	p->mediaPlayer->stop();
 }
 
 void Player::pause()
 {
-	p->mediaObject->pause();
+	p->mediaPlayer->pause();
 }
 
 void Player::play()
 {
-	p->mediaObject->play();
+	p->mediaPlayer->play();
 }
 
 void Player::start(const QStringList & trackInfo)
 {
-	Phonon::MediaSource f(trackInfo[Ororok::TrackFieldPath]);
-	f.setAutoDelete(true);
+	QMediaContent f(trackInfo[Ororok::TrackFieldPath]);
+	// f.setAutoDelete(true);
 	//qDebug() << "start track " << trackFile;
-	p->mediaObject->clear();
-	p->mediaObject->enqueue(f);
-	p->mediaObject->play();
+	// p->mediaPlayer->clear();
+	// p->mediaPlayer->enqueue(f);
+	p->mediaPlayer->setMedia(f);
+	p->mediaPlayer->play();
 	p->currentTrack = trackInfo;
 	p->currentTrackStartTime = QDateTime::currentDateTime();
 	p->nextTrack.clear();
@@ -107,15 +123,17 @@ void Player::start(const QStringList & trackInfo)
 
 void Player::enqueue(const QStringList & trackInfo)
 {
-	Phonon::MediaSource f(trackInfo[Ororok::TrackFieldPath]);
-	f.setAutoDelete(true);
-	p->mediaObject->enqueue(f);
+	QMediaContent f(trackInfo[Ororok::TrackFieldPath]);
+	// f.setAutoDelete(true);
+	p->mediaPlayer->playlist()->addMedia(f);
 	p->nextTrack = trackInfo;
 }
 
 void Player::tick(qint64 posTime)
 {
-	qint64 totalTime = p->mediaObject->totalTime();
+	Q_UNUSED(posTime);
+	/* // disabled for now
+	qint64 totalTime = p->mediaPlayer->totalTime();
 	p->currentTrackPlayingTime += p->tickInterval;
 
 	// emit signal with track time
@@ -124,6 +142,7 @@ void Player::tick(qint64 posTime)
 		emit midTrackReached(p->currentTrack, p->currentTrackStartTime);
 		p->midTrackReached = true;
 	}
+	*/
 }
 
 void Player::almostFinished()
@@ -145,6 +164,11 @@ void Player::sourceChanged(const Phonon::MediaSource &)
 	p->midTrackReached = false;
 	p->currentTrackPlayingTime = 0;
 	p->nextTrack.clear();
+}
+
+void Player::setPosition(int pos)
+{
+	Q_UNUSED(pos);
 }
 
 Player * Player::instance()

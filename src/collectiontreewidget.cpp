@@ -6,6 +6,7 @@
  */
 #include <QtGui>
 #include <QtDebug>
+#include <QtWidgets>
 
 #include "filterlineedit.h"
 #include "playlistmanager.h"
@@ -129,7 +130,6 @@ void CollectionTreeWidget::resetFilter()
 void CollectionTreeWidget::createModel()
 {
 	CollectionItemModel * newModel = new CollectionItemModel(this);
-	newModel->setSupportedDragActions(Qt::CopyAction | Qt::MoveAction);
 	CollectionTreeFilter * newQuickSearchProxy = new CollectionTreeFilter(CollectionItemModel::ItemQuickSearchMatchedRole, this);
 	CollectionTreeFilter * newDateFilterProxy = new CollectionTreeFilter(CollectionItemModel::ItemDatePeriodMatchedRole, this);
 

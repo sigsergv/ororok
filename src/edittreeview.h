@@ -8,7 +8,7 @@
 #ifndef EDITTREEVIEW_H_
 #define EDITTREEVIEW_H_
 
-#include <QtGui>
+#include <QTreeView>
 
 class EditTreeView : public QTreeView
 {

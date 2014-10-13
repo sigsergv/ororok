@@ -6,9 +6,8 @@
  */
 #include <QtCore>
 #include <QtGui>
-#include <Phonon/SeekSlider>
-#include <Phonon/VolumeSlider>
-#include <Phonon/MediaObject>
+#include <QtWidgets>
+#include <QtMultimedia>
 
 #include "mainwindow.h"
 #include "settings.h"
@@ -59,11 +58,11 @@ struct MainWindow::Private
 	QAction * actionPlaybackNext;
 
 	// track progress
-	Phonon::SeekSlider * trackProgressSlider;
+	QAbstractSlider * trackProgressSlider;
 	QLabel * trackTimeLabel;
 
 	// volume
-	Phonon::VolumeSlider * volumeSlider;
+	QAbstractSlider * volumeSlider;
 
 	PlaylistWidget * tmpPL;
 
@@ -270,14 +269,14 @@ void MainWindow::playbackPlayPause()
 	PlaylistManager * pm = PlaylistManager::instance();
 
 	// if player is playing something right now then pause play
-	if (Phonon::PlayingState == player->state()) {
+	if (QMediaPlayer::PlayingState == player->state()) {
 		// now mark track as paused in the corresponding playlist
 		pm->requestTrackPause();
 		return;
 	}
 
 	// if player is in paused state the resume playing
-	if (Phonon::PausedState == player->state()) {
+	if (QMediaPlayer::PausedState == player->state()) {
 		// now mark active paused track as playing
 		pm->requestTrackResume();
 		return;

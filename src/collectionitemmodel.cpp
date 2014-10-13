@@ -386,3 +386,9 @@ bool CollectionItemModel::reloadData()
 	p->rootTreeItem = new CollectionTreeItem(CollectionTreeItem::Root, 0);
 	return true;
 }
+
+
+Qt::DropActions CollectionItemModel::supportedDragActions() const
+{
+	return Qt::CopyAction | Qt::MoveAction;
+}

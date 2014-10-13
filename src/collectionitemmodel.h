@@ -31,6 +31,7 @@ public:
 	void markItemsMatchDatePeriod(int days);
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	QStringList mimeTypes() const;
+	Qt::DropActions supportedDragActions() const;
 
 	bool reloadData();
 

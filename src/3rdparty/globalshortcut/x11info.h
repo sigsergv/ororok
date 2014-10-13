@@ -1,6 +1,5 @@
 /*
- * globalshortcuttrigger.h - Helper class activating global shortcut
- * Copyright (C) 2006  Maciej Niedzielski
+ * Copyright (C) 2013  Il'inykh Sergey (rion)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,44 +17,29 @@
  *
  */
 
-#ifndef GLOBALSHORTCUTTRIGGER_H
-#define GLOBALSHORTCUTTRIGGER_H
+#ifndef X11INFO_H
+#define X11INFO_H
 
-#include "globalshortcutmanager.h"
-#include <QObject>
+typedef struct _XDisplay Display;
+#ifdef HAVE_QT5
+typedef struct xcb_connection_t xcb_connection_t;
+#endif
 
-class GlobalShortcutManager::KeyTrigger : public QObject
+class X11Info
 {
-	Q_OBJECT
+	static Display *_display;
+#ifdef HAVE_QT5
+	static xcb_connection_t *_xcb;
+#endif
+	static int _xcbPreferredScreen;
+
 public:
-	/**
-	 * Is there any slot connected to this hotkey?
-	 */
-	bool isUsed() const
-	{
-		return QObject::receivers(SIGNAL(triggered())) > 0;
-	}
-
-signals:
-	void triggered();
-
-private:
-	/**
-	 * Registers the \a key.
-	 */
-	KeyTrigger(const QKeySequence& key);
-	/**
-	 * Unregisters the key.
-	 */
-	~KeyTrigger();
-
-	friend class GlobalShortcutManager;
-
-	/**
-	 * Platform-specific helper
-	 */
-	class Impl;
-	Impl* d;
+	static Display* display();
+	static unsigned long appRootWindow(int screen = -1);
+#ifdef HAVE_QT5
+	static xcb_connection_t* xcbConnection();
+	static inline int xcbPreferredScreen() { return _xcbPreferredScreen; }
+#endif
 };
 
-#endif
+#endif // X11INFO_H
